@@ -139,10 +139,23 @@ async function runConversation(userInput, optionData, model) {
     } catch (e) {
         const allToolsFailedMessage = "All tools failed. No fallback currently available."
         console.warn(`${response}\n\n${allToolsFailedMessage}`);
-       // return response.choices[0].message.tool_calls[0];
-        //return fallback_function(query);
+        return {
+            "id": "call_000",
+            "type": "function",
+            "function": {
+                "name": "fallback",
+                "arguments": ""
+            }
+        };
         console.log(e);
-        return response + "<br /><br />" + allToolsFailedMessage;
+        return {
+            "id": "call_000",
+            "type": "function",
+            "function": {
+                "name": "fallback",
+                "arguments": ""
+            }
+        };
     }
 }
 

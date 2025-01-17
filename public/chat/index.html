@@ -85,7 +85,7 @@
                 <option value="gemma2-9b-it">gemma2-9b-it</option>
                 <option value="gpt-4o">gpt-4o</option>
                 <option value="llama-3.1-8b-instant" selected>llama3-1</option>             <option value="gpt-3.5-turbo-1106">gpt-3.5-turbo-1106</option>
-                <option value="llama-3-groq-70B-tool-tse" selected>llama3-tool</option>               </select>
+                <option value="llama-3-groq-70B-tool-use" selected>llama3-tool</option>               </select>
                 </select>
             </div>
             <label class="switch" for="toggle">
@@ -282,7 +282,23 @@
             currentPageIndex++;
         }
 
+        function addHint() {
+            const slideDiv = document.getElementById('content').querySelector('.slide');
 
+            // Get only the intro part.
+            const onscreenText = slideDiv.childNodes[0].textContent.trim();
+
+            // Get the matching fallback
+            let hint = 'Try again...';
+            for (const page of deckData.pages) {
+                if (page.text.trim() === onscreenText) {
+                    hint = page.fallback;
+                    break;
+                }
+            }
+            slideDiv.innerHTML = onscreenText + hint;
+
+        }
         //Write voice to input bubble
         function matchIt(res) {
             document.getElementById('input-text').value = res
@@ -291,7 +307,7 @@
         async function handleSend() {
             const prompt = document.getElementById('input-text').value;
             const model = getDropdownValue();
-            clearBubble('content');
+
 
             try {
 
@@ -302,11 +318,12 @@
                 });
 
                 const result = await response.json();
-
+console.log('res',result)
                 if (showLog()) {
                     document.getElementById('modelResponse').innerHTML = JSON.stringify(result);
                     document.getElementById('request').innerHTML = JSON.stringify({prompt, model, options: optionData});
                 }
+
 
                 const parsedArguments = JSON.parse(result.function.arguments);
                 const thisSlot = await Promise.resolve((parsedArguments.slot || ''))
@@ -314,12 +331,22 @@
                 console.log('slot:', thisSlot)
 
                 const pageName = result.function.name;
+
+                if (pageName === "fallback") {
+                    addHint();
+                    return;
+                }
+                else {
+                    clearBubble('content');
+                }
+
+
                 let content;
 
                 // this could be dynamically generated
                 // Using template literals and slots to fill
                 // to allow control of chats
-
+                console.log('result', pageName)
                 switch (pageName) {
                     case 'doctorPage':
                         content = getMedicalInfo(thisSlot, 'doctor');
@@ -334,6 +361,7 @@
                         console.log(content)
                         break;
                 }
+                //if (pageName === "fallback")
                 const indexOfPage = findPageIndex(pageName);
 
                 if (content) {
@@ -343,8 +371,8 @@
                 displayPage(indexOfPage, content);
 
             } catch (error) {
-                const fallback = (deckData.pages[currentPageIndex - 1].fallback) ? deckData.pages[indexOfPage - 1].fallback : "Error: Oops. Check JSON file" + error;
-                document.getElementById('content').innerHTML = fallback;
+                const fallbackMsg = (deckData.pages[currentPageIndex - 1].fallback ) ? deckData.pages[currentPageIndex - 1].fallback +deckData.pages[currentPageIndex - 1].text : "Error: Oops. Check JSON file" + error;
+                document.getElementById('content').innerHTML = fallbackMsg;
                 return null;
             }
         }

@@ -45,7 +45,7 @@
       "text": "This monster even cries when you are not around. How can you solve this predicament? ",
       "background": "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHlubzA3emg3N3NhdmhyeTl0dXpxaGxrZjF2eXJ5eXI1dnMyMWR5bCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/5hJ9A93k6F4fG2YQBJ/giphy.gif",
       "type": "options",
-      "fallback": "Try talking the monster to a university, counselor, get him a date",
+      "fallback": "Try taking the monster to a university, counselor, get him a date",
       "options": [
         {
           "option": "Send him to college",
@@ -63,6 +63,10 @@
         {
           "option": "I make a dating profile for Fred. That's my monster.",
           "nextSlideId": "romancePage"
+        },
+        {
+          "option": "I call ghost busters",
+          "nextSlideId": "Buster"
         },
         {
           "option": "I call ghost busters",
