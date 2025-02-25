@@ -148,37 +148,35 @@ input, textarea, ::placeholder {
 }
 
 .option.delay-0 {
-    animation-delay: 600ms;
+    animation-delay: 200ms;
 }
 
 .option.delay-1 {
-    animation-delay: 1000ms;
+    animation-delay: 400ms;
 }
 
 .option.delay-2 {
-    animation-delay: 1400ms;
+    animation-delay: 800ms;
 }
 
 .option.delay-3 {
-    animation-delay: 1800ms;
+    animation-delay: 900ms;
 }
 
 .option.delay-4 {
-    animation-delay: 2100ms;
+    animation-delay: 900ms;
 }
 
 .option.delay-5 {
-    animation-delay: 2500ms;
+    animation-delay: 900ms;
 }
 .option.delay-6 {
-    animation-delay: 2900ms;
+    animation-delay: 200ms;
 }
 .option.delay-7 {
-    animation-delay: 3300ms;
+    animation-delay: 3000ms;
 }
-.option.delay-8 {
-    animation-delay: 3300ms;
-}
+
 /* Add more delay classes as needed */
 
 @keyframes fadeIn {
@@ -505,6 +503,7 @@ input:checked + .slider:before {
 }
 .api  {display:none;   background-color: #ddd;
     margin-top: 11px;
+    min-height: 28px;
     border: 1px solid #999;
     font-size: .8em;
     max-width: 700px;
@@ -532,3 +531,18 @@ textarea:disabled {
     cursor: not-allowed; /* Change cursor to "not-allowed" */
     border: 1px solid #ccc; /* Optional: Subtle border change */
 }
+
+.pass:before {
+    content: "✔ ";
+
+}
+
+.fail:before {
+    content: "✘ "
+}
+
+
+.img-representative { float:left; margin:2px; display:inline-block; padding:4px; background-color:lightgrey}
+.on {background-color: lightcyan;}
+
+#manifest { border:1px solid #ccc}
