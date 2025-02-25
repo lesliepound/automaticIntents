@@ -21,7 +21,7 @@
         },
         {
           "option": "What is the phone number for this doctor",
-          "extra": "Get phone for doctor",
+          "extra": "Get phone for doctor  ",
           "nextSlideId": "phonePage",
           "slot": "doctor's name"
         },
