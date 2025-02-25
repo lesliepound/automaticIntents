@@ -1,0 +1,65 @@
+{
+  "pages": [
+    {
+      "id": "start",
+      "type": "simulation",
+      "foreground": [
+        "cow",
+        "bear",
+        "wagon",
+        "tree",
+        "hat",
+        "statue",
+        "stone",
+        "basket",
+        "blanket"
+      ],
+      "text": "This chat demonstrates how AI can work in some learning contexts. The visual terms below mimic was seen on screen. By interacting with visual the user can learn process and method. In this chat you can ask any item anything ",
+      "display": "none",
+      "goal": "Bear loves cupcakes. Help her find them.  ",
+      "options": [
+        {
+          "option": "ask_someone_or_thing",
+          "slot": {
+            "name": "thing_you_talk_to",
+            "description": "You will command a character to talk to or direct a character to talk to any item on screen. All on screen objects can be talked to.These are the items on screen:  _FOREGROUND_"
+          },
+          "nextSlideId": "ask_someone_or_thing"
+        },
+        {
+          "option": "Look under something",
+          "slot": {
+            "name": "thing_to_look_under",
+            "description": "You will look at or move one of these objects: _FOREGROUND_"
+          },
+          "nextSlideId": "look_under"
+        },
+        {
+          "option": "fallback; anything that does not fit the other options.",
+          "slot": {
+            "name": "clariyfing_question",
+            "description": "Generate a clariyfing_question quesiton to get more information about what the user-input means. Remember the context is a visual they are viewing. This is what they can see: _FOREGROUND_"
+          },
+          "nextSlideId": "model needs more information"
+        }
+      ]
+    },
+    {
+      "id": "ask_someone_or_thing",
+      "type": "story",
+      "text": "...",
+      "timer": 3
+    },
+    {
+      "id": "look_under",
+      "type": "story",
+      "text": "looking under ",
+      "timer": 3
+    },
+    {
+      "id": "ending",
+      "text": "The end.",
+      "type": "end"
+    }
+  ]
+}
