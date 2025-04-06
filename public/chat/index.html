@@ -1,4 +1,5 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <link rel="stylesheet" href="/style/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -34,13 +35,11 @@
         <span id="edit-button" class="pen-icon"> &#9998;</span>
     </h2>
     <div class="section">
-        <span id="optional-left-stack">
-            <!-- default model -->
 
-        <div class="left-bubble" model="gemma2-9b-it">
+        <div class="left-bubble" model="gemma2-9b-it">  <!--default model -->
             <div id="content" class="current-message"></div>
         </div>
-        </span>
+
         <div></div>
         <div></div>
         <div>
@@ -49,8 +48,9 @@
             </div>
         </div>
     </div>
+
     <!-- all the pop-up dialogs -->
-    <div id="dialog" class="modal">
+    <div id="dialog1" class="modal">
         <div class="modal-content">
             <span class="close-button">&times;</span>
             <h2>Automatic Intents </h2>
@@ -58,10 +58,12 @@
                 lesliedpound@gmail.com</p>
         </div>
     </div>
-    <div id="dialog2" class="modal">
+    <div id="dialog3" class="modal">
         <div class="modal-content">
             <span class="close-button">&times;</span>
             <h2>Try It: Edit a Chat</h2>
+            <h3> Use with caution. This will overwrite the original story.json.</h3>
+            See the repo
             <section>
                 <form id="fileForm" style="max-width: 500px">
                     <label for="fileName">File Name:</label>
@@ -77,7 +79,7 @@
             </section>
         </div>
     </div>
-    <div id="dialog1" class="modal">
+    <div id="dialog2" class="modal">
         <div class="modal-content">
             <span class="close-button">&times;</span>
             <h2>Settings</h2>
@@ -97,30 +99,33 @@
             </label>
             <div style="vertical-align: bottom; display:inline-block">Show API Traffic</div>
         </div>
-
     </div>
-    <div id="manifest" class="vis api">
+    <!-- end pop-up dialogs -->
+    <!--visChat -->
+    <div id="manifest" data-goal="" class="vis api">
         <table id="learning"></table>
     </div>
+
     <div id="visual" class="vis api"><span class="test"></span></div>
     <div id="request" class="api"><span class="help" placeholder="PROMPT SENT TO MODEL"></span></div>
     <div id="modelResponse" class="api"><span class="help" placeholder="MODEL RESPONSE"></span>
     </div>
 
     <script>
-        // UI styling
+        //Puts model name as chat bubble
         function addModelName(modelID, terms) {
             const element = document.querySelector('#' + modelID);
             element.style.setProperty("--content", `"${terms}"`);
         }
 
-        //Setup listeners for buttons & dialogs
+        // Setup listeners to respond to buttons clicks
         function setListeners() {
             const elements = {
-                'edit-button': editDialog,
-                'settings-button': () => showModal('dialog1'),
-                'info-button': () => showModal('dialog'),
-                'fetch-button': getFile,
+
+                'info-button': () => showModal('dialog1'),
+                'settings-button': () => showModal('dialog2'),
+                'edit-button': editDialog,   // prep to call dialog3
+                'fetch-button': getFile,     // set up for editing in dialog3
                 'model': handleModelChange,
                 'toggle': showHideAPI
             };
@@ -139,6 +144,8 @@
                     handleSend();
                 }
             });
+
+            // Show API calls
             document.getElementById("toggle").addEventListener('change', (event) => {
                 const isOn = event.target.checked;
                 event.target.classList.toggle("on", isOn);
@@ -147,13 +154,12 @@
         }
 
         //Dialog Pop-ups
-
         function editDialog() {
             const activeButton = document.querySelector("button.active");
             const filename = activeButton.getAttribute("filename");
             document.getElementById('focalChat').innerHTML = " " + filename;
             document.getElementById('fileName').value = filename + "/story.json";
-            showModal('dialog2');
+            showModal('dialog3');
         }
 
         function showModal(modalId) {
@@ -188,7 +194,7 @@
 
         }
 
-        //Show edit
+        // Shows JSON file for possible edit in text window
         async function getFile(event) {
             let fileName = document.getElementById('fileName').value;
             const urlName = "/chat/examples/" + fileName
@@ -203,13 +209,14 @@
             }
         }
 
-        //Gloabls
+        // Globals
         let currentPageIndex = 0;
         let deckData = null;
         let optionData = [];
         let running; // timeout name
 
-        //If a page in the story.json has nextSlideId, use that; otherwise get the next id
+        // If a page in the loaded story.json has nextSlideId, use that,
+        // otherwise get the next page.id in order in the file
         function getForNextIndex(thisIndex) {
             if (deckData.pages[thisIndex].hasOwnProperty("nextSlideId")) {
                 nextIndex = findPageIndex(deckData.pages[thisIndex].nextSlideId)
@@ -254,14 +261,17 @@
         }
 
         function setupPanes() {
-            //ocument.getElementById('visMap').classList.contains('active'))
             clearBubble('input-text');
+
+            // visual output
             const visPanes = document.querySelectorAll('.vis');
             document.getElementById('manifest').innerHTML = " <table id=\"learning\"></table>"
             document.getElementById('visual').innerHTML = "";
             visPanes.forEach(element => {
                 element.style.display = 'none';
             });
+
+            //API output for learning or debugging
             document.getElementById('request').innerHTML = "<span class='help'>SENT FROM SERVER</span>";
             document.getElementById('modelResponse').innerHTML = "<span class='help'>SENT TO SERVER</span>";
         }
@@ -271,7 +281,7 @@
             clearBubble('content');
             const page = deckData.pages[index];
 
-            //Add chat intros from config
+            //Add chat text
             const pageTextDiv = document.createElement('div');
             pageTextDiv.className = 'slide';
             pageTextDiv.textContent = (content) ? content : page.text;
@@ -282,22 +292,35 @@
             if (page.background) {
                 document.querySelector('.left-bubble').style.background = `white url(${page.background}) no-repeat right / contain`;
             }
-            if (page.type === 'end') return;
+
+            if (page.type === 'end') return
+            // types = story (explantion), options (interactive), simulation
             if (page.type === 'story') {
-                document.getElementById('input-text').value = ''; // Clear input field
+                clearBubble('input-text');
+                //displays page for page.timer amount of seconds
                 running  = setTimeout(() => displayPage(getForNextIndex(index)), page.timer * 800);
-                //document.getElementById("input-text").disabled = true;
             } else if (page.type === 'options' || page.type === 'simulation') {
-                //let foregroundObjects = page.foreground;
                 const textarea = document.getElementById("input-text").disabled = false;
+                //Shows user options as fade-in
                 optionData = page.options.map((optionObj, idx) => {
                     const optionDiv = document.createElement('div');
                     optionDiv.className = `option delay-${idx}`;
                     optionDiv.textContent = optionObj.option;
-                    if (page.display !== "none") {
+
+                    if (page.display !== "none") {  // optional to show user options
                         pageTextDiv.appendChild(optionDiv);
                     }
                        let newOption = optionObj.option;
+
+                    // visChat only ; this demonstrates how extended use of images (foreground)
+                    // in a "visual-first" type of chat.
+                    // This uses the simple meachnism of naming the image semantically that
+                    // can be used in more precise instructions to the AI model.
+
+                    // Here we reference images by their "names" (css IDs)
+                    // to show the connection to user voice or text input.
+                    // Add images and editing the css styles to create a more engaging UI
+
                     if (page.hasOwnProperty("foreground") && page.foreground[0]) {
                         let newString = page.foreground.join(", ");
                         if (optionObj.hasOwnProperty("clarifying_question")) {
@@ -319,7 +342,7 @@
                         nextSlideId: optionObj.nextSlideId,
                     };
                 });
-                //dont do anything.
+                // Don't do anything. Use applied to connect user input to visual output
                 if (page.type === 'simulation')
                     return;
             }
@@ -328,10 +351,8 @@
 
         function addHint() {
             const slideDiv = document.getElementById('content').querySelector('.slide');
-
             // Get only the intro part.
             const onscreenText = slideDiv.childNodes[0].textContent.trim();
-
 
             let hint = 'Try again...';
             for (const page of deckData.pages) {
@@ -341,10 +362,9 @@
                 }
             }
             slideDiv.innerHTML = onscreenText + hint;
-
         }
 
-        //Write voice to input bubble
+        //Show user voice input in input-text buble
         function matchIt(res) {
             document.getElementById('input-text').value = res
         }
@@ -354,7 +374,7 @@
             const prompt = document.getElementById('input-text').value;
             const model = getDropdownValue();
             const current = document.querySelector('.active');
-            const convo = current.getAttribute('filename');
+            //const convo = current.getAttribute('filename');
             let allForeground = "";
             if (deckData.pages[currentPageIndex].hasOwnProperty('foreground'))
              allForeground = deckData.pages[currentPageIndex].foreground.join(", ");
@@ -364,12 +384,9 @@
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({prompt, model, options: optionData, foreground: allForeground}),
-
-                   // body: JSON.stringify({prompt, model, options: optionData, convo: convo}),
                 });
 
                 const responseObject = await response.json(); // This line parses the JSON response;
-
 
                 if (document.getElementById('visMap').classList.contains('active')) {
                     const category = responseObject.name;
@@ -379,7 +396,7 @@
                     const slot = args[firstKey];
 
                     if (category) {
-                        bridgeActions(category, slot);
+                        bridgeActions(category, slot);   //Custom hooks to your application
                          return;
                     } else if (responseObject.hasOwnProperty('clarifyingQuestion') && responseObject.clarifyingQuestion !== "") {
                         displayPage(0, responseObject.clarifyingQuestion);
@@ -394,6 +411,7 @@
                 const pageName = responseObject.name;
                 let content;
 
+                // Shows key payloads in UI for easy development/deugging
                 if (showAPILog()) {
                     document.getElementById('modelResponse').innerHTML = JSON.stringify(result);
                     document.getElementById('request').innerHTML = JSON.stringify({
@@ -403,10 +421,9 @@
                     });
                 }
 
-
                 const parsedArguments = JSON.parse(responseObject.arguments);
 
-                //Get value without knowing key assumes on name/value
+                // Optionally replace chat text with a
                 let val = Object.values(parsedArguments);
                 const template = deckData.pages[pageIndex].text;
                 content = fillTemplate(template, [val]);
@@ -420,7 +437,7 @@
             }
         }
 
-        //Matching a response line in JSON to supply variables for user
+        // Adapting hard-coded chat instructions/responses with slots
         function fillTemplate(templateString, data) {
             let transferTemplate;
             transferTemplate = templateString;
@@ -476,9 +493,8 @@
         }
 
 
-        //This edits the local chat config file
+        // Save chat edits
         async function editFile() {
-
             const fileName = document.getElementById('fileName').value;
             const fileContents = document.getElementById('fileContents').value;
             const response = await fetch('/create-file', {
@@ -494,6 +510,22 @@
             } else {
                 alert("Error editing file.");
             }
+        }
+
+         //UI for demo
+        const manifestElement = document.getElementById('manifest');
+
+        //Demo
+        function updateGoal(newValue) {
+            if (manifestElement) { // Ensure the element exists
+                manifestElement.style.setProperty('--data-goal', `"${newValue}"`);
+                manifestElement.classList.add('goal-active');
+            }
+        }
+
+        // Set the initial value on load
+        if (manifestElement) {
+            updateGoal(manifestElement.getAttribute('data-goal'));
         }
     </script>
     <script src="/js/voice.js"></script>
