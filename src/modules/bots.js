@@ -43,7 +43,7 @@ function getUninsatiatedBotError(botName) {
         throw new Error("Invalid bot name");
     }
 
-    return `${botName} model was not instantiated. Did you supply an ${errorMap.get(botName)}?`;
+    return `${botName} model was not instantiated. Did you supply an ${errorMap.get(botName)}? If using ennviornment variables, are they available to the terminal`;
 }
 
 
