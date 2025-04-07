@@ -1,4 +1,4 @@
-
+//retirevs an item at random from array
 function random(items) {
     const max = items.length;
     const x = Math.floor((Math.random() * max));
@@ -26,7 +26,9 @@ function doHighlight(slot) {
         document.getElementById(slot).style.backgroundColor = 'lightcyan';
     }
 }
+
 function add2Manifest(action, marking) {
+    // confirmation = () ? 'yes' : 'no'
     const table = document.getElementById("learning");
     if (!table) {
         console.error("#manifest not found.");
@@ -37,10 +39,15 @@ function add2Manifest(action, marking) {
     let newText = document.createTextNode(action);
     cell.classList.add(marking);
     cell.appendChild(newText);
+    //show demo result in status for goal
+    const element = document.getElementById("manifest");
+    const newValue = "Updated Value";
+    element.style.setProperty("--my-attribute-value", `"${newValue}"`); //important to include quotes if you want them to appear in the content.
+
 }
 
 
-function ifTagged(id,tag) {
+function ifTagged(id, tag) {
     const element = document.getElementById(id);
     if (element && element.classList.contains(tag)) {
         return true;
@@ -51,67 +58,72 @@ function ifTagged(id,tag) {
 
 //Somehow highlight object user is interacting with
 function askOthers(askee) {
-    console.log("highlight "+ askee)
+    console.log("highlight " + askee)
     return true;
 }
-//mechanism to count & codify goal progress
-    function setUpGoal() {
 
-    const amount = getRandomNumber(2,3);
+// Placeholder mechanism to setup a goal, if needed, for application
+// example implemented
+function setUpGoal() {
+    //const amount = getRandomNumber(2, 3);
     const images = document.querySelectorAll('.img-representative'); //when img names
-let item;
-let foregroundImages;
+    let item;
+    let foregroundImages;
     for (let i = 0; i < 3; i++) {
         foregroundImages = Array.from(images).filter(img => !img.classList.contains('cupcake'))
-    .filter(img => !img.classList.contains('cupcake'));
+            .filter(img => !img.classList.contains('cupcake'));
         item = random(foregroundImages)
         item.classList.add('cupcake')
     }
-
 }
 
 //example of actions "Ask others"
-function simulateActions(action,slot) {
+function simulateActions(action, slot) {
+
     //bridgeActions(action,slot)
     let marking = "fail";
     let status = false;
-    console.log(action, " & ", slot)
-    if (action === "Look under things") //do I need to classify people?
-    { console.log("under")}
-    else if (action === "ask_someone_or_thing")
-    { console.log("ask")}
-    else if (action === "Move something")
-    { console.log("move")}
-    else if (action === "Put on x-ray glasses")
-    { console.log("xray")}
-    // else clarfying
+
 
     status = ifTagged(slot, 'cupcake')
-    if (status) {marking = "pass"; }
+    let statusMark = 'no';
+    if (status) {
+        marking = "pass";
+        statusMark = 'yes'
+    }
     add2Manifest(action, marking)
+
+    updateGoal("sstatus") //statusMark
     doHighlight(slot)
     return status
 }
 
-// This maps "intents" to on visual actions
+// This maps "intents" to visual representations of actions
 //Replace with application specifics
-function bridgeActions(action, slot, bag)  {
-    let marking  = "fail"
-    let status = ifTagged(slot, 'cupcake')
-    if (status) {marking = "pass"; }
+function bridgeActions(action, slot, bag) {
+    let marking = "fail"
+    let verifiedStatus = "no";
+    let thisStatus = ifTagged(slot, 'cupcake')
+    if (thisStatus) {
+        marking = "pass";
+        verifiedStatus = "yes"
+    }
+    updateGoal(verifiedStatus)
     add2Manifest(action, marking)
     doHighlight(slot)
-    return status
+    return thisStatus
 }
 
-    function setupApplication(chat){
+function setupApplication(chat) {
     const goal = chat.pages[currentPageIndex].goal;
 
     const newText = document.createTextNode(goal);
     manifest.insertBefore(newText, manifest.firstChild);
     const images = chat.pages[currentPageIndex].foreground;
     const visualDiv = document.getElementById('visual');
-    //visualDiv.innerHTML="";
+    //displayPage(num)
+    //pages[num].state="showing"
+    //
     images.forEach(img => {
         // Create the span element
         const span = document.createElement('span');

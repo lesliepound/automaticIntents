@@ -2,7 +2,7 @@
 import express from 'express';
 import fs from 'fs';
 import 'dotenv/config';
-import {main, runConversation} from "./src/modules/functions.js";
+import {runConversation} from "./src/modules/functions.js";
 
 // Setting up local environment
 const port = 3000;
@@ -16,12 +16,12 @@ app.use(express.json());
 
 // Setting up Routes **
 app.post('/create-file', (req, res) => {
-    const { fileName, fileContents } = req.body;
+    const {fileName, fileContents} = req.body;
 
     fs.access(fileName, fs.constants.F_OK, (err) => {
         if (err) {
             // File doesn't exist, create it
-            fs.writeFile('public/chat/examples/'+fileName, fileContents, (err) => {
+            fs.writeFile('public/chat/examples/' + fileName, fileContents, (err) => {
                 if (err) {
                     console.error('Error creating file:', err);
                     res.status(500).send('Error creating file');
@@ -46,7 +46,7 @@ app.post('/create-file', (req, res) => {
 });
 
 
-//Reads files from /user/<fileName>
+//Returns content of file
 app.get('/file', (req, res) => {
     const fileName = req.query.fileName;
     const filePath = path.join('/chat/examples/', fileName);
@@ -59,22 +59,21 @@ app.get('/file', (req, res) => {
                 res.status(500).send('Internal Server Error');
             }
 
+        } else {
+            res.send(data);
         }
-        else {
-        res.send(data);
-            }
     })
 });
 
 
 app.post('/middleware', async (req, res) => {
     try {
-        const {prompt,model,options,foreground} = req.body;
+        const {prompt, model, options, foreground} = req.body;
         if (!Array.isArray(options)) { // Check if options is actually an array
             console.log("Options is not an array:", options);
             return
         }
-        logThis(  `model called:${model}, prompt: ${prompt}` );
+        logThis(`model called:${model}, prompt: ${prompt}`);
         let result = await runConversation(prompt, options, model);
         logThis(result)
         res.json(result);
@@ -82,8 +81,8 @@ app.post('/middleware', async (req, res) => {
         console.error("Error processing request:", error);
         console.log(result.function.name); // Outputs: "John"
 
-        logThis("Error:",error)
-        res.status(500).json({ error: "Internal Server Error" });
+        logThis("Error:", error)
+        res.status(500).json({error: "Internal Server Error"});
     }
 });
 
