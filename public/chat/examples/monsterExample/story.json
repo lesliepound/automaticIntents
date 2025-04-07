@@ -5,22 +5,25 @@
       "type": "story",
       "background": "",
       "text": "You are in a forest and stumble across a monster.",
-      "timer": 3
+      "timer": 2
     },
     {
       "id": "nowWhatPage",
       "type": "options",
       "text": "What do you do now?",
-      "fallback": "Try talking",
+      "fallback": "Try saying something positive or negative to the monster",
       "options": [
         {
           "option": "I fight him",
           "extra": "We wrestle",
+          "slot": {"name": "fight-type", "description": "the type of fighting like wrestle or swords;default is fist"},
           "nextSlideId": "fightPage"
         },
         {
           "option": "I hug him",
           "extra": "We dance",
+          "slot": {"name": "type-of-affection", "description": "they type of affection for monster like dance; default is hug"},
+
           "nextSlideId": "lovePage"
         }
       ]
@@ -28,7 +31,7 @@
     {
       "id": "fightPage",
       "type": "story",
-      "text": "Well. The monster wins the fight and now you limp",
+      "text": "Well. The monster wins at ${fight-type} fight and now you limp",
       "nextSlideId": "ending",
       "timer": 4
     },
@@ -45,15 +48,17 @@
       "text": "This monster even cries when you are not around. How can you solve this predicament? ",
       "background": "https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExOHlubzA3emg3N3NhdmhyeTl0dXpxaGxrZjF2eXJ5eXI1dnMyMWR5bCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9cw/5hJ9A93k6F4fG2YQBJ/giphy.gif",
       "type": "options",
-      "fallback": "Try taking the monster to a university, counselor, get him a date",
+      "fallback": "Try taking the monster to a university, counselor, or get him a date",
       "options": [
         {
           "option": "Send him to college",
-          "slot": "college",
+          "slot": {"name": "college", "description": "the name of the university or college; default is college"},
           "nextSlideId": "toCollege"
         },
         {
-          "option": "Predicament? nah. We go to disneyland",
+          "option": "Predicament? nah. We go to an amusement park",
+          "slot": {"name": "amusement-park", "description": "the name of an amusement park"},
+
           "nextSlideId": "amusementPage"
         },
         {
@@ -63,10 +68,6 @@
         {
           "option": "I make a dating profile for Fred. That's my monster.",
           "nextSlideId": "romancePage"
-        },
-        {
-          "option": "I call ghost busters",
-          "nextSlideId": "Buster"
         },
         {
           "option": "I call ghost busters",
@@ -82,13 +83,13 @@
     {
       "id": "Buster",
       "type": "story",
-      "text": "The Ghostbusters are able to monsters as well as ghosts. They make your monster sleep and you escape",
+      "text": "The Ghostbusters are able to handle monsters as well as ghosts. They make your monster sleep and you escape",
       "nextSlideId": "ending",
       "timer": 6
     },
     {
       "id": "amusementPage",
-      "text": "We met Mickey Mouse. Now Fred the monster follows   Mickey everywhere",
+      "text": "We are on the rides at ${amusement-park} and having  a blast",
       "type": "end"
     },
     {
@@ -101,8 +102,7 @@
       "type": "story",
       "text": "The monster gets a degree at ${college} and finds someone smarter than you",
       "nextSlideId": "ending",
-      "slot": "college",
-      "timer": 7
+      "timer": 9
     },
     {
       "id": "mentalIssues",
@@ -113,20 +113,9 @@
     },
     {
       "id": "romancePage",
-      "text": "Fred, the monster, finds love and moves away. Where should the new couple live?",
-      "nextSlideId": "ending",
-      "type": "story",
-      "timer": 7
-    },
-    {
-      "id": "planetPage",
-      "text": "Cosmos has Billions and Billions",
-      "type": "end"
-    },
-    {
-      "id": "locationPage",
-      "text": "Go to the nations",
-      "type": "end"
+      "text": "Fred, the monster, finds love and moves away.",
+      "type": "end",
+      "timer": 4
     },
    {
       "id": "ending",

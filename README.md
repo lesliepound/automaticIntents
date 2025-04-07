@@ -2,24 +2,24 @@
 
 ## Overview
 
-This is a repository for building and running AI-driven chats.  __This can be used as an engine for many interactive workflows ( surveys, lessons, quizzes, etc.).__
-This connects to AI models from openAI or Groq (which includes open source options). 
+This is a javascript based repository demonstrating a few key concepts for building and running multimodal AI-driven chats.  __This repo can be used as a proof of concept or demo for many interactive workflows ( surveys, lessons, quizzes, etc.).__
+We use various AI models from openAI or Groq (which includes open source options). 
 
 The goal here is 
-1. Separate chat mechanics (what happens when user does XYZ) into an easy-to-understand file 
-2. These chat files also provide the AI model with the information needed to control the chat.
+1. Separate chat mechanics (what happens when user does XYZ) into an easy-to-understand file (JSON)
+2. Allow for the AI model to understand and execute those mechanicns with little extra coding beyond this repo.
 
 # Getting started
 
-This project has been developed and tested
-on macOS Monterey (12.5.1) and macOS Sequoia (15.2)
-running node `20.5.1`.
 
-## using `nvm`
-We support `nvm` via `.nvmrc`. Once nvm is installed, run `nvm use`;
+
+## Helpful Tools
+### using `nvm`
+
+We support `nvm` via `.nvmrc`. It is, however, optional. Once nvm is installed, run `nvm use`;
 you may need to run `` nvm install `cat .nvmrc` `` first.
 
-We provide a one-stop shop script (`setupProjectWithnvm.sh`)
+We also provide a one-stop shop script (`setupProjectWithnvm.sh`)
 that will install the correct version of `node` via `nvm`
 if `node` is NOT already installed. 
 
@@ -29,20 +29,26 @@ if `node` is NOT already installed.
 
 ### API Keys
 
+You can use an openAI or a Groq model. You can find groq models at https://console.groq.com/docs/models
 #### groq
 https://console.groq.com/login
 
 #### OpenAI
 https://platform.openai.com/api-keys
 
-#### API Key Names
+#### AI Model API Key Names
 We use the default API key names for both `groq` and `openai`;
 see `.env.example` for more details.
 
 ## Running the Project
+
+### Environment Variables
+If using evironment variables, remember to make them available in the terminal you execute.
+
 To execute the project run `npm run start`
 
 ## Testing the Project
+There are a few unit tests available for this repo.
 ### Unit Tests
 To run the unit test, run `npm run test`
 ### Developing Unit Tests
@@ -58,26 +64,34 @@ will update both `.node-version` and `.nvmrc`.
 
 - This repo includes: a node server ; web interface that interacts with openAI & Groq APIs for tools APIs.
 
-- Chat details are separate files (JSON format) and are dynamically navigated by the model at runtime. What the user says/types, dictates what happens according to the chat file. 
 
-- Every new response is called a page. Pages can have images. 
+- Chat details are separated in "story" files (JSON format) and are dynamically navigated by the model at runtime. What the user says/types, dictates what happens according to the chat file. 
+
+
+- Every new set of interactions is called a page. Pages have types, text and images.
+
 
 - "Intents" are labels that are learned by a model and connected to a specific functionality in your code.  In this repo, intents point to a "page" and the page contains its configuration.
 
-- Intents use a prompt and "extra" instruction (optional)
+
+- There is a new type of page called a "simulation". This allows the user  to try things on one page to meet a stated goal, the reponses are categorized and logged. 
+
+
+- Intents use a name, description and "extra" instruction (optional)
 
 - "Slots" are optional names and places  the model figures out from the user prompt.  You may use them in reponses in chat. Currently only one per chat message is returned.
 
 
 ## Chat Details
 
+
 Example 1: text element
 ```
  {
       "id": "startPage",
       "type": "story",
-      "background": "",
-      "text": "You are in a forest and stumble across a monster.",
+      "background": "<url to image; can use third party like giphy",
+      "text": "Message to user",
       "timer": 3
     }
 ```
@@ -103,12 +117,11 @@ Example 2: options element
 
 <page> ::= {
   "id": <string>,
-  "type": ("story" | "options" | "end"), 
+  "type": ("story" | "options" | "simulation" | end"), 
   "options": [ <option> ]?, 
   "background": <string>?,  
   "text": <string>,
   "timer": <number>?, 
-  "fallback": <string>?, 
   "nextSlideId": <string>?,
   "slot": <string>? 
 }
@@ -120,6 +133,5 @@ Example 2: options element
   "slot": <string>?  
 }
 
-<string> ::= "…"  
-<number> ::= 1 | 2 | 3 | ... 
+ ... 
 ```

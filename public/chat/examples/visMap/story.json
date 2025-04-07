@@ -1,0 +1,80 @@
+{
+  "pages": [
+    {
+      "id": "start",
+      "type": "simulation",
+      "foreground": [
+        "cow",
+        "bear",
+        "wagon",
+"dragon",
+        "tree",
+        "hat",
+        "statue",
+        "stone",
+        "basket",
+        "blanket"
+      ],
+      "text": "This chat demonstrates a visual-first method where the user interacts with images on screen. Here a cartoon character is looking for cupcakes. Your job is to help her find them by interacting with things on screen. By looking under things, asking things. Experiment by editing the file and adding a new entity to the screen, restart the chat, and ask about what you just added",
+      "display": "none",
+      "goal": "Bear loves cupcakes. Help her find them.  ",
+      "options": [
+        {
+          "option": "ask_someone_or_thing",
+          "slot": {
+            "name": "thing_you_talk_to",
+            "description": "You will command a character to talk to or direct a character to talk to any item on screen. All on screen objects can be talked to.These are the items on screen:  _FOREGROUND_"
+          },
+          "nextSlideId": "ask_someone_or_thing"
+        },
+        {
+          "option": "Use taste of smell sense",
+          "slot": {
+            "name": "taste_or_smell",
+            "description": "Ask the system or Ask a character to smell or taste one of these objects: _FOREGROUND_"
+          },
+          "nextSlideId": "smell_or_taste"
+        },
+        {
+          "option": "Look under something",
+          "slot": {
+            "name": "thing_to_look_under",
+            "description": "You will look at or move one of these objects: _FOREGROUND_"
+          },
+          "nextSlideId": "look_under"
+        },
+        {
+          "option": "fallback; anything that does not fit the other options.",
+          "slot": {
+            "name": "clariyfing_question",
+            "description": "Generate a clariyfing_question quesiton to get more information about what the user-input means. Remember the context is a visual they are viewing. This is what they can see: _FOREGROUND_"
+          },
+          "nextSlideId": "model needs more information"
+        }
+      ]
+    },
+    {
+      "id": "ask_someone_or_thing",
+      "type": "story",
+      "text": "...",
+      "timer": 3
+    },
+    {
+      "id": "smell_or_taste",
+      "type": "story",
+      "text": "...",
+      "timer": 3
+    },
+    {
+      "id": "look_under",
+      "type": "story",
+      "text": "looking under ",
+      "timer": 3
+    },
+    {
+      "id": "ending",
+      "text": "The end.",
+      "type": "end"
+    }
+  ]
+}

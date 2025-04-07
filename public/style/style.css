@@ -148,37 +148,35 @@ input, textarea, ::placeholder {
 }
 
 .option.delay-0 {
-    animation-delay: 600ms;
+    animation-delay: 200ms;
 }
 
 .option.delay-1 {
-    animation-delay: 1000ms;
+    animation-delay: 400ms;
 }
 
 .option.delay-2 {
-    animation-delay: 1400ms;
+    animation-delay: 800ms;
 }
 
 .option.delay-3 {
-    animation-delay: 1800ms;
+    animation-delay: 900ms;
 }
 
 .option.delay-4 {
-    animation-delay: 2100ms;
+    animation-delay: 900ms;
 }
 
 .option.delay-5 {
-    animation-delay: 2500ms;
+    animation-delay: 900ms;
 }
 .option.delay-6 {
-    animation-delay: 2900ms;
+    animation-delay: 200ms;
 }
 .option.delay-7 {
-    animation-delay: 3300ms;
+    animation-delay: 3000ms;
 }
-.option.delay-8 {
-    animation-delay: 3300ms;
-}
+
 /* Add more delay classes as needed */
 
 @keyframes fadeIn {
@@ -232,15 +230,15 @@ input, textarea, ::placeholder {
     content: '';
     position: absolute;
     left: 0;
-    top: 33%;
+    top: 25%;
     width: 0;
     height: 0;
-    border: 0.531em solid transparent;
+    border: 0.9em solid transparent;
     border-right-color: #cbe0e2;
     border-left: 0;
     border-bottom: 0;
     margin-top: -0.266em;
-    margin-left: -0.531em;
+    margin-left: -0.82em;
 
 
 }
@@ -251,15 +249,15 @@ input, textarea, ::placeholder {
     content: '';
     position: absolute;
     right: 0;
-    top: 33%;
+    top: 28%;
     width: 0;
     height: 0;
-    border: 0.533em solid transparent;
+    border: 0.9em solid transparent;
     border-left-color: #ccd6cf;
     border-right: 0;
     border-bottom: 0;
     margin-top: -0.281em;
-    margin-right: -0.562em;
+    margin-right: -0.862em;
 }
 
 .right-bubble {
@@ -270,26 +268,25 @@ input, textarea, ::placeholder {
 }
 
 .left-bubble:before {
-    max-width: 48px;
-    padding:2px;
+    max-width: 45px;
     color: #999;
     font-size: .9em;
     position: absolute;
     content: attr(model);
-    top: 12px;
-    left: -65px;
+    top: 10%;
+    left: -75px;
     border-radius: 4px;
 
 }
 
 .right-bubble:before {
-    padding:3px;
+    padding-left:16px;
     color: #999;
     font-size: .9em;
     position: absolute;
     content: "You";
-    top: 25px;
-    left: 710px;
+    top: 20%;
+    left: 100%;
     border-radius: 4px;
 }
 
@@ -503,8 +500,10 @@ input:checked + .slider:before {
 [placeholder]:empty:focus::before {
     content: "";
 }
-.api  {display:none;   background-color: #ddd;
+.api  {display:none;
+    background-color: #ddd;
     margin-top: 11px;
+    min-height: 28px;
     border: 1px solid #999;
     font-size: .8em;
     max-width: 700px;
@@ -527,8 +526,50 @@ input:checked + .slider:before {
 
 
 textarea:disabled {
-    background-color: #f5f5f5; /* Light gray background */
+    background-color: #f5f5f5;
     color: #999; /* Grayed-out text */
-    cursor: not-allowed; /* Change cursor to "not-allowed" */
-    border: 1px solid #ccc; /* Optional: Subtle border change */
+    cursor: not-allowed;
+    border: 1px solid #ccc;
 }
+
+.pass:before {
+    content: "✔ ";
+
+}
+
+.fail:before {
+    content: "✘ "
+}
+
+
+.img-representative { float:left; margin:2px; display:inline-block; padding:4px; background-color:lightgrey}
+.on {background-color: lightcyan;}
+
+
+#manifest {
+    border: 1px solid #ccc;
+    position: relative; /* Needed for absolute positioning of pseudo-element */
+    padding: 20px;
+}
+
+#manifest::after {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    content: "";
+    display: inline-block;
+    background-color: lightblue;
+    padding: 5px;
+    border-radius: 3px;
+    font-size: 1.1em;
+}
+
+#manifest.goal-active::after {
+    content: var(--data-goal);
+}
+
+
+#manifest.goal-active::before {
+    content: "Goal: ";
+}
+

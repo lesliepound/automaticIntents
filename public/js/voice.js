@@ -1,81 +1,68 @@
-var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition
-var SpeechGrammarList = SpeechGrammarList || window.webkitSpeechGrammarList
-var SpeechRecognitionEvent = SpeechRecognitionEvent || webkitSpeechRecognitionEvent
+// Use modern ES6+ syntax and Web Speech API
+const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
-//let colors = ['purple', 'yellow'];
+// State management
 let isListening = false;
 
-var recognition = new SpeechRecognition();
-if (SpeechGrammarList) {
-    // SpeechGrammarList is not currently available in Safari, and does not have any effect in any other browser.
-    // This code is provided as a demonstration of possible capability. You may choose not to use it.
-    // var speechRecognitionList = new SpeechGrammarList();
-    // var grammar = '#JSGF V1.0; grammar colors; public <color> = ' + colors.join(' | ') + ' ;'
-    // speechRecognitionList.addFromString(grammar, 1);
-    // recognition.grammars = speechRecognitionList;
-}
-
+// Initialize speech recognition
+const recognition = new SpeechRecognition();
 recognition.continuous = false;
 recognition.lang = 'en-US';
 recognition.interimResults = false;
 recognition.maxAlternatives = 1;
 
-var diagnostic = document.querySelector('.output');
-var bg = document.querySelector('html');
-var hints = document.querySelector('.input');
-var colorHTML = '';
-// colors.forEach(function (v, i, a) {
-//     colorHTML += '<span style="background-color:' + v + ';"> ' + v + ' </span>';
-// });
+// DOM elements
+const diagnostic = document.querySelector('.output');
+const listenButton = document.getElementById('listen-button');
 
+/**
+ * Updates the UI to indicate listening state
+ * @param {boolean} state - Whether the app is listening
+ */
+const indicateListen = (state) => {
+    const body = document.body;
 
-function indicateListen(state) {
-    const body = document.getElementsByTagName('body')
-    const lbutton = document.getElementById('listen-button')
     if (state) {
-        body[0].classList.remove("nolisten");
-        body[0].classList.add("listen");
-        lbutton.classList.add("listening");
+        body.classList.remove("nolisten");
+        body.classList.add("listen");
+        listenButton.classList.add("listening");
+        isListening = true;
     } else {
-        body[0].classList.remove("listen");
-        body[0].classList.add("nolisten");
-        lbutton.classList.remove("listening");
-
+        body.classList.remove("listen");
+        body.classList.add("nolisten");
+        listenButton.classList.remove("listening");
+        isListening = false;
     }
-}
+};
 
-const listen = document.getElementById('listen-button');
-listen.onclick = function () {
-    if (document.body.classList.contains('nolisten')) {
+// Event listeners using arrow functions
+listenButton.addEventListener('click', () => {
+    if (!isListening) {
         recognition.start();
-        indicateListen(true)
-    }
-    else
-    {
+        indicateListen(true);
+    } else {
         recognition.abort();
         recognition.stop();
-        indicateListen(false)
+        indicateListen(false);
     }
-}
+});
 
+// Recognition event handlers
+recognition.addEventListener('result', (event) => {
+    console.log(event);
+    const result = event.results[0][0];
+    console.log(`Confidence: ${result.confidence}`);
+    console.log(result.transcript);
+    matchIt(result.transcript);
+});
 
-// Catch voice
-recognition.onresult = function (event) {
-    console.log(event)
-    console.log('Confidence: ' + event.results[0][0].confidence);
-    console.log(event.results[0][0].transcript)
-    matchIt(event.results[0][0].transcript);
-}
-
-recognition.onspeechend = function () {
+recognition.addEventListener('speechend', () => {
     recognition.stop();
-    const button = document.getElementById('listen-button');
-    button.click();
-    handleSend()
-}
+    indicateListen(false);
+    handleSend();
+});
 
-recognition.onerror = function (event) {
-    diagnostic.textContent = 'Error occurred in recognition: ' + event.error;
-    indicateListen(false)
-}
-
+recognition.addEventListener('error', (event) => {
+    diagnostic.textContent = `Error occurred in recognition: ${event.error}`;
+    indicateListen(false);
+});

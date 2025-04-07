@@ -1,4 +1,5 @@
-<html>
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <link rel="stylesheet" href="/style/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -8,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
           rel="stylesheet">
+    <title>AutoIntents Demo</title>
 </head>
 <body class="nolisten">
 <div id="main">
@@ -16,11 +18,11 @@
         <div class="button-group">
             <!-- filenames correspond with folders in chat folder -->
             <button class="example" filename="monsterExample" id="option1">Story</button>
-            <button class="example" filename="medicalExample" id="option2">Chat Bot</button>
-            <div id="info-button" title="info"  class="circle-button">
+            <button class="example" filename="visMap" id="visMap">visMap</button>
+            <div id="info-button" title="info" class="circle-button">
                 <span class="symbol">i</span>
             </div>
-            <div id="settings-button" title="settings"  class="circle-button">
+            <div id="settings-button" title="settings" class="circle-button">
                 <span class="symbol">⚙</span>
             </div>
             <div id="listen-button" title="listen" class="circle-button">
@@ -33,12 +35,12 @@
         <span id="edit-button" class="pen-icon"> &#9998;</span>
     </h2>
     <div class="section">
-        <span id="optional-left-stack">
-            <!-- default model -->
-        <div class="left-bubble" model="llama3-70b-8192">
+
+        <div class="left-bubble" model="gemma2-9b-it">  <!--default model -->
             <div id="content" class="current-message"></div>
         </div>
-        </span>
+
+        <div></div>
         <div></div>
         <div>
             <div class="right-bubble">
@@ -46,8 +48,9 @@
             </div>
         </div>
     </div>
+
     <!-- all the pop-up dialogs -->
-    <div id="dialog" class="modal">
+    <div id="dialog1" class="modal">
         <div class="modal-content">
             <span class="close-button">&times;</span>
             <h2>Automatic Intents </h2>
@@ -55,10 +58,12 @@
                 lesliedpound@gmail.com</p>
         </div>
     </div>
-    <div id="dialog2" class="modal">
+    <div id="dialog3" class="modal">
         <div class="modal-content">
             <span class="close-button">&times;</span>
             <h2>Try It: Edit a Chat</h2>
+            <h3> Use with caution. This will overwrite the original story.json.</h3>
+            See the repo
             <section>
                 <form id="fileForm" style="max-width: 500px">
                     <label for="fileName">File Name:</label>
@@ -74,18 +79,18 @@
             </section>
         </div>
     </div>
-    <div id="dialog1" class="modal">
+    <div id="dialog2" class="modal">
         <div class="modal-content">
             <span class="close-button">&times;</span>
             <h2>Settings</h2>
             <h3>Choose a Model</h3>
             <div class="dropdown">
                 <select id="model">
-                <option value="mixtral-8x7b-32768">mixtral-8x7b</option>
-                <option value="gemma2-9b-it">gemma2-9b-it</option>
-                <option value="gpt-4o">gpt-4o</option>
-                <option value="llama-3.1-8b-instant" selected>llama3-1</option>             <option value="gpt-3.5-turbo-1106">gpt-3.5-turbo-1106</option>
-                <option value="llama-3-groq-70B-tool-use" selected>llama3-tool</option>               </select>
+                    <option value="mixtral-8x7b-32768">mixtral-8x7b</option>
+                    <option selected value="gemma2-9b-it">gemma2-9b-it</option>
+                    <option value="gpt-4o">gpt-4o</option>
+                    <option value="llama-3-groq-70B-tool-use">llama3-tool</option>
+                </select>
                 </select>
             </div>
             <label class="switch" for="toggle">
@@ -93,29 +98,34 @@
                 <span class="slider round"></span>
             </label>
             <div style="vertical-align: bottom; display:inline-block">Show API Traffic</div>
-            <div style="vertical-align: bottom; display:inline-block">Running Chat</div>
         </div>
     </div>
+    <!-- end pop-up dialogs -->
+    <!--visChat -->
+    <div id="manifest" data-goal="" class="vis api">
+        <table id="learning"></table>
+    </div>
 
+    <div id="visual" class="vis api"><span class="test"></span></div>
     <div id="request" class="api"><span class="help" placeholder="PROMPT SENT TO MODEL"></span></div>
     <div id="modelResponse" class="api"><span class="help" placeholder="MODEL RESPONSE"></span>
     </div>
 
     <script>
-
+        //Puts model name as chat bubble
         function addModelName(modelID, terms) {
             const element = document.querySelector('#' + modelID);
             element.style.setProperty("--content", `"${terms}"`);
         }
 
-
-        //Setup listeners for buttons & dialogs
+        // Setup listeners to respond to buttons clicks
         function setListeners() {
             const elements = {
-                'edit-button': editDialog,
-                'settings-button': () => showModal('dialog1'),
-                'info-button': () => showModal('dialog'),
-                'fetch-button': getFile,
+
+                'info-button': () => showModal('dialog1'),
+                'settings-button': () => showModal('dialog2'),
+                'edit-button': editDialog,   // prep to call dialog3
+                'fetch-button': getFile,     // set up for editing in dialog3
                 'model': handleModelChange,
                 'toggle': showHideAPI
             };
@@ -126,7 +136,6 @@
 
             document.querySelectorAll('.close-button').forEach(button => {
                 button.addEventListener('click', closeModal);
-
             });
 
             document.querySelector('#input-text').addEventListener('keypress', function (e) {
@@ -135,6 +144,8 @@
                     handleSend();
                 }
             });
+
+            // Show API calls
             document.getElementById("toggle").addEventListener('change', (event) => {
                 const isOn = event.target.checked;
                 event.target.classList.toggle("on", isOn);
@@ -143,13 +154,12 @@
         }
 
         //Dialog Pop-ups
-
         function editDialog() {
             const activeButton = document.querySelector("button.active");
             const filename = activeButton.getAttribute("filename");
             document.getElementById('focalChat').innerHTML = " " + filename;
             document.getElementById('fileName').value = filename + "/story.json";
-            showModal('dialog2');
+            showModal('dialog3');
         }
 
         function showModal(modalId) {
@@ -162,6 +172,7 @@
             }
         }
 
+        //Demo UI
         function handleModelChange(event) {
             const terms = `${event.target.value}`
             const label = terms.slice(0, 11);
@@ -170,7 +181,8 @@
         }
 
         function showHideAPI() {
-            if (this.checked) {
+            demo = true;
+            if (this.checked || demo) {
                 document.getElementById('toggle').classList.add("on")
                 document.getElementById('modelResponse').style.display = "block"
                 document.getElementById('request').style.display = "block"
@@ -179,11 +191,12 @@
                 document.getElementById('modelResponse').style.display = "none"
                 document.getElementById('request').style.display = "none"
             }
+
         }
 
+        // Shows JSON file for possible edit in text window
         async function getFile(event) {
             let fileName = document.getElementById('fileName').value;
-            // fileName = "/" + fileName
             const urlName = "/chat/examples/" + fileName
             if (urlName) {
                 const response = await fetch(urlName, {
@@ -196,13 +209,14 @@
             }
         }
 
-        //Gloabls
+        // Globals
         let currentPageIndex = 0;
         let deckData = null;
         let optionData = [];
+        let running; // timeout name
 
-
-        //If a page in the story.json has nexySlideId, use that; otherwise get the next id
+        // If a page in the loaded story.json has nextSlideId, use that,
+        // otherwise get the next page.id in order in the file
         function getForNextIndex(thisIndex) {
             if (deckData.pages[thisIndex].hasOwnProperty("nextSlideId")) {
                 nextIndex = findPageIndex(deckData.pages[thisIndex].nextSlideId)
@@ -215,80 +229,131 @@
             return deckData.pages.findIndex(page => page.id === targetPageName);
         }
 
-        async function loadChat(chatLink) {
+        function resetGlobalContols() {
             currentPageIndex = 0;
             deckData = null;
             optionData = [];
-            clearApiLogs();
-            const response = await fetch(chatLink);
-            deckData = await response.json();
-            document.getElementById("content").innerHTML = "<div>" + JSON.stringify(deckData) + "</div>"
-            clearBubble('input-text')
-            displayPage(currentPageIndex); // Use index directly
+            clearTimeout(running)
         }
 
+        async function loadChat(chatLink) {
+            resetGlobalContols()
+            setupPanes();
+
+            //Read chat configuration
+            const response = await fetch(chatLink);
+            deckData = await response.json();
+
+            //UI elements
+            document.getElementById("content").innerHTML = "<div>" + JSON.stringify(deckData) + "</div>"
+            displayPage(currentPageIndex);
+
+            // Uncomment for "visual map" demo
+            if (chatLink.includes("visMap")) {
+                const toggleCheckbox = document.getElementById("toggle");
+                setupApplication(deckData)
+            }
+        }
 
         function clearBubble(id) {
             document.getElementById(id).innerHTML = '';
             document.getElementById(id).value = '';
         }
 
-        function clearApiLogs() {
+        function setupPanes() {
+            clearBubble('input-text');
+
+            // visual output
+            const visPanes = document.querySelectorAll('.vis');
+            document.getElementById('manifest').innerHTML = " <table id=\"learning\"></table>"
+            document.getElementById('visual').innerHTML = "";
+            visPanes.forEach(element => {
+                element.style.display = 'none';
+            });
+
+            //API output for learning or debugging
             document.getElementById('request').innerHTML = "<span class='help'>SENT FROM SERVER</span>";
             document.getElementById('modelResponse').innerHTML = "<span class='help'>SENT TO SERVER</span>";
         }
 
-
         function displayPage(index, content) {
             const contentDiv = document.getElementById('content');
             clearBubble('content');
-
             const page = deckData.pages[index];
-            if (page.type === "story")
-                document.getElementById('input-text').value = ''; // Clear input field
 
+            //Add chat text
             const pageTextDiv = document.createElement('div');
             pageTextDiv.className = 'slide';
             pageTextDiv.textContent = (content) ? content : page.text;
             contentDiv.appendChild(pageTextDiv);
 
+            // UI styles
             document.querySelector('.left-bubble').style.background = '#cbe0e2';
-
             if (page.background) {
                 document.querySelector('.left-bubble').style.background = `white url(${page.background}) no-repeat right / contain`;
             }
 
-
-            if (page.type === 'end') return;
+            if (page.type === 'end') return
+            // types = story (explantion), options (interactive), simulation
             if (page.type === 'story') {
-                setTimeout(() => displayPage(getForNextIndex(index)), page.timer * 800);
-                document.getElementById("input-text").disabled = true;
-            } else if (page.type === 'options') {
+                clearBubble('input-text');
+                //displays page for page.timer amount of seconds
+                running  = setTimeout(() => displayPage(getForNextIndex(index)), page.timer * 800);
+            } else if (page.type === 'options' || page.type === 'simulation') {
                 const textarea = document.getElementById("input-text").disabled = false;
+                //Shows user options as fade-in
                 optionData = page.options.map((optionObj, idx) => {
                     const optionDiv = document.createElement('div');
                     optionDiv.className = `option delay-${idx}`;
                     optionDiv.textContent = optionObj.option;
-                    if (!page.display) {
+
+                    if (page.display !== "none") {  // optional to show user options
                         pageTextDiv.appendChild(optionDiv);
                     }
+                       let newOption = optionObj.option;
+
+                    // visChat only ; this demonstrates how extended use of images (foreground)
+                    // in a "visual-first" type of chat.
+                    // This uses the simple meachnism of naming the image semantically that
+                    // can be used in more precise instructions to the AI model.
+
+                    // Here we reference images by their "names" (css IDs)
+                    // to show the connection to user voice or text input.
+                    // Add images and editing the css styles to create a more engaging UI
+
+                    if (page.hasOwnProperty("foreground") && page.foreground[0]) {
+                        let newString = page.foreground.join(", ");
+                        if (optionObj.hasOwnProperty("clarifying_question")) {
+                            let questionDescription = optionObj.clarifying_question.description;
+                            questionDescription = questionDescription.replace(/_FOREGROUND_/gi, newString) // Case-insensitive, global replace
+                            optionObj.clarifying_question.description = questionDescription;
+                        }
+                        if (optionObj.slot) {
+                            let newOption = optionObj.slot.description;
+                            newOption = newOption.replace(/_FOREGROUND_/gi, newString) // Case-insensitive, global replace
+                            optionObj.slot.description = newOption;
+                        }
+
+                    }
+
                     return {
                         option: optionObj.option,
                         slot: optionObj.slot,
                         nextSlideId: optionObj.nextSlideId,
                     };
                 });
+                // Don't do anything. Use applied to connect user input to visual output
+                if (page.type === 'simulation')
+                    return;
             }
             currentPageIndex++;
         }
 
         function addHint() {
             const slideDiv = document.getElementById('content').querySelector('.slide');
-
             // Get only the intro part.
             const onscreenText = slideDiv.childNodes[0].textContent.trim();
 
-            // Get the matching fallback
             let hint = 'Try again...';
             for (const page of deckData.pages) {
                 if (page.text.trim() === onscreenText) {
@@ -297,102 +362,94 @@
                 }
             }
             slideDiv.innerHTML = onscreenText + hint;
-
         }
-        //Write voice to input bubble
+
+        //Show user voice input in input-text buble
         function matchIt(res) {
             document.getElementById('input-text').value = res
         }
 
         async function handleSend() {
+
             const prompt = document.getElementById('input-text').value;
             const model = getDropdownValue();
-
+            const current = document.querySelector('.active');
+            //const convo = current.getAttribute('filename');
+            let allForeground = "";
+            if (deckData.pages[currentPageIndex].hasOwnProperty('foreground'))
+             allForeground = deckData.pages[currentPageIndex].foreground.join(", ");
 
             try {
-
                 const response = await fetch('/middleware', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({prompt, model, options: optionData}),
+                    body: JSON.stringify({prompt, model, options: optionData, foreground: allForeground}),
                 });
 
-                const result = await response.json();
-console.log('res',result)
-                if (showLog()) {
-                    document.getElementById('modelResponse').innerHTML = JSON.stringify(result);
-                    document.getElementById('request').innerHTML = JSON.stringify({prompt, model, options: optionData});
+                const responseObject = await response.json(); // This line parses the JSON response;
+
+                if (document.getElementById('visMap').classList.contains('active')) {
+                    const category = responseObject.name;
+                    // results vary for slot
+                    const args = JSON.parse(responseObject.arguments);
+                    const firstKey = Object.keys(args); // Get the first key
+                    const slot = args[firstKey];
+
+                    if (category) {
+                        bridgeActions(category, slot);   //Custom hooks to your application
+                         return;
+                    } else if (responseObject.hasOwnProperty('clarifyingQuestion') && responseObject.clarifyingQuestion !== "") {
+                        displayPage(0, responseObject.clarifyingQuestion);
+                        return;
+                    } else {
+                        console.log("issue");
+                        return;
+                    }
                 }
 
-
-                const parsedArguments = JSON.parse(result.function.arguments);
-                const thisSlot = await Promise.resolve((parsedArguments.slot || ''))
-                    .then(slot => slot.replace(/^\s?(Dr\.?|Doctor)\s+/i, ''))
-                console.log('slot:', thisSlot)
-
-                const pageName = result.function.name;
-
-                if (pageName === "fallback") {
-                    addHint();
-                    return;
-                }
-                else {
-                    clearBubble('content');
-                }
-
-
+                const pageIndex = findPageIndex(responseObject.name);
+                const pageName = responseObject.name;
                 let content;
 
-                // this could be dynamically generated
-                // Using template literals and slots to fill
-                // to allow control of chats
-                console.log('result', pageName)
-                switch (pageName) {
-                    case 'doctorPage':
-                        content = getMedicalInfo(thisSlot, 'doctor');
-                        console.log(content)
-                        break;
-                    case 'phonePage':
-                        content = getMedicalInfo(thisSlot, 'doctor');
-                        console.log(content)
-                        break;
-                    case 'departmentPage':
-                        content = getMedicalInfo(thisSlot, 'department');
-                        console.log(content)
-                        break;
+                // Shows key payloads in UI for easy development/deugging
+                if (showAPILog()) {
+                    document.getElementById('modelResponse').innerHTML = JSON.stringify(result);
+                    document.getElementById('request').innerHTML = JSON.stringify({
+                        prompt,
+                        model,
+                        options: responseObject
+                    });
                 }
-                //if (pageName === "fallback")
-                const indexOfPage = findPageIndex(pageName);
 
-                if (content) {
-                    const template = deckData.pages[indexOfPage].text;
-                    content = fillTemplate(template, content)
-                }
-                displayPage(indexOfPage, content);
+                const parsedArguments = JSON.parse(responseObject.arguments);
+
+                // Optionally replace chat text with a
+                let val = Object.values(parsedArguments);
+                const template = deckData.pages[pageIndex].text;
+                content = fillTemplate(template, [val]);
+                displayPage(pageIndex, content);
 
             } catch (error) {
-                const fallbackMsg = (deckData.pages[currentPageIndex - 1].fallback ) ? deckData.pages[currentPageIndex - 1].fallback +deckData.pages[currentPageIndex - 1].text : "Error: Oops. Check JSON file" + error;
-                document.getElementById('content').innerHTML = fallbackMsg;
-                return null;
+                {
+                console.log('error')
+                    return null;
+                }
             }
         }
 
-
-        //Matching a response line in JSON to supply variables for user
+        // Adapting hard-coded chat instructions/responses with slots
         function fillTemplate(templateString, data) {
             let transferTemplate;
             transferTemplate = templateString;
-            return transferTemplate.replace(/\${(.*?)}/g, (match, key) => {
-                return data[key] || match; // Return the value from the object or the original match if not found
-            });
+            return transferTemplate.replace(/\${(.*?)}/g, data[0]);
         }
 
         function clearButtons() {
             document.querySelectorAll('.active').forEach(el => el.classList.remove("active"))
         }
 
+        // Load a chat example, when a button is selected.
         document.addEventListener("DOMContentLoaded", function () {
-
             const exampleButtons = document.querySelectorAll('.example');
             exampleButtons.forEach(button => {
                 button.addEventListener('click', () => {
@@ -404,10 +461,12 @@ console.log('res',result)
                     document.getElementById('fileName').value = fileName + "/story.json";
                     // Load the chat using the file name
                     loadChat(`/chat/examples/${fileName}/story.json`);
+
                 });
             });
             setListeners()
 
+            //show the label of the model selected.
             const dropdown = document.getElementById("model");
             const MAX_LABEL_LENGTH = 10;
 
@@ -429,11 +488,12 @@ console.log('res',result)
 
 
         //This shows the traffic sent back and forth
-        function showLog() {
+        function showAPILog() {
             return document.getElementById('toggle').classList.contains('on');
         }
 
-        //save edits to chat file
+
+        // Save chat edits
         async function editFile() {
             const fileName = document.getElementById('fileName').value;
             const fileContents = document.getElementById('fileContents').value;
@@ -451,9 +511,25 @@ console.log('res',result)
                 alert("Error editing file.");
             }
         }
+
+         //UI for demo
+        const manifestElement = document.getElementById('manifest');
+
+        //Demo
+        function updateGoal(newValue) {
+            if (manifestElement) { // Ensure the element exists
+                manifestElement.style.setProperty('--data-goal', `"${newValue}"`);
+                manifestElement.classList.add('goal-active');
+            }
+        }
+
+        // Set the initial value on load
+        if (manifestElement) {
+            updateGoal(manifestElement.getAttribute('data-goal'));
+        }
     </script>
     <script src="/js/voice.js"></script>
-    <script src="/js/dataExample.js"></script>
+    <script src="/js/applied.js"></script>   <!-- Customizations can be added in here  -->
 </div>
 </body>
 </html>
