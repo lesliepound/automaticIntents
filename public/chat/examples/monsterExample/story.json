@@ -113,20 +113,9 @@
     },
     {
       "id": "romancePage",
-      "text": "Fred, the monster, finds love and moves away. Where should the new couple live?",
-      "nextSlideId": "ending",
-      "type": "story",
-      "timer": 7
-    },
-    {
-      "id": "planetPage",
-      "text": "Cosmos has Billions and Billions",
-      "type": "end"
-    },
-    {
-      "id": "locationPage",
-      "text": "Go to the nations",
-      "type": "end"
+      "text": "Fred, the monster, finds love and moves away.",
+      "type": "end",
+      "timer": 4
     },
    {
       "id": "ending",

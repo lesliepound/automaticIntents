@@ -7,6 +7,7 @@
         "cow",
         "bear",
         "wagon",
+"dragon",
         "tree",
         "hat",
         "statue",
@@ -14,7 +15,7 @@
         "basket",
         "blanket"
       ],
-      "text": "This chat demonstrates how AI can work in some learning contexts. The visual terms below mimic was seen on screen. By interacting with visual the user can learn process and method. In this chat you can ask any item anything ",
+      "text": "This chat demonstrates a visual-first method where the user interacts with images on screen. Here a cartoon character is looking for cupcakes. Your job is to help her find them by interacting with things on screen. By looking under things, asking things. Experiment by editing the file and adding a new entity to the screen, restart the chat, and ask about what you just added",
       "display": "none",
       "goal": "Bear loves cupcakes. Help her find them.  ",
       "options": [
@@ -25,6 +26,14 @@
             "description": "You will command a character to talk to or direct a character to talk to any item on screen. All on screen objects can be talked to.These are the items on screen:  _FOREGROUND_"
           },
           "nextSlideId": "ask_someone_or_thing"
+        },
+        {
+          "option": "Use taste of smell sense",
+          "slot": {
+            "name": "taste_or_smell",
+            "description": "Ask the system or Ask a character to smell or taste one of these objects: _FOREGROUND_"
+          },
+          "nextSlideId": "smell_or_taste"
         },
         {
           "option": "Look under something",
@@ -46,6 +55,12 @@
     },
     {
       "id": "ask_someone_or_thing",
+      "type": "story",
+      "text": "...",
+      "timer": 3
+    },
+    {
+      "id": "smell_or_taste",
       "type": "story",
       "text": "...",
       "timer": 3
