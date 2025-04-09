@@ -80,10 +80,8 @@ function setUpGoal() {
 //example of actions "Ask others"
 function simulateActions(action, slot) {
 
-    //bridgeActions(action,slot)
     let marking = "fail";
     let status = false;
-
 
     status = ifTagged(slot, 'cupcake')
     let statusMark = 'no';
@@ -92,26 +90,8 @@ function simulateActions(action, slot) {
         statusMark = 'yes'
     }
     add2Manifest(action, marking)
-
-    updateGoal("sstatus") //statusMark
     doHighlight(slot)
     return status
-}
-
-// This maps "intents" to visual representations of actions
-//Replace with application specifics
-function bridgeActions(action, slot, bag) {
-    let marking = "fail"
-    let verifiedStatus = "no";
-    let thisStatus = ifTagged(slot, 'cupcake')
-    if (thisStatus) {
-        marking = "pass";
-        verifiedStatus = "yes"
-    }
-    updateGoal(verifiedStatus)
-    add2Manifest(action, marking)
-    doHighlight(slot)
-    return thisStatus
 }
 
 function setupApplication(chat) {
@@ -121,9 +101,7 @@ function setupApplication(chat) {
     manifest.insertBefore(newText, manifest.firstChild);
     const images = chat.pages[currentPageIndex].foreground;
     const visualDiv = document.getElementById('visual');
-    //displayPage(num)
-    //pages[num].state="showing"
-    //
+   //Setting up words to represent images for demo
     images.forEach(img => {
         // Create the span element
         const span = document.createElement('span');
@@ -136,7 +114,7 @@ function setupApplication(chat) {
     setUpGoal();
 
     //Trigger showing
-    const toggleCheckbox = document.getElementById("toggle");
+    const toggleCheckbox = document.getElementById("traffic");
     toggleCheckbox.checked = true;
     toggleCheckbox.dispatchEvent(new Event('change'));
 }
