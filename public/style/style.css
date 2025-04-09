@@ -18,16 +18,16 @@ header {
 
 
 .listening {
-    animation: color-change 5s infinite; /* Adjust duration as needed */
+    animation: color-change 4s infinite; /* Adjust duration as needed */
 }
 
 @keyframes color-change {
-    0% {  box-shadow: 0 0 10px 5px #E6004C; }
-    20% { box-shadow: 0 0 10px 5px #FFB826; }
-    40% { box-shadow: 0 0 10px 5px #FFB826; }
+    0% {  box-shadow: 0 0 10px 5px #ef9770; }
+    20% { box-shadow: 0 0 10px 5px #ffd133; }
+    40% { box-shadow: 0 0 10px 5px #ff33e0; }
     60% {  box-shadow: 0 0 10px 5px #E64C00; }
-    80% {  box-shadow: 0 0 10px 5px #FFB826; }
-    100% {  box-shadow: 0 0 10px 5px #E6FFFF; }
+    80% {  box-shadow: 0 0 10px 5px #f3ced9; }
+    100% {  box-shadow: 0 0 10px 5px #e7acca; }
 }
 
 
@@ -68,6 +68,9 @@ header {
     -webkit-text-fill-color: transparent;
 }
 
+.activeOn {
+    outline: 1px solid #cc0000;
+}
 .mic-button {
     margin-left: 25px;
     width: 50px;

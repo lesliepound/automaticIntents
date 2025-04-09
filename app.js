@@ -76,6 +76,7 @@ app.post('/middleware', async (req, res) => {
         logThis(`model called:${model}, prompt: ${prompt}`);
         let result = await runConversation(prompt, options, model);
         logThis(result)
+        console.log(result)
         res.json(result);
     } catch (error) {
         console.error("Error processing request:", error);
