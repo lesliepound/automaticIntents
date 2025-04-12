@@ -15,7 +15,7 @@
         "basket",
         "blanket"
       ],
-      "text": "This chat demonstrates a visual-first method where the user interacts with images on screen. Here a cartoon character is looking for cupcakes. Your job is to help her find them by interacting with things on screen. By looking under things, asking things. Experiment by editing the file and adding a new entity to the screen, restart the chat, and ask about what you just added",
+      "text": "This is a visual intent system. The example is a scene to help a character find cupcakes ... by looking under things, asking things. Experiment by editing the chat file with new image like 'flower bed'  to the foreground, restart the chat, and ask about what you just added.",
       "display": "none",
       "goal": "Bear loves cupcakes. Help her find them.  ",
       "options": [
