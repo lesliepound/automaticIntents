@@ -1,68 +1,90 @@
-// Use modern ES6+ syntax and Web Speech API
-const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+var SpeechRecognition = SpeechRecognition || webkitSpeechRecognition;
+var SpeechGrammarList = SpeechGrammarList || window.webkitSpeechGrammarList;
+var SpeechRecognitionEvent = SpeechRecognitionEvent || webkitSpeechRecognitionEvent;
 
-// State management
 let isListening = false;
 
-// Initialize speech recognition
-const recognition = new SpeechRecognition();
+var recognition = new SpeechRecognition();
 recognition.continuous = false;
 recognition.lang = 'en-US';
-recognition.interimResults = false;
+recognition.interimResults = false; //change to true for as-you-type results
 recognition.maxAlternatives = 1;
 
-// DOM elements
-const diagnostic = document.querySelector('.output');
-const listenButton = document.getElementById('listen-button');
+var diagnostic = document.querySelector('.output');
 
-/**
- * Updates the UI to indicate listening state
- * @param {boolean} state - Whether the app is listening
- */
-const indicateListen = (state) => {
-    const body = document.body;
+const indicateListen = (on) => {
+    const body = document.querySelector('body');
+    const listenButton = document.getElementById('listen-button');
 
-    if (state) {
-        body.classList.remove("nolisten");
-        body.classList.add("listen");
-        listenButton.classList.add("listening");
+    if (on) {
+        body.classList.remove('notlistening');
+        body.classList.add('listening');
+        // listenButton.classList.remove('nolisten');
+        listenButton.classList.add('activeOn');
         isListening = true;
     } else {
-        body.classList.remove("listen");
-        body.classList.add("nolisten");
-        listenButton.classList.remove("listening");
+        body.classList.remove('listening');
+        listenButton.classList.remove('activeOn');
+        body.classList.add('notlistening');
         isListening = false;
+        // Assuming 'recognition' is defined elsewhere
+        if (typeof recognition !== 'undefined' && recognition) {
+            recognition.abort();
+        }
     }
 };
 
-// Event listeners using arrow functions
-listenButton.addEventListener('click', () => {
+
+const listen = document.getElementById('listen-button');
+listen.onclick = function () {
     if (!isListening) {
-        recognition.start();
-        indicateListen(true);
+        try {
+            recognition.start();
+            console.log('start');
+            indicateListen(true);
+        } catch (error) {
+            console.log("Error starting recognition:", error);
+            if (error.name !== "InvalidStateError") {
+                diagnostic.textContent = 'Error occurred in recognition: ' + error.message;
+            }
+            indicateListen(false);
+        }
     } else {
-        recognition.abort();
-        recognition.stop();
-        indicateListen(false);
+        try {
+            recognition.abort();
+            recognition.stop();
+            console.log('stop');
+            indicateListen(false);
+        } catch (error) {
+            console.error("Error stopping recognition:", error);
+            if (error.name !== "InvalidStateError") {
+                diagnostic.textContent = 'Error stopping recognition: ' + error.message;
+            }
+            indicateListen(false);
+        }
     }
-});
+}
 
-// Recognition event handlers
-recognition.addEventListener('result', (event) => {
+recognition.onresult = function (event) {
     console.log(event);
-    const result = event.results[0][0];
-    console.log(`Confidence: ${result.confidence}`);
-    console.log(result.transcript);
-    matchIt(result.transcript);
-});
+    console.log('Confidence: ' + event.results[0][0].confidence);
+    console.log('said', event.results[0][0].transcript);
 
-recognition.addEventListener('speechend', () => {
+    const transcriptDiv = document.getElementById('input-text');
+    transcriptDiv.value = event.results[0][0].transcript
+}
+
+recognition.onspeechend = function (event) {
+
+    indicateListen(false);
+    isListening = false;
+
     recognition.stop();
-    indicateListen(false);
+    recognition.abort();
     handleSend();
-});
+}
 
-recognition.addEventListener('error', (event) => {
-    diagnostic.textContent = `Error occurred in recognition: ${event.error}`;
+recognition.onerror = function (event) {
+    diagnostic.textContent = 'Error occurred in recognition: ' + event.error;
     indicateListen(false);
-});
+}

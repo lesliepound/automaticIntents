@@ -17,7 +17,7 @@
         <span class="header-text"> Automatic Intents</span>
         <div class="button-group">
             <!-- filenames correspond with folders in chat folder -->
-            <button class="example" filename="monsterExample" id="option1">Story</button>
+            <button class="example" filename="monsterExample">Story</button>
             <button class="example" filename="visMap" id="visMap">visMap</button>
             <div id="info-button" title="info" class="circle-button">
                 <span class="symbol">i</span>
@@ -93,11 +93,21 @@
                 </select>
                 </select>
             </div>
-            <label class="switch" for="toggle">
-                <input type="checkbox" id="toggle">
+            <label class="switch" for="traffic">
+                <input type="checkbox" id="traffic">
                 <span class="slider round"></span>
             </label>
+
             <div style="vertical-align: bottom; display:inline-block">Show API Traffic</div>
+            <!--Style issues to work out to add continuous chat -->
+            <!--
+            <label class="switch" for="scroll-type">
+                <input type="checkbox" id="scroll-type">
+                <span class="slider round"></span>
+            </label>
+            <div style="vertical-align: bottom; display:inline-block">Continous Feed Chat</div>
+             -->
+
         </div>
     </div>
     <!-- end pop-up dialogs -->
@@ -107,8 +117,9 @@
     </div>
 
     <div id="visual" class="vis api"><span class="test"></span></div>
-    <div id="request" class="api"><span class="help" placeholder="PROMPT SENT TO MODEL"></span></div>
-    <div id="modelResponse" class="api"><span class="help" placeholder="MODEL RESPONSE"></span>
+
+    <div id="request" class="api" placeholder="PROMPT SENT TO MODEL"></div>
+    <div id="modelResponse" class="api" placeholder="MODEL RESPONSE">
     </div>
 
     <script>
@@ -121,13 +132,12 @@
         // Setup listeners to respond to buttons clicks
         function setListeners() {
             const elements = {
-
                 'info-button': () => showModal('dialog1'),
                 'settings-button': () => showModal('dialog2'),
                 'edit-button': editDialog,   // prep to call dialog3
                 'fetch-button': getFile,     // set up for editing in dialog3
-                'model': handleModelChange,
-                'toggle': showHideAPI
+                'model': handleModelChange
+                //'traffic': showHideAPI
             };
 
             Object.entries(elements).forEach(([id, handler]) => {
@@ -146,11 +156,19 @@
             });
 
             // Show API calls
-            document.getElementById("toggle").addEventListener('change', (event) => {
+            document.getElementById("traffic").addEventListener('change', (event) => {
                 const isOn = event.target.checked;
-                event.target.classList.toggle("on", isOn);
                 document.querySelectorAll('.api').forEach(el => el.style.display = isOn ? "block" : "none");
             });
+            // Make Chat continous
+            // document.getElementById("continuous-feed").addEventListener('change', (event) => {
+            //     const isOn = event.target.checked;
+            //     if (isOn) {
+            //     document.getElementsByClassName('left-bubble')[0].classList.add("continuous-feed")}
+            //     else
+            //     document.getElementsByClassName('left-bubble')[0].classList.remove("continuous-feed")
+            //     //forEach(el => el.style.display = isOn ? "block" : "none");
+            // })
         }
 
         //Dialog Pop-ups
@@ -180,18 +198,17 @@
             addModelName("input-text", label)
         }
 
-        function showHideAPI() {
-            demo = true;
-            if (this.checked || demo) {
-                document.getElementById('toggle').classList.add("on")
+        function showHideAPI(demo) {
+
+            if (this.checked) {
+                document.getElementById('traffic').classList.add("on")
                 document.getElementById('modelResponse').style.display = "block"
                 document.getElementById('request').style.display = "block"
             } else {
-                document.getElementById('toggle').classList.remove("on")
+                document.getElementById('traffic').classList.remove("on")
                 document.getElementById('modelResponse').style.display = "none"
                 document.getElementById('request').style.display = "none"
             }
-
         }
 
         // Shows JSON file for possible edit in text window
@@ -215,9 +232,9 @@
         let optionData = [];
         let running; // timeout name
 
-        // If a page in the loaded story.json has nextSlideId, use that,
+        // If a current has nextSlideId, use that,
         // otherwise get the next page.id in order in the file
-        function getForNextIndex(thisIndex) {
+        function getNextIndex(thisIndex) {
             if (deckData.pages[thisIndex].hasOwnProperty("nextSlideId")) {
                 nextIndex = findPageIndex(deckData.pages[thisIndex].nextSlideId)
                 return nextIndex
@@ -234,10 +251,13 @@
             deckData = null;
             optionData = [];
             clearTimeout(running)
+            document.getElementById("content").innerHTML = "";
+            //UI for demo
+
         }
 
         async function loadChat(chatLink) {
-            resetGlobalContols()
+            resetGlobalContols();
             setupPanes();
 
             //Read chat configuration
@@ -245,13 +265,10 @@
             deckData = await response.json();
 
             //UI elements
-            document.getElementById("content").innerHTML = "<div>" + JSON.stringify(deckData) + "</div>"
-            displayPage(currentPageIndex);
+            displayPage(0);
 
-            // Uncomment for "visual map" demo
             if (chatLink.includes("visMap")) {
-                const toggleCheckbox = document.getElementById("toggle");
-                setupApplication(deckData)
+                setupApplication(deckData);
             }
         }
 
@@ -265,25 +282,27 @@
 
             // visual output
             const visPanes = document.querySelectorAll('.vis');
-            document.getElementById('manifest').innerHTML = " <table id=\"learning\"></table>"
             document.getElementById('visual').innerHTML = "";
+            document.querySelectorAll('.api').forEach(el =>
+            {el.style.display = "none"; el.innerText = (el.innerText.length > 5) ? el.getAttribute('placeholder'): '' });
             visPanes.forEach(element => {
                 element.style.display = 'none';
             });
+            document.getElementById('manifest').innerHTML = " <table id=\"learning\"></table>"
 
-            //API output for learning or debugging
-            document.getElementById('request').innerHTML = "<span class='help'>SENT FROM SERVER</span>";
-            document.getElementById('modelResponse').innerHTML = "<span class='help'>SENT TO SERVER</span>";
         }
+
 
         function displayPage(index, content) {
             const contentDiv = document.getElementById('content');
             clearBubble('content');
             const page = deckData.pages[index];
 
-            //Add chat text
+            // Add chat text
             const pageTextDiv = document.createElement('div');
             pageTextDiv.className = 'slide';
+
+            // If new content is avaialble
             pageTextDiv.textContent = (content) ? content : page.text;
             contentDiv.appendChild(pageTextDiv);
 
@@ -297,8 +316,8 @@
             // types = story (explantion), options (interactive), simulation
             if (page.type === 'story') {
                 clearBubble('input-text');
-                //displays page for page.timer amount of seconds
-                running  = setTimeout(() => displayPage(getForNextIndex(index)), page.timer * 800);
+                // Calls the next page to display after timer amount
+                running = setTimeout(() => displayPage(getNextIndex(index)), page.timer * 800);
             } else if (page.type === 'options' || page.type === 'simulation') {
                 const textarea = document.getElementById("input-text").disabled = false;
                 //Shows user options as fade-in
@@ -310,7 +329,7 @@
                     if (page.display !== "none") {  // optional to show user options
                         pageTextDiv.appendChild(optionDiv);
                     }
-                       let newOption = optionObj.option;
+                    let newOption = optionObj.option;
 
                     // visChat only ; this demonstrates how extended use of images (foreground)
                     // in a "visual-first" type of chat.
@@ -318,7 +337,7 @@
                     // can be used in more precise instructions to the AI model.
 
                     // Here we reference images by their "names" (css IDs)
-                    // to show the connection to user voice or text input.
+                    // to show the connection to user input
                     // Add images and editing the css styles to create a more engaging UI
 
                     if (page.hasOwnProperty("foreground") && page.foreground[0]) {
@@ -328,6 +347,7 @@
                             questionDescription = questionDescription.replace(/_FOREGROUND_/gi, newString) // Case-insensitive, global replace
                             optionObj.clarifying_question.description = questionDescription;
                         }
+                        //Provide context to the AI model
                         if (optionObj.slot) {
                             let newOption = optionObj.slot.description;
                             newOption = newOption.replace(/_FOREGROUND_/gi, newString) // Case-insensitive, global replace
@@ -337,12 +357,13 @@
                     }
 
                     return {
+
                         option: optionObj.option,
                         slot: optionObj.slot,
                         nextSlideId: optionObj.nextSlideId,
                     };
                 });
-                // Don't do anything. Use applied to connect user input to visual output
+                // Don't do anything. Use applied.js to classifcations to action
                 if (page.type === 'simulation')
                     return;
             }
@@ -371,14 +392,16 @@
 
         async function handleSend() {
 
+            //gather input for tools
             const prompt = document.getElementById('input-text').value;
-            const model = getDropdownValue();
-            const current = document.querySelector('.active');
-            //const convo = current.getAttribute('filename');
-            let allForeground = "";
-            if (deckData.pages[currentPageIndex].hasOwnProperty('foreground'))
-             allForeground = deckData.pages[currentPageIndex].foreground.join(", ");
+            const model = getModelFromSettings();
 
+            // Create context for AI model
+            let allForeground = "";
+            if (deckData.pages[currentPageIndex].hasOwnProperty('foreground')) {
+                allForeground = deckData.pages[currentPageIndex].foreground.join(", ");
+                console.log('allForeground', allForeground)
+            }
             try {
                 const response = await fetch('/middleware', {
                     method: 'POST',
@@ -386,58 +409,57 @@
                     body: JSON.stringify({prompt, model, options: optionData, foreground: allForeground}),
                 });
 
-                const responseObject = await response.json(); // This line parses the JSON response;
+                const responseObject = await response.json(); //Includes classification (option) & any slots
 
+                // Show key data going to/from AI models ; Settings determine if this is shown  onscreen
+                document.getElementById('modelResponse').innerHTML = JSON.stringify({responseObject});
+                document.getElementById('request').innerHTML = JSON.stringify({
+                    prompt, model, options: optionData, foreground: allForeground
+                });
+
+                // Read classifications and slots
                 if (document.getElementById('visMap').classList.contains('active')) {
                     const category = responseObject.name;
                     // results vary for slot
                     const args = JSON.parse(responseObject.arguments);
                     const firstKey = Object.keys(args); // Get the first key
-                    const slot = args[firstKey];
+                    const slot = args[firstKey]; //currently one slot;
 
+                    // A classification  was found
                     if (category) {
-                        bridgeActions(category, slot);   //Custom hooks to your application
-                         return;
+                        simulateActions(category, slot); //Custom hooks to your application ;
+                        return;
+                        // A classification  wasn't found, but a question was returned
                     } else if (responseObject.hasOwnProperty('clarifyingQuestion') && responseObject.clarifyingQuestion !== "") {
+                        console.log("responseObject.clarifyingQuestion", responseObject.clarifyingQuestion)
                         displayPage(0, responseObject.clarifyingQuestion);
-                        return;
                     } else {
+                        // Display user hint?
                         console.log("issue");
-                        return;
                     }
+                    return;
                 }
 
                 const pageIndex = findPageIndex(responseObject.name);
-                const pageName = responseObject.name;
+                //const pageName = responseObject.name;
                 let content;
 
-                // Shows key payloads in UI for easy development/deugging
-                if (showAPILog()) {
-                    document.getElementById('modelResponse').innerHTML = JSON.stringify(result);
-                    document.getElementById('request').innerHTML = JSON.stringify({
-                        prompt,
-                        model,
-                        options: responseObject
-                    });
-                }
-
                 const parsedArguments = JSON.parse(responseObject.arguments);
-
-                // Optionally replace chat text with a
+                // If updated chat text is needed.
                 let val = Object.values(parsedArguments);
                 const template = deckData.pages[pageIndex].text;
                 content = fillTemplate(template, [val]);
-                displayPage(pageIndex, content);
 
+                displayPage(pageIndex, content);
             } catch (error) {
                 {
-                console.log('error')
+                    console.log('error')
                     return null;
                 }
             }
         }
 
-        // Adapting hard-coded chat instructions/responses with slots
+        // Adapting hard-coded chat instructions/responses with user responses / slots
         function fillTemplate(templateString, data) {
             let transferTemplate;
             transferTemplate = templateString;
@@ -455,9 +477,11 @@
                 button.addEventListener('click', () => {
                     clearButtons();
                     button.classList.add("active");
+                    //fileName is an attribute on the button
                     const fileName = button.getAttribute('filename');
                     document.getElementById('focalChat').textContent = " " + fileName;
                     document.getElementById('edit-button').style.display = 'block';
+                    // Get edit pencil to open the right chat example in the edit dialog
                     document.getElementById('fileName').value = fileName + "/story.json";
                     // Load the chat using the file name
                     loadChat(`/chat/examples/${fileName}/story.json`);
@@ -476,7 +500,7 @@
             });
         })
 
-        function getDropdownValue() {
+        function getModelFromSettings() {
             const dropdown = document.getElementById("model");
             return dropdown.value;
         }
@@ -484,12 +508,6 @@
         function setModelLabel(label) {
             document.querySelector(".left-bubble").setAttribute("model", label)
             document.querySelector(".right-bubble").setAttribute("model", label)
-        }
-
-
-        //This shows the traffic sent back and forth
-        function showAPILog() {
-            return document.getElementById('toggle').classList.contains('on');
         }
 
 
@@ -512,8 +530,12 @@
             }
         }
 
-         //UI for demo
+
         const manifestElement = document.getElementById('manifest');
+
+        //Demo
+
+
 
         //Demo
         function updateGoal(newValue) {

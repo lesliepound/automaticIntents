@@ -15,21 +15,18 @@ header {
     background-color: whitesmoke;
 }
 
-
-
 .listening {
-    animation: color-change 5s infinite; /* Adjust duration as needed */
+    animation: color-change 4s infinite; /* Adjust duration as needed */
 }
 
 @keyframes color-change {
-    0% {  box-shadow: 0 0 10px 5px #E6004C; }
-    20% { box-shadow: 0 0 10px 5px #FFB826; }
-    40% { box-shadow: 0 0 10px 5px #FFB826; }
+    0% {  box-shadow: 0 0 10px 5px #ef9770; }
+    20% { box-shadow: 0 0 10px 5px #ffd133; }
+    40% { box-shadow: 0 0 10px 5px #ff33e0; }
     60% {  box-shadow: 0 0 10px 5px #E64C00; }
-    80% {  box-shadow: 0 0 10px 5px #FFB826; }
-    100% {  box-shadow: 0 0 10px 5px #E6FFFF; }
+    80% {  box-shadow: 0 0 10px 5px #f3ced9; }
+    100% {  box-shadow: 0 0 10px 5px #e7acca; }
 }
-
 
 #focalChat {color:lightseagreen; }
 
@@ -68,6 +65,9 @@ header {
     -webkit-text-fill-color: transparent;
 }
 
+.activeOn {
+    outline: 1px solid #cc0000;
+}
 .mic-button {
     margin-left: 25px;
     width: 50px;
@@ -80,6 +80,7 @@ header {
     cursor: pointer;
     transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Add box-shadow transition */
 }
+
 
 
 .mic-button::before {
@@ -215,16 +216,23 @@ input, textarea, ::placeholder {
     font-weight: bold;
 
 }
-.left-bubble {
 
+.continuous-feed {
+    max-height: 400px;
+    overflow-y: scroll;}
+
+
+
+.left-bubble {
     padding: 25px 5px 10px 25px;
     position: relative;
     background: #cbe0e2;
     border-radius: .4em;
     margin-bottom:10px;
     min-height:70px;
-}
+    height: auto;}
 
+}
 
 .left-bubble:after {
     content: '';
@@ -445,6 +453,7 @@ body {
 .switch {
     position: relative;
     display: inline-block;
+    margin-top: 10px;
     width: 60px; /* Adjust width as needed */
     height: 34px; /* Adjust height as needed */
 }
@@ -492,26 +501,34 @@ input:checked + .slider:before {
     transform: translateX(26px); /* Move thumb to the right on checked */
 }
 
-[placeholder]:empty::before {
+*[placeholder]:empty::before {
     content: attr(placeholder);
-    font-size: 2em;color:#ccc;
+    color: #999;
 }
 
 [placeholder]:empty:focus::before {
     content: "";
 }
-.api  {display:none;
-    background-color: #ddd;
+
+.api  {
+    display:none;
+    padding-left:10px;
     margin-top: 11px;
     min-height: 28px;
     border: 1px solid #999;
     font-size: .8em;
     max-width: 700px;
     color: #444;
-    font-family: system-ui;
 
     }
-.help { font-size: 2em;color:#ccc;}
+
+.vis {border:none;}
+
+#request{ margin-top:20px;border-top:10px solid #e0e0e0;}
+
+.help { color:#ccc;
+    font-variant: small-caps}
+
 
 .pen-icon {
     font-size: 19px;
@@ -571,5 +588,9 @@ textarea:disabled {
 
 #manifest.goal-active::before {
     content: "Goal: ";
+}
+#manifest:empty::before {
+    /* Your styles for the pseudo-element here */
+    content: " ";
 }
 
