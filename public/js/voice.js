@@ -7,7 +7,7 @@ let isListening = false;
 var recognition = new SpeechRecognition();
 recognition.continuous = false;
 recognition.lang = 'en-US';
-recognition.interimResults = true;
+recognition.interimResults = false; //change to true for as-you-type results
 recognition.maxAlternatives = 1;
 
 var diagnostic = document.querySelector('.output');
@@ -78,9 +78,10 @@ recognition.onspeechend = function (event) {
 
     indicateListen(false);
     isListening = false;
-    handleSend();
+
     recognition.stop();
     recognition.abort();
+    handleSend();
 }
 
 recognition.onerror = function (event) {
