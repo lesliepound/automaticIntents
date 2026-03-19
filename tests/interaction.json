@@ -1,0 +1,19 @@
+{
+  "name": "Interaction",
+  "description": "Configures what gets captured from live usage. Not a test runner — controls long-term analytics logging depth.",
+  "stories": ["ER", "test"],
+  "capture": {
+    "tools_sent":     true,
+    "story_id":       true,
+    "latency":        true,
+    "slot_fill_rate": true,
+    "options_config": true
+  },
+  "notes": {
+    "tools_sent":     "Log the full tools array sent to the LLM — lets you see exactly what wording the model saw",
+    "story_id":       "Tag each entry with which story was active",
+    "latency":        "ms from request to response",
+    "slot_fill_rate": "Track whether expected slots were filled vs empty",
+    "options_config": "Snapshot the options at time of call — catches config changes over time"
+  }
+}

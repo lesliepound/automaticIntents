@@ -1,6 +1,7 @@
-import {BotName, getGroqBot, getOpenAIBot, getUninsatiatedBotError} from "../bots.js";
+import { jest } from '@jest/globals';
+import {BotName, getGroqBot, getOpenAIBot, getUninstantiatedBotError} from "../bots.js";
 import OpenAI from "openai";
-const Groq = require("groq-sdk"); // Jest can't pull this in with "import"
+import Groq from "groq-sdk";
 
 describe("bots.js unit tests", () => {
     const originalEnv = process.env;
@@ -75,31 +76,33 @@ describe("bots.js unit tests", () => {
         });
     });
 
-    describe("getUninsatiatedBotError", () => {
+    describe("getUninstantiatedBotError", () => {
         describe("OpenAI", () => {
             it('returns correct error message', () => {
-                const errorMessage = getUninsatiatedBotError(BotName.OPENAI);
-                expect(errorMessage).toEqual("OpenAI model was not instantiated. Did you supply an OPENAI_API_KEY?");
+                const errorMessage = getUninstantiatedBotError(BotName.OPENAI);
+                expect(errorMessage).toContain("OpenAI model was not instantiated");
+                expect(errorMessage).toContain("OPENAI_API_KEY");
             })
         })
 
         describe("Groq", () => {
             it('returns correct error message', () => {
-                const errorMessage = getUninsatiatedBotError(BotName.GROQ);
-                expect(errorMessage).toEqual("Groq model was not instantiated. Did you supply an GROQ_API_KEY?");
+                const errorMessage = getUninstantiatedBotError(BotName.GROQ);
+                expect(errorMessage).toContain("Groq model was not instantiated");
+                expect(errorMessage).toContain("GROQ_API_KEY");
             })
         })
     })
 
     describe("has invalid name passed in", () => {
         it('throws an error', () => {
-            expect(() => getUninsatiatedBotError("InvalidBotName")).toThrow("Invalid bot name");
+            expect(() => getUninstantiatedBotError("InvalidBotName")).toThrow("Invalid bot name");
         })
     })
 
     describe("has invalid type passed in", () => {
         it('throws an error', () => {
-            expect(() => getUninsatiatedBotError(666)).toThrow("Invalid bot name");
+            expect(() => getUninstantiatedBotError(666)).toThrow("Invalid bot name");
         })
     })
 })

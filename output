@@ -1,0 +1,5 @@
+
+> test
+> NODE_OPTIONS=--experimental-vm-modules jest --clearCache && NODE_OPTIONS=--experimental-vm-modules jest
+
+Cleared /private/var/folders/sm/8gpcjddx69g6t05d2mtdhftr0000gn/T/jest_dx

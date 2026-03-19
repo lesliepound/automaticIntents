@@ -1,0 +1,7 @@
+{
+    "chatId": "visMap",
+    "name": "visual",
+    "logicModule": "../chat/examples/test/config.js",
+    "data": "../chat/examples/test/patient.csv"
+
+}

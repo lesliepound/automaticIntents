@@ -1,0 +1,161 @@
+
+> test
+> NODE_OPTIONS=--experimental-vm-modules jest --clearCache && NODE_OPTIONS=--experimental-vm-modules jest
+
+Cleared /private/var/folders/sm/8gpcjddx69g6t05d2mtdhftr0000gn/T/jest_dx
+(node:8715) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+PASS src/modules/__test__/bots.test.js
+  ● Console
+
+    console.log
+      Groq
+
+      at Object.log (src/modules/__test__/bots.test.js:63:29)
+
+(node:8714) ExperimentalWarning: VM Modules is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+FAIL src/modules/__test__/scenarios.test.js
+  ● [LIVE] Intent matching — ER scenario › exact: "move the iv to the patient" → movable
+
+    SyntaxError: The requested module './bots.js' does not provide an export named 'getUninsatiatedBotError'
+
+      238 |
+      239 |     beforeAll(async () => {
+    > 240 |         const mod = await import('../functions.js');
+          |                     ^
+      241 |         runClassifier = mod.runClassifier;
+      242 |
+      243 |         const story = loadStory('ER');
+
+      at Runtime.linkAndEvaluateModule (node_modules/jest-runtime/build/index.js:684:5)
+      at Object.<anonymous> (src/modules/__test__/scenarios.test.js:240:21)
+
+  ● [LIVE] Intent matching — ER scenario › exact: "attach ekg or blood pressure" → connectable
+
+    SyntaxError: The requested module './bots.js' does not provide an export named 'getUninsatiatedBotError'
+
+      238 |
+      239 |     beforeAll(async () => {
+    > 240 |         const mod = await import('../functions.js');
+          |                     ^
+      241 |         runClassifier = mod.runClassifier;
+      242 |
+      243 |         const story = loadStory('ER');
+
+      at Runtime.linkAndEvaluateModule (node_modules/jest-runtime/build/index.js:684:5)
+      at Object.<anonymous> (src/modules/__test__/scenarios.test.js:240:21)
+
+  ● [LIVE] Intent matching — ER scenario › exact: "the patient had a heart attack" → test
+
+    SyntaxError: The requested module './bots.js' does not provide an export named 'getUninsatiatedBotError'
+
+      238 |
+      239 |     beforeAll(async () => {
+    > 240 |         const mod = await import('../functions.js');
+          |                     ^
+      241 |         runClassifier = mod.runClassifier;
+      242 |
+      243 |         const story = loadStory('ER');
+
+      at Runtime.linkAndEvaluateModule (node_modules/jest-runtime/build/index.js:684:5)
+      at Object.<anonymous> (src/modules/__test__/scenarios.test.js:240:21)
+
+  ● [LIVE] Intent matching — ER scenario › extra: "give the water to the patient" → movable
+
+    SyntaxError: The requested module './bots.js' does not provide an export named 'getUninsatiatedBotError'
+
+      238 |
+      239 |     beforeAll(async () => {
+    > 240 |         const mod = await import('../functions.js');
+          |                     ^
+      241 |         runClassifier = mod.runClassifier;
+      242 |
+      243 |         const story = loadStory('ER');
+
+      at Runtime.linkAndEvaluateModule (node_modules/jest-runtime/build/index.js:684:5)
+      at Object.<anonymous> (src/modules/__test__/scenarios.test.js:240:21)
+
+  ● [LIVE] Intent matching — ER scenario › extra: "check her pulse" → connectable
+
+    SyntaxError: The requested module './bots.js' does not provide an export named 'getUninsatiatedBotError'
+
+      238 |
+      239 |     beforeAll(async () => {
+    > 240 |         const mod = await import('../functions.js');
+          |                     ^
+      241 |         runClassifier = mod.runClassifier;
+      242 |
+      243 |         const story = loadStory('ER');
+
+      at Runtime.linkAndEvaluateModule (node_modules/jest-runtime/build/index.js:684:5)
+      at Object.<anonymous> (src/modules/__test__/scenarios.test.js:240:21)
+
+  ● [LIVE] Intent matching — ER scenario › extra: "any thing about conditions that lead to a heart attack" → test
+
+    SyntaxError: The requested module './bots.js' does not provide an export named 'getUninsatiatedBotError'
+
+      238 |
+      239 |     beforeAll(async () => {
+    > 240 |         const mod = await import('../functions.js');
+          |                     ^
+      241 |         runClassifier = mod.runClassifier;
+      242 |
+      243 |         const story = loadStory('ER');
+
+      at Runtime.linkAndEvaluateModule (node_modules/jest-runtime/build/index.js:684:5)
+      at Object.<anonymous> (src/modules/__test__/scenarios.test.js:240:21)
+
+  ● [LIVE] Intent matching — ER scenario › abstraction: "slide the pills over to her" → movable
+
+    SyntaxError: The requested module './bots.js' does not provide an export named 'getUninsatiatedBotError'
+
+      238 |
+      239 |     beforeAll(async () => {
+    > 240 |         const mod = await import('../functions.js');
+          |                     ^
+      241 |         runClassifier = mod.runClassifier;
+      242 |
+      243 |         const story = loadStory('ER');
+
+      at Runtime.linkAndEvaluateModule (node_modules/jest-runtime/build/index.js:684:5)
+      at Object.<anonymous> (src/modules/__test__/scenarios.test.js:240:21)
+
+  ● [LIVE] Intent matching — ER scenario › abstraction: "hook her up to the heart monitor" → connectable
+
+    SyntaxError: The requested module './bots.js' does not provide an export named 'getUninsatiatedBotError'
+
+      238 |
+      239 |     beforeAll(async () => {
+    > 240 |         const mod = await import('../functions.js');
+          |                     ^
+      241 |         runClassifier = mod.runClassifier;
+      242 |
+      243 |         const story = loadStory('ER');
+
+      at Runtime.linkAndEvaluateModule (node_modules/jest-runtime/build/index.js:684:5)
+      at Object.<anonymous> (src/modules/__test__/scenarios.test.js:240:21)
+
+  ● [LIVE] Intent matching — test scenario (toys) › exact: "move the ball to the child" → movable
+
+    request for './bots.js' is not in cache
+
+      at Runtime.linkAndEvaluateModule (node_modules/jest-runtime/build/index.js:684:5)
+
+  ● [LIVE] Intent matching — test scenario (toys) › extra: "child grabs the teddy bear" → movable
+
+    request for './bots.js' is not in cache
+
+      at Runtime.linkAndEvaluateModule (node_modules/jest-runtime/build/index.js:684:5)
+
+  ● [LIVE] Intent matching — test scenario (toys) › abstraction: "let them play together" → movable
+
+    request for './bots.js' is not in cache
+
+      at Runtime.linkAndEvaluateModule (node_modules/jest-runtime/build/index.js:684:5)
+
+Test Suites: 1 failed, 1 passed, 2 total
+Tests:       11 failed, 27 passed, 38 total
+Snapshots:   0 total
+Time:        0.741 s
+Ran all test suites.

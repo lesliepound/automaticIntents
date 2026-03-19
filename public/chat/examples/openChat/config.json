@@ -1,0 +1,6 @@
+{
+    "chatId": "chat-a",
+    "name": "Customer Support",
+    "logicModule": "../chat/examples/openChat/config.js"
+
+}

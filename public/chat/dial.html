@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Status Dial</title>
+    <!--link rel="stylesheet" href="style.css"-->
+    <style>/* General page styling */
+    /* General page styling */
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        background-color: #f0f2f5;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+        color: #333;
+    }
+
+    /* The main container for the half-circle dial */
+    #dial-container {
+        width: 90px;
+        height: 50px; /* Half the width to create a perfect semi-circle */
+        border: 3px solid #cccccc;
+        border-bottom: none; /* Remove the bottom border */
+        border-radius: 150px 150px 0 0; /* Top-left and top-right radius make it a semi-circle */
+        position: relative;
+        box-sizing: border-box;
+        overflow: visible; /* This is important to contain the shadows within the dial shape */
+    }
+
+    /* Styling for each individual step on the dial */
+    .step {
+        position: absolute;
+        bottom: -2px; /* Position at the bottom edge of the container */
+        left: 50%;   /* Center horizontally */
+        width: 4px;
+        height: 45px;
+
+        /* This is the key: the rotation will originate from the center of the dial's base */
+        transform-origin: center bottom;
+
+        /* A little transition for smooth effect if you change the data later */
+        transition: transform 0.5s ease-in-out, box-shadow 0.3s ease; /* Added box-shadow to transition */
+    }
+
+    /* --- Status Colors & Fuzzy Borders --- */
+    /* These classes are added by JavaScript based on the input array */
+
+    .ideal {
+        background-color: #2ecc71; /* Green */
+        /* x-offset | y-offset | blur-radius | spread-radius | color */
+      //  box-shadow: -2px 0 5px 3px rgba(46, 204, 113, 0.7); /* Green fuzzy border on the right */
+    }
+
+    .caution {
+        background-color: #f1c40f; /* Yellow */
+      box-shadow: 20px -1px 20px 1px rgba(52, 73, 94, 0.33); /* Yellow fuzzy border on the right */
+    }
+
+    .danger {
+        background-color: mediumvioletred; /* Red */
+        //box-shadow: 50px 4px  1px  12px 	rgba(199,21,133,8); /* Red fuzzy border on the right */
+    }
+
+    /* --- ADD THIS NEW SECTION --- */
+    .damaged {
+        background-color: red; /* Dark Slate Blue/Grey */
+        box-shadow: 20px -1px 20px 1px rgba(52, 73, 94, 0.33); /* Matching fuzzy border */
+    }
+    .line {
+        background-color: black; /* Dark Slate Blue/Grey */
+       // box-shadow: 5px 0 5px 0 rgba(52, 73, 94, 0.7); /* Matching fuzzy border */
+        top: 147px;
+        height: 4px;
+        width: 45px;
+        /* margin-top: 4px; */
+        left: 104px;
+    }
+
+    /*.needle {*/
+
+    .needle {
+        position: relative;
+        background-color: #34495e; /* A dark color */
+        border-right:4px solid #999;
+        height: 4px;
+        width: 20px; /* Make it long enough to reach the edge */
+
+        /* --- CRITICAL POSITIONING --- */
+        /* Position the pivot point at the dial's base center (x=150, y=150) */
+        top: 55px; /* (150px base - 1.5px half-needle-height) */
+        left: 44px;  /* (center of the 300px width) */
+
+        /* Set the pivot point to be the far left of the needle */
+        transform-origin: left center;
+
+        /* An initial rotation to point straight up */
+        transform: rotate(-90deg);
+
+        /* Add a smooth transition for rotation */
+        transition: transform 0.7s cubic-bezier(0.68, -0.55, 0.27, 1.55);
+
+        /* Ensure the needle is always on top of the steps */
+        z-index: 10;
+    }
+
+    </style>
+</head>
+<body>
+
+<h1>Dynamic Status Dial</h1>
+
+<div id="dial-container">
+
+        <div class="needle"></div>
+
+</div>
+
+<!--script src="../js/temp-dial.js"></script-->
+<script>
+
+// --- Configuration ---
+// Define the temperature ranges for your cargo.
+// 'danger' is the fallback status if no other range matches.
+const fruitSpec = {
+ideal:   { min: 34, max: 38 },
+caution:    { min: 39, max: 45 },
+damaged: { min: 32, max: 33 } // Example for chill damage
+// Note: You can add more ranges, like another 'damaged' range for high temps
+};
+
+const strawberry = {
+    ideal:   { min: 34, max: 38 },
+    caution:    { min: 39, max: 45 },
+    damaged: { min: 32, max: 33 } // Example for chill damage
+// Note: You can add more ranges, like another 'damaged' range for high temps
+};
+// Define the order of checking. 'danger' is not needed here
+// as it's the default state.
+const statusLabels = ['ideal', 'caution', 'danger', 'damaged'];
+
+
+/**
+* Updates the widget based on a temperature value.
+* @param {number} temp - The current temperature of the cargo.
+*/
+function updateWidget(temp) {
+const widget = document.getElementById('temp-widget');
+const tempValueEl = document.getElementById('temp-value');
+const statusLabelEl = document.getElementById('status-label');
+
+if (temp === null || isNaN(temp)) {
+return; // Do nothing if the temp is not a valid number
+}
+
+let currentStatus = 'ideal'; // Default status
+
+// Check each status against the temperature
+for (const label of statusLabels) {
+const range = fruitSpec[label]; //returns the object of min/max each status label
+if (temp >= range.min && temp <= range.max) {
+    //if the statusLabel
+currentStatus = label;
+break; // Found the correct label, no need to check further
+}
+}
+
+
+// 1. Update the display text
+tempValueEl.textContent = temp;
+statusLabelEl.textContent = currentStatus.charAt(0).toUpperCase() + currentStatus.slice(1);
+    tempValueEl.style.class = currentStatus;
+    const list = statusLabelEl.classList;
+    list.add(currentStatus);
+    console.log(currentStatus)
+// 2. Clean up old status classes
+
+}
+
+/**
+* A helper function to get value from the input and run the update.
+*/
+function updateFromInput() {
+const tempInput = document.getElementById('temp-input');
+const temperature = parseFloat(tempInput.value);
+updateWidget(temperature);
+}
+
+// Example: Set an initial state when the page loads
+window.onload = () => {
+updateWidget(42); // Set an initial example value of 42
+};
+</script>
+
+<span id="temp-value">--</span>
+
+<div id="status-label" class="status-label">Awaiting Reading</div>
+</body>
+</html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dual Cargo Monitor</title>
+    <link rel="stylesheet" href="../style/style.css">
+</head>
+<body>
+<div class="dial-wrapper">
+    <div id="temperature-monitor" class="monitor-container">
+        <h3 class="dial-title">Temperature</h3>
+        <div class="widget">
+            <div class="status-text">
+                <span class="value" data-current-value="89">--</span><span class="unit"></span>
+            </div>
+            <div class="status-label">Awaiting Reading</div>
+        </div>
+    </div>
+    <div id="pain" class="monitor-container">
+        <h3 class="dial-title">Pain</h3>
+        <div class="widget">
+            <div class="status-text">
+                <span class="value" data-current-value="0">--</span><span class="unit"></span>
+            </div>
+            <div class="status-label">Awaiting Reading</div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Global object to hold references to our widget controllers
+    const dialWidgets = {};
+
+    window.setMonitor = function(painSpec, temperatureSpec) {
+        if (!temperatureSpec || !temperatureSpec.Produce || !painSpec || !painSpec.Produce) {
+            console.error("Invalid spec provided. Make sure 'Produce' property exists.");
+            return;
+        }
+        initializeDial('temperature-monitor', temperatureSpec, '');
+        initializeDial('pain', painSpec, '');
+    }
+
+    window.setWidget = function(name, direction, amount=1) {
+        const controller = dialWidgets[name];
+
+        if (!controller) {
+            console.error(`Widget "${name}" not found.`);
+            return;
+        }
+        const currentValue = parseFloat(controller.valueElement.dataset.currentValue);
+        let newValue = currentValue;
+        if (direction === 'up') newValue += amount;
+        else if (direction === 'down') newValue -= amount;
+        controller.update(newValue);
+    }
+
+    function initializeDial(containerId, spec, unit) {
+        const containerEl = document.getElementById(containerId);
+        if (!containerEl || !spec) return;
+        const titleEl = containerEl.querySelector('.dial-title');
+        const widgetEl = containerEl.querySelector('.widget');
+        const valueEl = containerEl.querySelector('.value');
+        const unitEl = containerEl.querySelector('.unit');
+        const statusLabelEl = containerEl.querySelector('.status-label');
+        const header1 = spec.Produce;
+        const statusPriority = ['good', 'caution', 'danger', 'damaged'];
+
+        function parseRange(rangeStr) {
+            if (!rangeStr) return { min: NaN, max: NaN };
+            if (rangeStr.includes('<')) return { min: -Infinity, max: parseFloat(rangeStr.replace('<', '')) };
+            if (rangeStr.includes('>')) return { min: parseFloat(rangeStr.replace('>', '')), max: Infinity };
+            if (rangeStr.includes('-')) {
+                const parts = rangeStr.split('-').map(parseFloat);
+                return { min: parts[0], max: parts[1] };
+            }
+            return { min: NaN, max: NaN };
+        }
+
+        function updateWidget(val) {
+            if (val === null || isNaN(val)) return;
+            let currentStatus = 'unknown';
+            for (const status of statusPriority) {
+                const rangeStr = spec[status];
+                if (!rangeStr) continue;
+                const range = parseRange(rangeStr);
+                if ((val > range.min && range.max === Infinity) || (val < range.max && range.min === -Infinity) || (val >= range.min && val <= range.max)) {
+                    currentStatus = status;
+                    break;
+                }
+            }
+            valueEl.dataset.currentValue = val;
+            valueEl.textContent = Math.round(val);
+            statusLabelEl.textContent = currentStatus.charAt(0).toUpperCase() + currentStatus.slice(1);
+            widgetEl.className = 'widget';
+            widgetEl.classList.add(currentStatus);
+        }
+
+        const baseTitle = titleEl.textContent.split(' ').pop();
+        titleEl.textContent = `${header1} `;
+        unitEl.textContent = unit;
+
+        const initialGoodRange = spec.good ? spec.good.split('-').map(parseFloat) : [40, 60];
+        const initialValue = (initialGoodRange[0] + initialGoodRange[1]) / 2;
+        updateWidget(initialValue);
+
+        const widgetKey = containerId.split('-')[0];
+        dialWidgets[widgetKey] = {
+            update: updateWidget,
+            valueElement: valueEl
+        };
+    }
+
+    // --- USAGE EXAMPLE ---
+
+    const painSpec = {
+        Produce: 'pain', damage: '<8', good: '0-1',  caution: '2-5', danger: '6-8'
+
+    };
+    const temperature = {
+        unit: 'degree', damage: '<102', good: '87-90',  caution: '90-100', danger: '100-102'
+
+    };
+    // const tomatoHumidSpec = {
+    //     Produce: 'Tomatoes', danger: '<80', good: '80-95', caution: '>95'
+    // };
+
+    // 2. Call setMonitor() with your data to start the widgets.
+    setMonitor(painSpec, temperatureSpec);
+
+</script>
+</body>
+</html>
+
+temperature = {  unit:'degree';  damage: '<102', good: '87-90',  caution: '90-100', danger: '100-102'  };
+

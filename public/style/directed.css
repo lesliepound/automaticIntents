@@ -1,0 +1,37 @@
+
+:root {
+    --my-scale: 1;
+    --my-rotate: 40deg;
+}
+#humidity {
+    top: 200px;
+    left: 200px;
+    width: 240px;
+    height: 115px;
+    background-size: contain;
+    background-image: url(images/dial.png);
+    border: 0px solid #333;
+    /* background-color: lightpink; */
+    position: relative;
+    background-repeat: no-repeat;
+}
+
+#myElement {
+    transform: scale(var(--my-scale)) rotate(var(--my-rotate));
+    transition: transform 0.3s ease; /* Optional: For smooth transitions */
+}
+
+#needle {
+
+    position: absolute;
+    width: 76px;
+    height: 4px;
+    background: black;
+    transform-origin: bottom right; /* Rotate around the bottom of the needle */
+    top: 110px; /* Position the needle within the dial */
+    left: 10px;
+    /* Initial needle position */
+}
+.foo {transform: translate(0, 0) rotate(60deg)}
+
+#manifest {display:none}

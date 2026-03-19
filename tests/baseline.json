@@ -1,0 +1,26 @@
+{
+  "name": "Baseline",
+  "description": "Core classification against current story config. All tests should pass with any reasonable model.",
+  "story": "ER",
+  "model": "llama-3.1-8b-instant",
+  "tests": [
+    { "id": "er-b-001", "category": "literal",     "prompt": "attach the ekg",                   "expected": "connectable" },
+    { "id": "er-b-002", "category": "literal",     "prompt": "move the pills to the patient",    "expected": "movable"     },
+    { "id": "er-b-003", "category": "literal",     "prompt": "get blood pressure",               "expected": "orderable"   },
+    { "id": "er-b-004", "category": "literal",     "prompt": "what are her symptoms",            "expected": "@prompt"     },
+    { "id": "er-b-005", "category": "literal",     "prompt": "the patient has an MI",            "expected": "diagnosable" },
+    { "id": "er-b-006", "category": "synonym",     "prompt": "hook up the heart monitor",        "expected": "connectable" },
+    { "id": "er-b-007", "category": "synonym",     "prompt": "give the patient meds",            "expected": "movable"     },
+    { "id": "er-b-008", "category": "synonym",     "prompt": "administer medication",            "expected": "movable"     },
+    { "id": "er-b-009", "category": "synonym",     "prompt": "check her oxygen levels",          "expected": "orderable"   },
+    { "id": "er-b-010", "category": "synonym",     "prompt": "she needs an IV drip",             "expected": "connectable" },
+    { "id": "er-b-011", "category": "misspelling", "prompt": "atach the bp cuff",                "expected": "connectable" },
+    { "id": "er-b-012", "category": "misspelling", "prompt": "mve the syringe to the patient",   "expected": "movable"     },
+    { "id": "er-b-013", "category": "misspelling", "prompt": "diagnoze the patient",             "expected": "diagnosable" },
+    { "id": "er-b-014", "category": "concept",     "prompt": "I need to monitor her heart",      "expected": "connectable" },
+    { "id": "er-b-015", "category": "concept",     "prompt": "she needs fluids",                 "expected": "connectable" },
+    { "id": "er-b-016", "category": "concept",     "prompt": "run some labs",                    "expected": "orderable"   },
+    { "id": "er-b-017", "category": "fallback",    "prompt": "order a pizza",                    "expected": "fallback"    },
+    { "id": "er-b-018", "category": "fallback",    "prompt": "the weather is nice today",        "expected": "fallback"    }
+  ]
+}

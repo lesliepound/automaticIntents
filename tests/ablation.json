@@ -1,0 +1,23 @@
+{
+  "name": "Ablation",
+  "description": "Same prompts run against config variants to isolate what actually affects match rate.",
+  "story": "ER",
+  "models": ["llama-3.1-8b-instant", "llama-3.3-70b-versatile", "openai/gpt-oss-120b"],
+  "variants": [
+    { "name": "with_extra",        "transform": "keep_extra"                               },
+    { "name": "without_extra",     "transform": "strip_extra"                              },
+    { "name": "comma_separator",   "transform": "replace_separator", "from": ";", "to": "," },
+    { "name": "pipe_separator",    "transform": "replace_separator", "from": ";", "to": "|" },
+    { "name": "natural_separator", "transform": "replace_separator", "from": ";", "to": ". " }
+  ],
+  "tests": [
+    { "id": "abl-001", "prompt": "hook up the heart monitor",     "expected": "connectable" },
+    { "id": "abl-002", "prompt": "give the patient meds",         "expected": "movable"     },
+    { "id": "abl-003", "prompt": "check her oxygen levels",       "expected": "orderable"   },
+    { "id": "abl-004", "prompt": "administer medication",         "expected": "movable"     },
+    { "id": "abl-005", "prompt": "atach the bp cuff",             "expected": "connectable" },
+    { "id": "abl-006", "prompt": "I want to run some tests",      "expected": "orderable"   },
+    { "id": "abl-007", "prompt": "she needs fluids",              "expected": "connectable" },
+    { "id": "abl-008", "prompt": "what is her diagnosis",         "expected": "diagnosable" }
+  ]
+}

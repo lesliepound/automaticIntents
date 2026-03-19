@@ -1,0 +1,1187 @@
+
+#topline {
+    position:absolute;
+    top:77px;
+    left:0px;
+    width:100%;
+    height:32px;
+    background-color: yellowgreen;
+}
+#convo {position:absolute;display:block;z-index:390}
+
+.foregound{
+    position: absolute;
+    animation-timing-function: ease-in;
+}
+
+
+
+
+.h1 {
+    top: 1vh;
+}
+
+.h5 {
+    top: 5vh;
+}
+
+.h10 {
+    left: 10vw;
+}
+
+.h15 {
+    left: 15vw;
+}
+
+.h20 {
+    left: 20vw;
+}
+
+.h25 {
+    left: 25vw;
+}
+
+.h30 {
+    left: 30vw;
+}
+
+.h35 {
+    left: 35vw;
+}
+
+.h40 {
+    left: 40vw;
+}
+
+.h45 {
+    left: 45vw;
+}
+
+.h50 {
+    left: 50vw;
+}
+
+.h55 {
+    left: 55vw;
+}
+
+.h60 {
+    left: 60vw;
+}
+
+.h65 {
+    left: 65vw;
+}
+
+.h70 {
+    left: 70vw;
+}
+
+.h75 {
+    left: 75vw;
+}
+
+.h80 {
+    left: 80vw;
+}
+
+.h85 {
+    left: 85vw;
+}
+
+.h90 {
+    left: 90vw;
+}
+
+.h95 {
+    left: 95vw;
+}
+
+.h100 {
+    left: 100vw;
+}
+
+.h110 {
+    left: 110vw;
+}
+
+.h120 {
+    left: 120vw;
+}
+
+.v0 {
+    top: 0vh;
+}
+
+.v01 {
+    top: 1vh;
+}
+
+.v05 {
+    top: 5vh;
+}
+
+.v10 {
+    top: 10vh;
+}
+
+.v15 {
+    top: 15vh;
+}
+
+.v20 {
+    top: 20vh;
+}
+
+.v25 {
+    top: 25vh;
+}
+
+.v30 {
+    top: 30vh;
+}
+
+.v35 {
+    top: 35vh;
+}
+
+.v40 {
+    top: 40vh;
+}
+
+.v45 {
+    top: 45vh;
+}
+
+.v50 {
+    top: 50vh;
+}
+
+.v55 {
+    top: 55vh;
+}
+
+.v60 {
+    top: 60vh;
+}
+
+.v65 {
+    top: 65vh;
+}
+
+.v70 {
+    top: 70vh;
+}
+
+.v75 {
+    top: 75vh;
+}
+
+.v80 {
+    top: 80vh;
+}
+
+.v85 {
+    top: 85vh;
+}
+
+.v90 {
+    top: 90vh;
+}
+
+.v95 {
+    top: 95vh;
+}
+
+.v100 {
+    top: 100vh;
+}
+
+.v110 {
+    top: 110vh;
+}
+
+
+.holding {
+    position: relative;
+    z-index: 100;
+    position: relative;
+
+    z-index: 10;
+    top: 52px;
+    left: 40px;
+    width: 100px;
+    display: none;
+    background-image: url(images/teddy.png);
+    height: 50px;
+    background-repeat: no-repeat;
+    background-size: contain;
+
+}
+
+
+.expand {
+    display: block;
+    animation: fadeOut 2s;
+    -webkit-animation: fadeOut 2s;
+    animation-fill-mode: forwards;
+}
+
+@keyframes fadeOut {
+    0% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(2.2) rotate(120deg);
+        opacity: 0;
+    }
+}
+
+
+.floatAway {
+    display: block;
+    animation: fadeOut 2s;
+    animation-direction: normal;
+    -webkit-animation: fadeOut 2s;
+    animation-fill-mode: forwards;
+}
+
+@keyframes fadeOut {
+    0% {
+        transform: scale(1) rotate(0deg);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(.2) rotate(120deg);
+        top: 10vh;
+        left: 90vw;
+        opacity: 0;
+    }
+}
+
+.cupcake {
+    position: absolute;
+
+    left: 563px;
+    top: 485px;
+    z-index: 30;
+}
+
+
+.tree {
+    z-index: 300;
+    position: absolute;
+    --start-left: 200px;
+
+    animation-timing-function: ease-in;
+}
+
+.walkImage {}
+.walkImage {
+    /* Apply both animations. You can give them different durations. */
+    /* animation-name | duration | fill-mode */
+    animation: iwalk            0.6s     forwards,
+    moveLeft         .5s       forwards; /* <-- Add the second animation here */
+}
+
+
+
+@keyframes iwalk {
+    3% {
+        clip-path: polygon(48% 0, 53% 0, 84% 68%, 98% 100%, 39% 84%, 19% 91%, 0 100%, 13% 70%);
+    }
+    9% {
+        clip-path: polygon(48% 0, 53% 0, 84% 68%, 100% 100%, 33% 72%, 23% 78%, 6% 98%, 13% 70%);
+    }
+    15% {
+
+        clip-path: polygon(48% 0, 53% 0, 84% 68%, 100% 83%, 35% 68%, 27% 73%, 30% 100%, 10% 76%);
+    }
+    20% {
+        clip-path: polygon(48% 0, 53% 0, 84% 68%, 100% 81%, 39% 68%, 27% 73%, 11% 100%, 10% 76%);
+    }
+    99% {
+        clip-path: polygon(48% 0, 53% 0, 84% 68%, 98% 100%, 50% 98%, 21% 100%, 0 100%, 13% 70%);
+    }
+    100% {
+        clip-path: circle(100%);
+    }
+}
+/* New animation to move the element left */
+@keyframes moveLeft {
+    from {
+        /* Combine both transformations in one line */
+        transform: translateX(0) rotate(-24deg);
+    }
+    to {
+        /* Combine the final transformations in one line */
+        transform: translateX(20px) rotate(0deg);
+    }
+}
+
+.left-walkImage {
+    animation-name: iwalk;
+    animation-duration: .4s;
+    animation-fill-mode: forwards;
+}
+
+@keyframes left-iwalk {
+    3% {
+
+
+        clip-path: polygon(48% 0, 53% 0, 84% 68%, 98% 100%, 39% 84%, 19% 91%, 0 100%, 13% 70%);
+    }
+    9% {
+
+        transform: rotate(-13deg);
+        clip-path: polygon(48% 0, 53% 0, 84% 68%, 100% 100%, 33% 72%, 23% 78%, 6% 98%, 13% 70%);
+    }
+    15% {
+
+
+        transform: rotate(-13deg);
+        clip-path: polygon(48% 0, 53% 0, 84% 68%, 100% 83%, 35% 68%, 27% 73%, 30% 100%, 10% 76%);
+    }
+    20% {
+
+        transform: rotate(-14deg);
+        clip-path: polygon(48% 0, 53% 0, 84% 68%, 100% 81%, 39% 68%, 27% 73%, 11% 100%, 10% 76%);
+    }
+    99% {
+        transform: rotate(0deg);
+        left: calc(var(--start-left) - 20px);
+        clip-path: polygon(48% 0, 53% 0, 84% 68%, 98% 100%, 50% 98%, 21% 100%, 0 100%, 13% 70%);
+    }
+    100% {
+        transform: rotate(0deg);
+
+        left: calc(var(--start-left) - 50px);
+
+        clip-path: circle(100%);
+    }
+}
+
+@keyframes tilt {
+    50% {
+        transform: rotate(118deg);
+    }
+}
+
+
+
+.tiltright {
+    transform: rotate(-24deg);
+}
+
+.dance2 {
+    animation-iteration-count: 9;
+    animation-fill-mode: none;
+    animation-name: tiltMe2;
+    animation-duration: 1.5s;
+}
+
+.dance3 {
+    animation-iteration-count: 8;
+    animation-fill-mode: none;
+    animation-play-state: running;
+    animation-name: tiltMe2;
+    animation-duration: 3s;
+}
+
+@keyframes tiltMe2 {
+    5% {
+        transform: rotate(-1deg);
+        margin-top: -20px;
+        background: url(/images/ani-block4.png) no-repeat;
+    }
+    20% {
+        transform: rotate(-11deg);
+        margin-top: 0;
+        background: url(/images/ani-blockR.png) no-repeat;
+    }
+    45% {
+        transform: rotate(-1deg);
+        margin-top: -20px;
+    }
+    67% {
+        transform: rotate(11deg);
+        margin-top: 0;
+        background: url(images/ani-blockL.png) no-repeat;
+    }
+    91% {
+        transform: rotate(15deg);
+        margin-top: -20px;
+        background: url(/images/ani-blockR.png) no-repeat;
+    }
+}
+
+.dance4 {
+    animation-iteration-count: 8;
+    animation-fill-mode: none;
+    animation-play-state: running;
+    animation-name: skidDanceR;
+    animation-duration: 1s;
+}
+
+@keyframes skidDanceR {
+    5% {
+        transform: rotate(-30deg);
+        margin-top: -2px;
+        left: 150px !important;
+    }
+    25% {
+        transform: rotate(-11deg);
+        left: 140px;
+        background: transparent url(/ta-images/ani/ani-blockR.png) no-repeat;
+    }
+    45% {
+        left: 170px;
+        margin-top: -2px;
+        transform: rotate(-30deg);
+    }
+    65% {
+        transform: rotate(-11deg);
+        left: 180px;
+    }
+}
+
+
+.dance5 {
+    animation-iteration-count: 7;
+    animation-fill-mode: none;
+    animation-play-state: running;
+    animation-name: skidDanceL;
+    animation-duration: 1s;
+}
+
+@keyframes skidDanceL {
+    5% {
+        transform: rotate(30deg);
+        margin-top: -2px;
+        left: 190px !important;
+    }
+    25% {
+        transform: rotate(-13deg);
+        left: 204px;
+        /* background: transparent url(/images/ani-blockR.png) no-repeat;*/
+    }
+}
+
+@keyframes buzzing {
+    5% {
+        transform: rotate(-40deg);
+        margin-top: -25px;
+        left: 300px;
+        background: transparent url(/ta-images/ani/ani-block4.png) no-repeat;
+    }
+    20% {
+        left: 280px;
+        background: transparent url(/ta-images/ani/ani-blockR.png) no-repeat;
+    }
+    45% {
+        left: 250px;
+        margin-top: -20px;
+    }
+    67% {
+        left: 190px;
+        background: transparent url(/ta-images/ani/ani-blockL.png) no-repeat;
+    }
+    91% {
+        transform: rotate(15deg);
+        left: 130px;
+        background: transparent url(/ta-images/ani/ani-blockL.png) no-repeat;
+    }
+}
+
+
+.comeback {
+    animation: comeback .9s;
+    animation-iteration-count: 1
+}
+
+@keyframes comeback {
+    10% {
+        left: -150px;
+    }
+    100% {
+        left: 300px;
+    }
+}
+
+#device {
+    border-radius: 20px;
+    display: none;
+    position: absolute;
+    left: 80vw;
+    top: 20px;
+    background-color: darkseagreen;
+    border: 1px solid #666;
+    width: 200px;
+    height: 60px;
+}
+
+#hole {
+    position: absolute;
+    left: 23px;
+    top: 515px;
+    border-radius: 30px 60px;
+    margin-top: 23px;
+    background-color: #333;
+    border-bottom: 240px solid white;
+    width: 0px;
+    height: 30px;
+    display: none;
+    z-index: 400;
+    animation: enlarge .25s;
+    animation-fill-mode: both;
+}
+
+
+
+.tilt {
+    transform: rotate(11deg);
+
+}
+
+.confused {
+    left: 19px !important;
+    transform: rotate(20deg);
+}
+
+.confused2 {
+    left: -9px !important;
+    transform: rotate(-20deg);
+}
+
+
+#thoughtBuble {
+    background: transparent url(/images/thought.png) no-repeat;
+    text-align: center;
+    object-fit: scale-down;
+    margin: auto;
+    padding-top: 30px;
+    background-size: contain;
+    display: none;
+    line-height: 40px;
+    font-size: 1.6em;
+    color: #bbc;
+    font-family: "Arial Black";
+    height: 228px;
+    width: 228px;
+    z-index: 3000;
+    position: absolute;
+    transition: background 1s linear;
+    margin-top: 10px;
+
+}
+
+#thoughtBuble {
+    left: 20vh;
+    top: 15vw;
+}
+
+
+
+
+
+@keyframes jumpH2 {
+    0% {
+        transform: translate(-50%, -50%) scale(1.25, 0.75);
+    }
+    50% {
+        transform: translate(-50%, -150%) scale(1, 1);
+    }
+}
+
+.jumpHigh {
+    transform-origin: 50% 50%;
+    animation: jumpH2 .5s linear;
+}
+
+.sitfeet {
+    animation-fill-mode: forwards;
+    border-radius: 40px !important;
+    height: 20px !important;
+    top: 96px !important;
+}
+
+.peekOut {
+    transform: rotate(-10deg)
+}
+
+
+.fall {
+    animation: animate__hinge; /* referring directly to the animation's @keyframe declaration */
+    animation-duration: .7s;
+    animation-iteration-count: 1;
+    animation-fill-mode: forwards;
+}
+
+#hook {
+    margin-top: -20px;
+    display: block;
+    animation: moveK .8s;
+    animation-direction: alternate;
+}
+
+@keyframes moveK {
+    10% {
+        left: -300px;
+    }
+    25% {
+        left: -200px;
+    }
+    40% {
+        left: -100px;
+    }
+    50% {
+        left: -170px;
+    }
+    69% {
+        left: -230px;
+    }
+    99% {
+        left: -290px;
+    }
+}
+
+
+
+
+#topline {
+    position: absolute;
+    top: 97px;
+    left: 0px;
+    width: 100%;
+    height: 40px;
+    background-color: yellowgreen;
+}
+
+
+@media only screen and (max-width: 800px) {
+
+    .slide {
+        font-size: 1.3em !important;
+        line-height: 22px;
+    }
+}
+
+.ani {
+    transition: transform .9s ease-in-out;
+}
+
+#message {
+    background-color: rgb(234, 255, 203);
+    width: 110%;
+    position: fixed;
+    margin-top: 50px;
+    text-align: center;
+    padding: 5px;
+    z-index: 300;
+}
+
+
+.listening {
+    padding-bottom: 140px;
+    height: 770px;
+}
+
+/*body {*/
+/*    background-size: cover;*/
+/*    min-height: 100vh;*/
+/*    font-family: 'Noto Sans', sans-serif;*/
+/*    min-width: 100vh;*/
+/*    overflow: hidden;*/
+/*    background-repeat: no-repeat !important;*/
+/*    background-position: center;*/
+/*    --mod-name: 'bearclothes';*/
+/*    --mod-url: '/mods/';*/
+/*    padding: 1px*/
+/*}*/
+
+.gridlines {
+    display: none;
+    background-color: transparent;
+    background-image: linear-gradient(0deg, red, transparent 1px, transparent 27%, transparent 74%), linear-gradient(90deg, red, transparent 1px, transparent 26%, transparent 27%, transparent 74%, transparent 75%, transparent 76%);
+    height: 100%;
+    width: 100%;
+    background-size: 10vw 10vh;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+}
+
+
+.story {
+    position: absolute;
+    width: 100%;
+    padding: 5px 11px;
+}
+
+
+.smaller {
+    display: block;
+    visibility: visible;
+    animation-duration: 2s;
+    animation: usmaller .5s;
+    animation-fill-mode: forwards;
+}
+
+@keyframes usmaller {
+    30% {
+        transform: scale(.8)
+    }
+    65% {
+        transform: scale(.6)
+    }
+    90% {
+        transform: scale(.3)
+    }
+    100% {
+        transform: scale(.1)
+    }
+}
+
+
+
+.animal *, .animal *:before, .animal *:after {
+    position: absolute;
+}
+.animal.bear {
+    --alt-color: bisque;
+    --main-color: #9e505b;
+    --highlight-color: #b76974;
+    border-radius: 160px 250px 0 0;
+
+    background: transparent url('/images/ani-block4.png') no-repeat;
+    z-index: 5;
+}
+#face {
+    top: 1px;
+    left: 8px;
+    position: relative;
+}
+.lash2, .lash1, .lash3, .lash4 {
+    top: 22px;
+    left: 9px;
+    color: black;
+    height: 3px;
+    width: 5px;
+    background-color: #000;
+    border-radius: 900px;
+    transform: rotate(-290deg);
+}
+
+.lash2 {
+    transform: rotate(-90deg);
+    left: 17px;
+    top: 17px;
+}
+
+.lash3 {
+    transform: rotate(107deg);
+    left: 50px;
+    top: 17px;
+}
+
+.lash4 {
+    transform: rotate(-230deg);
+    left: 58px;
+    top: 17px;
+    width: 5px;
+}
+
+.lid {
+    visibility: hidden;
+    height: 1px;
+    width: 22px;
+    background-color: var(--main-color);
+    border-radius: 100px;
+    top: 20px;
+    left: -7px;
+    z-index: 80;
+}
+
+.animal.bear .lidleft {
+    height: 1px;
+    width: 17px;
+    border-radius: 100px;
+    top: 22px;
+    left: -45px;
+
+    box-shadow: -2px 5px 4px -2px #585858;
+}
+
+.animal.bear .lidright {
+    height: 0px;
+    width: 18px;
+    box-shadow: -2px 5px 4px -2px #585858;
+
+}
+
+.animal.man .lidleft {
+    top: 22px;
+    z-index: 900;
+    height: 20px;
+    width: 14px;
+    left: -43px;
+    border-radius: 10px 0px 1px 14px;
+}
+
+.eyeleft {
+    height: 11px;
+    width: 11px;
+    background-color: black;
+    border-radius: 100px;
+    top: 22px;
+    left: -7px;
+    z-index: 10;
+}
+
+.eyeright {
+    height: 11px;
+    width: 11px;
+    background-color: black;
+    border-radius: 100px;
+    top: 23px;
+    right: 28px;
+    z-index: 10;
+}
+
+.straight {
+    border-top: 1.5px solid var(--alt-color);
+    border-left: 3px solid var(--alt-color);
+    border-right: 2px solid var(--alt-color);
+    border-bottom: 1.6px solid var(--alt-color);
+}
+bear > .nose {
+    height: 18px;
+    width: 18px;
+    background-color: var(--alt-color);
+    border-radius: 24px 14px 9px 9px;
+    top: 30px;
+    left: calc(50% - 28px);
+}
+
+.man > .nose {
+    height: 8px;
+    width: 8px;
+}
+
+.animal.bear .nose:after {
+
+    content: '';
+    height: 4px;
+    width: 7px;
+    background-color: #f9ae89;
+    top: 33px;
+    left: -22px;
+    border-radius: 50px;
+    z-index: 20;
+    border-bottom: 2px solid black;
+}
+
+#mouth {
+    height: 7px;
+    width: 9px;
+    top: 43px;
+    left: -19px;
+    border-bottom: 2px solid bisque;
+    transform: rotate(-22deg);
+    border-radius: 12px;
+    -moz-border-radius-topright: 0;
+}
+
+.hand {
+    transition: top .5s;
+    top: 67px;
+    height: 26px;
+    width: 17px;
+    background-color: var(--main-color);
+    border: 1px ridge black;
+    border-bottom: 5px solid bisque;
+
+}
+
+.lefthand {
+    left: 15px;
+    border-radius: 40px 150px 0 0;
+    transform: rotate(108deg);
+    background-color: var(--main-color);
+}
+.righthand {
+    z-index: 100;
+    left: 63px;
+    border-radius: 150px 40px 0 0;
+    transform: rotate(-110deg);
+    background-color: var(--main-color);
+}
+
+
+.righthand:after {
+    z-index: 99;
+    background-image: url("images/banana.png")
+}
+#anna {
+    top: 20vh;
+    margin: 0;
+    left: 25vw;
+    justify-content: center;
+    align-items: flex-end;
+    position: absolute;
+    z-index: 30;
+    transition: transfer3D 1s linear;
+}
+
+#onhead {
+    display: block;
+    position: absolute;
+    top: -33px;
+    margin-left: -9px;
+    width: 115%;
+    height:65px;
+    z-index: 100;
+
+
+}
+
+
+
+.animal {
+    height: 176px;
+    width: 94px;
+    left: 0;
+    top: 0px;
+}
+
+/* ears */
+.earleft {
+    height: 20px;
+    width: 30px;
+    left: -22px;
+    border-radius: 30px 20px 110px 40px;
+    transform: rotate(204deg);
+    border-right: 1px solid #333;
+    border-left: 2px solid #333;
+}
+
+.earright {
+    height: 20px;
+    width: 30px;
+    left: 60px;
+    border-radius: 8px 10px 12px 24px;
+    transform: rotate(150deg);
+}
+
+.ear {
+    position: absolute;
+    background-color: var(--main-color);
+    border-top: 5px solid #333;
+    top: -11px;
+    z-index: 20;
+}
+
+.handWait {
+    top: 62px !important;
+    left: 62px !important;
+    transform: rotate(-2deg);
+}
+
+.smile {
+    visibility: visible !important;
+    display: block;
+    /* referring directly to the animation's @keyframe declaration */
+    animation-duration: .3s; /* don't forget to set a duration! */
+    animation: smileMotion 1.5s;
+    animation-iteration-count: 1;
+    border-top-right-radius: 16px;
+}
+
+@keyframes smileMotion {
+    10% {
+        width: 6px;
+        transform: rotate(-17deg);
+    }
+    45% {
+        width: 7px;
+        transform: rotate(-21deg);
+    }
+    70% {
+        width: 10px;
+        transform: rotate(-21deg);
+    }
+    100% {
+        width: 11px;
+        transform: rotate(-21deg);
+    }
+}
+
+.sad {
+    height: 10px !important;
+    visibility: visible !important;
+    border-top: 2px ridge black;
+}
+
+.confused {
+    left: 19px !important;
+    transform: rotate(20deg);
+}
+
+.confused2 {
+    left: -9px !important;
+    transform: rotate(-20deg);
+}
+
+.happy {
+    transform: rotate(-14deg);
+    height: 5px;
+    width: 20px;
+    display: block;
+    top: 50px;
+    border-bottom: 1px solid papayawhip;
+}
+
+.blush {
+    transition: background-color 7s;
+    background-color: rgba(255, 20, 147, .6);
+    border-radius: 20px;
+}
+
+
+.yawn {
+    display:block;
+    top: 51px;
+    background-color:black !important;
+    color: black;
+    animation-fill-mode: forwards;
+    animation-duration: 2.1s; /* don't forget to set a duration! */
+    animation: yawnMotion 2.1s;
+    animation-iteration-count: 1;
+}
+@keyframes yawnMotion {
+    from {
+        transform: scale(.2) rotate(36deg);
+        width:1px;
+    }
+    to {
+        transform: scale(1.8) rotate(42deg);
+        width:6px;
+    }
+}
+
+
+.blink {
+    visibility: visible !important;
+    animation-duration: .2s;
+
+    animation: blinkMorph .2s;
+
+
+}
+
+.blink-double {
+    visibility: visible !important;
+    animation: blinkMorph 0.3s ease-in-out 2; /* 2 iterations */
+}
+
+.blink-triple {
+    visibility: visible !important;
+    animation: blinkMorph 0.2s ease-in-out 3; /* 3 iterations */
+}
+
+@keyframes blinkMorph {
+    10% {
+        height: 3px;
+    }
+    35% {
+        height: 10px
+    }
+    45% {
+        height: 13px;
+    }
+    90% {
+        height: 14px;
+    }
+}
+
+.sign {
+    display: none;
+    width: 410px;
+    height: 210px;
+    box-shadow: 10px 5px 5px #666;
+    background-color: blanchedalmond;
+    position: absolute;
+    font-weight: bold;
+    padding: 13px;
+    font-family: 'KoHo', sans-serif;
+    font-size: 18px;
+    border: 10px solid burlywood !important;
+    z-index: 400;
+}
+
+
+
+
+.bg-blue {
+    background-color: lightsteelblue;
+    background: rgb(254, 251, 233);
+    background: radial-gradient(circle, rgba(254, 251, 233, 1) 0%, rgba(148, 187, 233, 1) 100%);
+}
+
+
+.bg-watercolor1 {
+    background: rgb(254, 251, 233);
+    background: linear-gradient(90deg, rgba(254, 251, 233, .3) 0%, rgba(197, 241, 206, .5) 25%, rgba(199, 224, 237, 0.8057816876750701) 59%, rgba(205, 217, 224, 0.2679665616246498) 83%, rgba(148, 233, 207, 0.2931766456582633) 100%);
+}
+
+.bg-watercolor2 {
+    background: rgb(254, 233, 233);
+    background: linear-gradient(90deg, rgba(254, 233, 233, 1) 0%, rgba(241, 225, 197, 0.7637648809523809) 25%, rgba(233, 177, 148, 0.2931766456582633) 100%);
+}
+
+.bg-watercolor3 {
+    background: #fefcea; /* Old browsers */
+    background: -moz-linear-gradient(top, #fefcea 0%, #88a09e 21%, #e094ba 70%, #efe5a0 100%); /* FF3.6-15 */
+    background: -webkit-linear-gradient(top, #fefcea 0%, #88a09e 21%, #e094ba 70%, #efe5a0 100%); /* Chrome10-25,Safari5.1-6 */
+    background: linear-gradient(to bottom, #fefcea 0%, #88a09e 21%, #e094ba 70%, #efe5a0 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+}
+
+
+
+.sign:after {
+    display: block;
+    position: absolute;
+    top: 250px;
+    content: ".";
+    width: 9px;
+    height: 140px;
+    background-color: burlywood;
+    margin-left: 45%;
+    border: 1px solid #888;
+}
+
+.walk {
+    display: inline-block;
+    position: relative;
+    animation: mywalk .5s;
+    animation-iteration-count: 3
+}
+
+@keyframes mywalk {
+    10% {
+        transform: rotate(10deg)
+    }
+    30% {
+        transform: rotate(-10deg)
+    }
+    50% {
+        transform: rotate(10deg)
+    }
+    70% {
+        transform: rotate(-10deg)
+    }
+    90% {
+        transform: rotate(10deg)
+    }
+}

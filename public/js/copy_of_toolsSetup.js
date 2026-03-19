@@ -676,7 +676,8 @@ async function getCsvRow(csvData, rowNumber) {
 
         if (index >= 0 && index < rows.length) {
             const rowString = rows[index];
-            const fields = rowString.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/g);
+      const fields = rowString.split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/g);
+
             // Returns an array of trimmed field values (while retaining quotes)
             return fields.map(field => field.trim());
         }
@@ -916,8 +917,7 @@ async function handleSend() {
                 prompt,
                 model,
                 options: processedOptionData,
-                foreground: allForeground,
-                story: getActiveChatId()
+                foreground: allForeground
             }),
         });
         responseObject = await response.json();
@@ -949,29 +949,10 @@ async function handleSend() {
     // ─────────────────────────────────────────────
 
     if (responseObject.name.includes('@prompt')) {
-        const matchedOption = processedOptionData.find(o => responseObject.name.includes(o.nextSlideId));
-        const resourceFile = matchedOption?.resource ?? 'patient.txt';   // was hardcoded 'patient.txt'
-        const fileToSkim = await getData(resourceFile);
+        const fileToSkim = await getData('patient.txt');
         console.log('prompt', prompt);
         console.log('fileToSkim', fileToSkim);
         directChat(prompt, fileToSkim);
-        return;
-    }
-
-
-    // ─────────────────────────────────────────────
-    // 5.5 FALLBACK RESOURCE LOOKUP
-    //     No intent matched — if page defines a
-    //     fallbackResource, answer from that file.
-    //     Otherwise stop here (nothing to show).
-    // ─────────────────────────────────────────────
-
-    if (responseObject.name === 'fallback') {
-        const fallbackResource = currentPage.fallbackResource;
-        if (fallbackResource) {
-            const fileData = await getData(fallbackResource);
-            directChat(prompt, fileData);
-        }
         return;
     }
 
@@ -1009,26 +990,47 @@ async function handleSend() {
 
         // Parse slot arguments from the response (if any)
         let slots = [];
+        let slot  = "";
+        let slot1 = "";
+
 
         const hasArgs = responseObject.arguments !== "null" && responseObject.arguments !== '{}';
 
         if (hasArgs) {
             const args = JSON.parse(responseObject.arguments);
             console.log('✅ Has arguments:', args);
-            slots = Object.entries(args).map(([key, value]) => ({
-                key,
-                value: value?.toLowerCase().replace(/\s+/g, '_') ?? ''
-            }));
-            console.log('✅ Slots:', slots);
+
+            // 1. Access by key name instead of index
+            // Use .replace(/\s+/g, '_') to ensure "Blood Pressure" becomes "blood_pressure"
+            slot = args.slot?.toLowerCase().replace(/\s+/g, '_') ?? '';
+            slot1 = args.slot1?.toLowerCase().replace(/\s+/g, '_') ?? '';
+
+            console.log('Formatted -> slot:', slot, '| slot1:', slot1);
+        }
+        // const hasArgs = responseObject.arguments !== "null" && responseObject.arguments !== '{}';
+        // if (hasArgs) {
+        //     const args = JSON.parse(responseObject.arguments);
+        //     console.log('✅ Has arguments:', args);
+        //     slots = Object.values(args);
+        //     //const formattedId = originalString.toLowerCase().replace(/\s+/g, '_');
+        //     const slot = slots[0]?.toLowerCase().replace(/\s+/g, '_') ?? '';
+        //     const slot1 = slots[1]?.toLowerCase().replace(/\s+/g, '_') ?? '';
+        //     console.log('slot:', slot, '| slot1:', slot1, 'category', category);
+        // }
+
+        // If the primary slot isn't visible, swap slot order
+        // if (!onScreen(slot)) {
+        //     [slot, slot1] = [slot1, slot];
+        // }
+// 2. Swapping Logic (if the tool needs to interact with slot1 instead)
+// If 'slot' isn't the interactive element on the current page, swap them
+        if (slot1 && !targetPage.affordances?.[slot]) {
+            console.log(`🔄 Swapping slots: ${slot} was not found, trying ${slot1}`);
+            [slot, slot1] = [slot1, slot];
         }
 
-        // If the primary slot isn't on the page, swap slot order
-        if (slots.length > 1 && !targetPage.affordances?.[slots[0].value]) {
-            console.log(`🔄 Swapping slots: ${slots[0].value} not found, trying ${slots[1].value}`);
-            [slots[0], slots[1]] = [slots[1], slots[0]];
-        }
 
-        processAction(targetPage, category, slots);
+        processAction(targetPage, category, slot, slot1);
 
 
         // ─────────────────────────────────────────────
@@ -1080,8 +1082,8 @@ function parseResponseObject(responseObject, hint) { // Renamed function and par
                 const args = JSON.parse(responseObject.arguments);
 
                 // Extract clarifying_question if present
-                if (args.clarifying_question !== undefined) {          // was: clariyfing_question (typo)
-                    question = args.clarifying_question;
+                if (args.clariyfing_question !== undefined) {
+                    question = args.clariyfing_question;
                 }
 
                 // Extract slot ONLY if category is NOT 'model needs more information' and slot is present
@@ -1113,14 +1115,11 @@ function parseResponseObject(responseObject, hint) { // Renamed function and par
 }
 
 
+//  Not currenly used: Optional model question for disambiguation. Needs research
 function optionalQuestion(responseObject, hint) {
     console.log("Checking for optionalQuestion")
-    // Check if the name is a clarifying question request (new tool or legacy name)
-    const isClarifying = responseObject && (
-        responseObject.name === 'clarifying_question' ||
-        responseObject.name === 'model needs more information'
-    );
-    if (isClarifying) {
+    // Check if the name is 'model needs more information'
+    if (responseObject && responseObject.name === 'model needs more information') {
         // Process arguments if it's a string containing JSON
         if (responseObject.arguments && typeof responseObject.arguments === 'string') {
             try {
@@ -1128,8 +1127,8 @@ function optionalQuestion(responseObject, hint) {
                 let question;
 
                 // Look for clarifying_question first
-                if (args.clarifying_question !== undefined) {          // was: clariyfing_question (typo)
-                    question = args.clarifying_question;
+                if (args.clariyfing_question !== undefined) {
+                    question = args.clariyfing_question;
                 } else if (args.slot !== undefined) {
                     // If no clarifying_question, look for slot
                     question = args.slot;
@@ -1199,6 +1198,8 @@ document.addEventListener("DOMContentLoaded", function () {
             loadChat(`/chat/examples/${fileName}/story.json`);
             console.log(` ✓ loading  /chat/examples/${fileName}`);
 
+
+
         });
     });
     setListeners();
@@ -1221,7 +1222,7 @@ document.addEventListener("DOMContentLoaded", function () {
 async function getFile(event) {
     let fileName = document.getElementById('fileName').value;
     const urlName = "/chat/examples/" + fileName
-    if (fileName) {
+    if (urlName) {
         const response = await fetch(urlName, {
             method: 'GET',
             headers: {'Content-Type': 'application/json'}// Stringify for sending
@@ -1230,6 +1231,7 @@ async function getFile(event) {
         const formattedJson = JSON.stringify(fileData, null, 2); // 2 spaces for indentation
         document.getElementById("fileContents").value = formattedJson;
         scrollTextareaToChar(16)
+        //reurn
 
     }
 }
@@ -1416,6 +1418,8 @@ function popOutDialog() {
         alert("Pop-up blocked! Please allow pop-ups for this feature.");
     }
 }
+
+
 
     // ── Internal state ─────────────────────────────
     const monitors = {};

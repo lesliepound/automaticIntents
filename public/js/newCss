@@ -1,0 +1,15 @@
+
+         turnOn(imageId)
+
+                createTalkBubble(imageId, 'I feel awful. I fell down'); // Assuming moveWithLegs is defined
+
+
+            directionalMove('#' + imageId, direction)
+
+            moveTowards('#' + imageId, '#' + target)
+
+            initializeAllDials( temperatureSpec, bloodSpec);
+            adjustDial('temperature', 'up',4)
+            drawConnection(imageId, target);
+                adjustDial('temperature', 'down',2)
+                animateCSS('#temperature-monitor','swing')

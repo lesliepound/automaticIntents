@@ -38,8 +38,12 @@ const indicateListen = (on) => {
 const listen = document.getElementById('listen-button');
 listen.onclick = function () {
     if (!isListening) {
+
         try {
             recognition.start();
+
+            //nextIndex = findPageIndex(deckData.pages[thisIndex].nextSlideId)
+
             console.log('start');
             indicateListen(true);
         } catch (error) {
@@ -65,12 +69,13 @@ listen.onclick = function () {
     }
 }
 
+
 recognition.onresult = function (event) {
     console.log(event);
     console.log('Confidence: ' + event.results[0][0].confidence);
     console.log('said', event.results[0][0].transcript);
 
-    const transcriptDiv = document.getElementById('input-text');
+    const transcriptDiv = document.getElementById('user-prompt');
     transcriptDiv.value = event.results[0][0].transcript
 }
 
@@ -82,6 +87,7 @@ recognition.onspeechend = function (event) {
     recognition.stop();
     recognition.abort();
     handleSend();
+
 }
 
 recognition.onerror = function (event) {

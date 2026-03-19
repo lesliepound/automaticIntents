@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dynamic Form Generator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style/style.css">
+
+  <style>
+    body {
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+    .main-container {
+      width: 100%;
+      max-width: 900px;
+      position: relative;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+    h1.app-header { /* Style for the new "Pages" header */
+      text-align: center;
+      color: #333;
+      margin-bottom: 30px;
+      font-size: 2em;
+      font-weight: bold;
+    }
+    .page-container {
+      margin-bottom: 20px;
+      border: 1px solid #999;
+      border-radius: 8px;
+      background-color: #lightblue;
+      position: relative;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+      padding: 0;
+      overflow: hidden; /* Ensures child elements respect rounded corners */
+    }
+    .top-summary-bar {
+      background-color: #e0e0e0; /* Grey background */
+      height: 30px; /* Increased height as requested */
+      border-top-left-radius: 8px;
+      border-top-right-radius: 8px;
+      margin: 0;
+      padding: 5px 15px; /* Adjusted padding for 30px height with 16px inputs */
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+      flex-wrap: wrap;
+    }
+    .top-summary-bar .data-field {
+      margin-bottom: 0;
+      align-items: center;
+      flex-shrink: 0;
+    }
+    .top-summary-bar .data-field label {
+      font-size: 12px;
+      min-width: unset;
+      margin-right: 5px;
+      color: #666;
+    }
+    .top-summary-bar input,
+    .top-summary-bar select {
+      height: 18px; /* Adjusted height for inputs to fit 30px bar */
+      padding: 2px 4px;
+      font-size: 12px;
+      border-radius: 3px;
+      line-height: normal;
+    }
+
+    .top-summary-bar .smallfield-grow {
+      flex-grow: 1;
+      width: auto;
+      min-width: 50px;
+      max-width: 150px;
+    }
+    .top-summary-bar .edit-icon,
+    .top-summary-bar .timer-icon {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+    }
+    .top-summary-bar .active-toggle-container {
+      width: 35px;
+      height: 18px;
+      border-radius: 9px;
+    }
+    .top-summary-bar .active-toggle-thumb {
+      width: 14px;
+      height: 14px;
+      top: 2px;
+      left: 2px;
+    }
+    .top-summary-bar .active-toggle-container.on .active-toggle-thumb {
+      transform: translateX(17px);
+    }
+
+    .page-content-area {
+      padding: 12px;
+    }
+
+
+
+    .edit-icon {
+      cursor: pointer;
+      width: 16px;
+      height: 16px;
+      fill: #555;
+      transition: fill 0.2s ease;
+    }
+    .edit-icon:hover {
+      fill: #007bff;
+    }
+    .data-field {
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+    }
+    .data-field-vertical {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    .data-field-vertical label {
+      margin-bottom: 5px;
+      margin-right: 0;
+    }
+    .data-field label {
+      display: block;
+      margin-right: 10px;
+      color: #555;
+      /* Adjusted min-width for consistent alignment of Text, Foreground, Goal labels */
+      min-width: 50px; /* Example width, adjust as needed */
+    }
+    /* Specific override for labels in top-summary-bar */
+    .top-summary-bar .data-field label {
+      min-width: unset;
+    }
+
+    .data-field:not(.top-summary-bar .data-field) input,
+    .data-field:not(.top-summary-bar .data-field) select {
+      flex-grow: 1;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+      font-size: 14px;
+      color: #333;
+    }
+    .data-field textarea {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+      font-size: 14px;
+      color: #333;
+      min-height: 48px;
+      resize: vertical;
+      flex-grow: 1;
+    }
+    .smallfield {
+      display: inline-block;
+      flex-grow: 0;
+      margin-right: 10px;
+    }
+
+    /* Changed options-grid to stacked vertical rectangles */
+    .options-grid {
+      display: flex; /* Use flexbox */
+      flex-direction: column; /* Stack vertically */
+      gap: 15px; /* Spacing between stacked options */
+      margin-top: 15px;
+      justify-content: flex-start;
+    }
+
+    .option-container {
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      padding: 10px;
+      background-color: #f9f9f9;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+      width: 100%; /* Take full width */
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .slot-details-container {
+      border: 1px solid #cce5ff;
+      border-radius: 5px;
+      padding: 10px;
+      margin-top: 10px;
+      background-color: #e6f7ff;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    /* New style to put Name and Description on the same line */
+    .slot-name-description-row {
+      display: flex;
+      gap: 10px; /* Space between Name and Description fields */
+      flex-wrap: wrap; /* Allow wrapping on small screens */
+    }
+    .slot-name-description-row .data-field {
+      flex: 1; /* Allow each to take equal space */
+      margin-bottom: 0; /* Remove extra margin if flex-item */
+    }
+    .slot-details-container h5 {
+      margin-top: 0;
+      margin-bottom: 10px;
+      color: #0056b3;
+    }
+
+    .add-remove-buttons {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      display: flex;
+    }
+    .add-remove-buttons button {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      line-height: 1;
+      padding: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-left: 8px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      transition: background-color 0.2s ease, transform 0.2s ease;
+    }
+    .add-button {
+      background-color: #28a745;
+      color: white;
+    }
+    .add-button svg {
+      fill: white;
+      width: 18px;
+      height: 18px;
+    }
+    .remove-button {
+      background-color: #dc3545;
+      color: white;
+    }
+    .add-button:hover {
+      background-color: #218838;
+      transform: translateY(-1px);
+    }
+    .remove-button:hover {
+      background-color: #c82333;
+      transform: translateY(-1px);
+    }
+    .json-button {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+      transition: background-color 0.2s ease, transform 0.2s ease;
+    }
+    .json-button:hover {
+      background-color: #0056b3;
+      transform: translateY(-1px);
+    }
+    .page-variables-container {
+
+      padding: 15px;
+
+    }
+    .id-type-container { /* This element is effectively removed as its content moved to top-summary-bar */
+      display: none;
+    }
+
+    /* Styles for action icons in the top bar */
+    .icon-button {
+      cursor: pointer;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.1s ease;
+      flex-shrink: 0;
+      margin-left: auto; /* Pushes action icons to the far right */
+    }
+    .icon-button.delete-page-icon {
+      margin-left: 0; /* Reset margin for subsequent icons if any */
+    }
+    .icon-button:hover {
+      transform: scale(1.1);
+    }
+    .icon-button svg {
+      width: 16px;
+      height: 16px;
+      fill: #555;
+    }
+    .icon-button.delete-page-icon svg {
+      fill: #dc3545; /* Red for delete */
+    }
+    .icon-button.publish-icon svg {
+      fill: #007bff; /* Blue for publish */
+    }
+
+    /* Styles for JSON modal */
+    .json-modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.7);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
+    }
+
+    .json-modal-content {
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      max-width: 80%;
+      max-height: 80%;
+      overflow: auto;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      position: relative;
+    }
+
+    .json-modal-pre {
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    .json-modal-close-button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      float: right;
+    }
+
+    .json-modal-close-button:hover {
+      background-color: #0056b3;
+    }
+
+  </style>
+  <script>
+    function makeFields(pageData, index) {
+      const container = document.createElement('div');
+      container.className = 'page-container';
+      container.setAttribute('data-index', index);
+
+      // --- Top Summary Bar ---
+      const topSummaryBar = document.createElement('div');
+      topSummaryBar.className = 'top-summary-bar';
+
+      // 1. Page ID and edit icon
+      const idFieldInTopBar = document.createElement('div');
+      idFieldInTopBar.className = 'data-field';
+      const idLabelInTopBar = document.createElement('label');
+      idLabelInTopBar.textContent = 'ID:';
+      idFieldInTopBar.appendChild(idLabelInTopBar);
+      const idInputInTopBar = document.createElement('input');
+      idInputInTopBar.type = 'text';
+      idInputInTopBar.value = pageData.id;
+      idInputInTopBar.disabled = true;
+      idInputInTopBar.className = 'smallfield';
+      idInputInTopBar.setAttribute('data-key', 'id');
+      idFieldInTopBar.appendChild(idInputInTopBar);
+      const editIconInTopBar = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      editIconInTopBar.setAttribute("class", "edit-icon");
+      editIconInTopBar.setAttribute("viewBox", "0 0 24 24");
+      editIconInTopBar.innerHTML = `<path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>`;
+      idFieldInTopBar.appendChild(editIconInTopBar);
+      topSummaryBar.appendChild(idFieldInTopBar);
+
+      // Event listeners for ID input in top bar
+      editIconInTopBar.addEventListener('click', function() {
+        idInputInTopBar.disabled = !idInputInTopBar.disabled;
+        if (!idInputInTopBar.disabled) {
+          idInputInTopBar.focus();
+        }
+      });
+      idInputInTopBar.addEventListener('blur', function() {
+        idInputInTopBar.disabled = true;
+      });
+
+
+      // 2. Summary Text Field in top bar
+      // const summaryTextField = document.createElement('div');
+      // summaryTextField.className = 'data-field';
+      // const summaryTextLabel = document.createElement('label');
+      // summaryTextLabel.textContent = 'Text:';
+      // summaryTextField.appendChild(summaryTextLabel);
+      // const summaryTextInput = document.createElement('input');
+      // summaryTextInput.type = 'text';
+      // summaryTextInput.value = pageData.text ? pageData.text.substring(0, 20) + (pageData.text.length > 20 ? '...' : '') : '';
+      // summaryTextInput.className = 'smallfield-grow';
+      // summaryTextInput.setAttribute('data-key', 'text'); // Link to the main 'text' property
+      // summaryTextField.appendChild(summaryTextInput);
+      // topSummaryBar.appendChild(summaryTextField);
+
+      // 3. Type dropdown in top bar
+      const typeFieldInTopBar = document.createElement('div');
+      typeFieldInTopBar.className = 'data-field';
+      const typeLabelInTopBar = document.createElement('label');
+      typeLabelInTopBar.textContent = 'Type:';
+      typeFieldInTopBar.appendChild(typeLabelInTopBar);
+      const typeSelectInTopBar = document.createElement('select');
+      typeSelectInTopBar.setAttribute('data-key', 'type');
+      typeSelectInTopBar.className = 'smallfield';
+      const types = ['simulation', 'story', 'options'];
+
+      types.forEach(typeValue => {
+        const option = document.createElement('option');
+        option.value = typeValue;
+        option.textContent = typeValue.charAt(0).toUpperCase() + typeValue.slice(1);
+        if (pageData.type === typeValue) {
+          option.selected = true;
+        }
+        typeSelectInTopBar.appendChild(option);
+      });
+
+      typeSelectInTopBar.addEventListener('change', function() {
+        const changedIndex = parseInt(container.getAttribute('data-index'));
+        const oldType = dataArray[changedIndex].type; // Store old type before updating
+        dataArray[changedIndex].type = this.value;
+
+        // Logic for default options on type change from story
+        if (oldType === 'story' && (dataArray[changedIndex].type === 'simulation' || dataArray[changedIndex].type === 'options')) {
+          if (!dataArray[changedIndex].options || dataArray[changedIndex].options.length === 0) {
+            dataArray[changedIndex].options = [{
+              option: "New Option",
+              slot: { name: "default-slot", description: "Default description" },
+              nextSlideId: "next-page"
+            }];
+          }
+        }
+        displayData(dataArray); // Re-render to update type-specific fields (like the new preamble timer)
+      });
+      typeFieldInTopBar.appendChild(typeSelectInTopBar);
+      topSummaryBar.appendChild(typeFieldInTopBar);
+
+      // 4. "Is Active" Toggle (Conditional and now directly after Type)
+      if (pageData.type === 'simulation' || pageData.type === 'options') {
+        const isActiveFieldInTopBar = document.createElement('div');
+        isActiveFieldInTopBar.className = 'data-field';
+        const isActiveLabelInTopBar = document.createElement('label');
+        isActiveLabelInTopBar.textContent = 'Active:';
+        isActiveFieldInTopBar.appendChild(isActiveLabelInTopBar);
+
+        const activeToggleContainerInTopBar = document.createElement('div');
+        activeToggleContainerInTopBar.className = 'active-toggle-container';
+        if (pageData.isActive) {
+          activeToggleContainerInTopBar.classList.add('on');
+        }
+
+        const activeToggleThumbInTopBar = document.createElement('div');
+        activeToggleThumbInTopBar.className = 'active-toggle-thumb';
+        activeToggleContainerInTopBar.appendChild(activeToggleThumbInTopBar);
+
+        activeToggleContainerInTopBar.addEventListener('click', function() {
+          const changedIndex = parseInt(container.getAttribute('data-index'));
+          const currentIsActive = dataArray[changedIndex].isActive;
+          dataArray[changedIndex].isActive = !currentIsActive; // Toggle the boolean value
+          activeToggleContainerInTopBar.classList.toggle('on', dataArray[changedIndex].isActive); // Update visual state
+        });
+
+        isActiveFieldInTopBar.appendChild(activeToggleContainerInTopBar);
+        topSummaryBar.appendChild(isActiveFieldInTopBar);
+      }
+
+      // 5. Preamble Timer Field (Conditional with icon)
+      if (pageData.type === 'story') {
+        const preambleTimerFieldInTopBar = document.createElement('div');
+        preambleTimerFieldInTopBar.className = 'data-field preamble-timer-field';
+
+        const preambleTimerIconInTopBar = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        preambleTimerIconInTopBar.setAttribute("class", "timer-icon");
+        preambleTimerIconInTopBar.setAttribute("viewBox", "0 0 24 24");
+        // Clock icon SVG path
+        preambleTimerIconInTopBar.innerHTML = `<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm.25 15.5h-1.5V10h1.5v7.5zM12 8c-.83 0-1.5-.67-1.5-1.5S11.17 5 12 5s1.5.67 1.5 1.5S12.83 8 12 8z"/>`;
+        preambleTimerFieldInTopBar.appendChild(preambleTimerIconInTopBar);
+
+        const preambleTimerInputInTopBar = document.createElement('input');
+        preambleTimerInputInTopBar.type = 'number';
+        preambleTimerInputInTopBar.value = pageData.preambleTimer !== undefined ? pageData.preambleTimer : '';
+        preambleTimerInputInTopBar.setAttribute('data-key', 'preambleTimer');
+        preambleTimerInputInTopBar.disabled = true; // Start disabled
+
+        preambleTimerIconInTopBar.addEventListener('click', function() {
+          preambleTimerInputInTopBar.disabled = !preambleTimerInputInTopBar.disabled;
+          if (!preambleTimerInputInTopBar.disabled) {
+            preambleTimerInputInTopBar.focus();
+          }
+        });
+
+        preambleTimerInputInTopBar.addEventListener('blur', function() {
+          preambleTimerInputInTopBar.disabled = true;
+        });
+
+        preambleTimerFieldInTopBar.appendChild(preambleTimerInputInTopBar);
+        topSummaryBar.appendChild(preambleTimerFieldInTopBar);
+      }
+      container.appendChild(topSummaryBar);
+      // --- END: Top Summary Bar ---
+
+      // --- NEW: Page Content Area ---
+      const pageContentArea = document.createElement('div');
+      pageContentArea.className = 'page-content-area';
+
+      // NEW: Page ID Header within the content area
+      const pageIdHeader = document.createElement('h3');
+      const pageIdHeaderTextSpan = document.createElement('span');
+      pageIdHeaderTextSpan.textContent = `Page: ${pageData.id}`;
+      pageIdHeader.appendChild(pageIdHeaderTextSpan);
+      const editIconForHeader = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      editIconForHeader.setAttribute("class", "edit-icon");
+      editIconForHeader.setAttribute("viewBox", "0 0 24 24");
+      editIconForHeader.innerHTML = `<path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25zM20.71 7.04c.39-.39.39-1.02 0-1.41l-2.34-2.34c-.39-.39-1.02-.39-1.41 0l-1.83 1.83 3.75 3.75 1.83-1.83z"/>`;
+      pageIdHeader.appendChild(editIconForHeader);
+      //Not showing Header ID LDP
+      //pageContentArea.appendChild(pageIdHeader); // Append the h3 header to the content area
+
+      // Event listener for the new page ID header edit icon
+      editIconForHeader.addEventListener('click', function() {
+        // Find the corresponding ID input in the top bar
+        const correspondingIdInput = idFieldInTopBar.querySelector('input[data-key="id"]'); // Corrected query selector context
+        if (correspondingIdInput) {
+          correspondingIdInput.disabled = !correspondingIdInput.disabled;
+          if (!correspondingIdInput.disabled) {
+            correspondingIdInput.focus();
+          }
+        }
+      });
+      // Listen for changes on the ID input in the top bar to update the h3 header
+      // Corrected query selector context
+      idInputInTopBar.addEventListener('input', function() { // Direct reference to idInputInTopBar
+        pageIdHeaderTextSpan.textContent = `Page: ${this.value}`;
+      });
+
+
+      const pageVariablesContainer = document.createElement('div');
+      pageVariablesContainer.className = 'page-variables-container';
+
+      const textField = document.createElement('div');
+      textField.className = 'data-field';
+      const textLabel = document.createElement('label');
+      textLabel.textContent = 'Text:';
+      textField.appendChild(textLabel);
+      const textInput = document.createElement('textarea');
+      textInput.value = pageData.text || '';
+      textInput.setAttribute('data-key', 'text');
+      textField.appendChild(textInput);
+      pageVariablesContainer.appendChild(textField);
+
+     //Foreground
+      const foregroundField = document.createElement('div');
+      foregroundField.className = 'data-field';
+      const foregroundLabel = document.createElement('label');
+      foregroundLabel.textContent = 'Fore:';
+      foregroundField.appendChild(foregroundLabel);
+      if (pageData.foreground && Array.isArray(pageData.foreground)) {
+        pageData.foreground.forEach((fg, fgIndex) => {
+          const fgInput = document.createElement('input');
+          fgInput.type = 'text';
+          fgInput.value = fg;
+          fgInput.setAttribute('data-key', `foreground[${fgIndex}]`);
+          foregroundField.appendChild(fgInput);
+        });
+      } else {
+        const fgInput = document.createElement('input');
+        fgInput.type = 'text';
+        fgInput.value = '';
+        fgInput.setAttribute('data-key', `foreground[0]`);
+        foregroundField.appendChild(fgInput);
+      }
+      pageVariablesContainer.appendChild(foregroundField);
+
+
+      // if (pageData.goal !== undefined) {
+      //   const goalField = document.createElement('div');
+      //   goalField.className = 'data-field';
+      //   const goalLabel = document.createElement('label');
+      //   goalLabel.textContent = 'Goal:';
+      //   goalField.appendChild(goalLabel);
+      //   const goalInput = document.createElement('input');
+      //   goalInput.type = 'text';
+      //   goalInput.value = pageData.goal;
+      //   goalInput.setAttribute('data-key', 'goal');
+      //   goalField.appendChild(goalInput);
+      //   pageVariablesContainer.appendChild(goalField);
+      // }
+      pageContentArea.appendChild(pageVariablesContainer);
+
+
+      // Only render options if the page type is NOT 'story'
+      if (pageData.type !== 'story' && pageData.options && Array.isArray(pageData.options)) {
+        const optionsGridContainer = document.createElement('div');
+        optionsGridContainer.className = 'options-grid';
+        pageContentArea.appendChild(optionsGridContainer);
+
+        pageData.options.forEach((option, optionIndex) => {
+          const optionContainer = document.createElement('div');
+          optionContainer.className = 'option-container';
+
+          const optionField = document.createElement('div');
+          optionField.className = 'data-field data-field-vertical';
+          const optionInput = document.createElement('textarea');
+          optionInput.value = option.option;
+          optionInput.setAttribute('data-key', `options[${optionIndex}].option`);
+          optionField.appendChild(optionInput);
+          optionContainer.appendChild(optionField);
+
+          const slotDetailsContainer = document.createElement('div');
+          slotDetailsContainer.className = 'slot-details-container';
+          const slotHeader = document.createElement('h5');
+          slotHeader.textContent = 'Slot Details:';
+          slotDetailsContainer.appendChild(slotHeader);
+
+          // Wrapper for Name and Description to put them on the same line
+          const slotNameDescriptionRow = document.createElement('div');
+          slotNameDescriptionRow.className = 'slot-name-description-row';
+
+          const slotNameField = document.createElement('div');
+          slotNameField.className = 'data-field';
+          const slotNameLabel = document.createElement('label');
+          slotNameLabel.textContent = 'Name:';
+          slotNameField.appendChild(slotNameLabel);
+          const slotNameInput = document.createElement('input');
+          slotNameInput.type = 'text';
+          slotNameInput.value = option.slot.name;
+          slotNameInput.setAttribute('data-key', `options[${optionIndex}].slot.name`);
+          slotNameField.appendChild(slotNameInput);
+          slotNameDescriptionRow.appendChild(slotNameField); // Append to new row div
+
+          const slotDescriptionField = document.createElement('div');
+          slotDescriptionField.className = 'data-field';
+          const slotDescriptionLabel = document.createElement('label');
+          slotDescriptionLabel.textContent = 'Description:';
+          slotDescriptionField.appendChild(slotDescriptionLabel);
+          const slotDescriptionInput = document.createElement('input');
+          slotDescriptionInput.type = 'text';
+          slotDescriptionInput.value = option.slot.description;
+          slotDescriptionInput.setAttribute('data-key', `options[${optionIndex}].slot.description`);
+          slotDescriptionField.appendChild(slotDescriptionInput);
+          slotNameDescriptionRow.appendChild(slotDescriptionField); // Append to new row div
+
+          slotDetailsContainer.appendChild(slotNameDescriptionRow); // Add the new row div to slotDetailsContainer
+          optionContainer.appendChild(slotDetailsContainer);
+
+
+          const nextSlideIdField = document.createElement('div');
+          nextSlideIdField.className = 'data-field';
+          const nextSlideIdLabel = document.createElement('label');
+          // Changed to ASCII symbol and word "next"
+          nextSlideIdLabel.innerHTML = 'next &#x27A0; ';
+          nextSlideIdField.appendChild(nextSlideIdLabel);
+          const nextSlideIdInput = document.createElement('input');
+          nextSlideIdInput.type = 'text';
+          nextSlideIdInput.value = option.nextSlideId;
+          nextSlideIdInput.setAttribute('data-key', `options[${optionIndex}].nextSlideId`);
+          nextSlideIdField.appendChild(nextSlideIdInput);
+          optionContainer.appendChild(nextSlideIdField);
+
+          // const nextSlideIdField = document.createElement('div');
+          // nextSlideIdField.className = 'data-field';
+          // const nextSlideIdLabel = document.createElement('label');
+          // nextSlideIdLabel.textContent = 'Next Slide ID:';
+          // nextSlideIdField.appendChild(nextSlideIdLabel);
+          // const nextSlideIdInput = document.createElement('input');
+          // nextSlideIdInput.type = 'text';
+          // nextSlideIdInput.value = option.nextSlideId;
+          // nextSlideIdInput.setAttribute('data-key', `options[${optionIndex}].nextSlideId`);
+          // nextSlideIdField.appendChild(nextSlideIdInput);
+          // optionContainer.appendChild(nextSlideIdField);
+
+          optionsGridContainer.appendChild(optionContainer);
+        });
+      }
+
+      container.appendChild(pageContentArea);
+      // --- END: Page Content Area ---
+
+
+      const buttonContainer = document.createElement('div');
+      buttonContainer.className = 'add-remove-buttons';
+      const plusButton = document.createElement('button');
+      plusButton.className = 'add-button';
+      plusButton.innerHTML = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+          <path d="M16 1H4C2.9 1 2 1.9 2 3v14h2V3h12V1zm3 4H8C6.9 5 6 5.9 6 7v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/>
+        </svg>
+      `;
+      plusButton.addEventListener('click', function(event) {
+        event.stopPropagation();
+        const newItem = JSON.parse(JSON.stringify(pageData));
+        newItem.id = `new-page-${Date.now()}`;
+
+        // Handle isActive and preambleTimer for new item based on its type
+        if (newItem.type === 'story') {
+          delete newItem.isActive; // isActive not relevant for story
+          newItem.preambleTimer = 0; // Ensure preambleTimer is present for story
+        } else {
+          newItem.isActive = true; // Default to active for simulation/options
+          delete newItem.preambleTimer; // preambleTimer not relevant for others
+        }
+
+        // Ensure options are handled correctly for the new item based on its type
+        if (newItem.type === 'simulation' || newItem.type === 'options') {
+          if (!newItem.options || newItem.options.length === 0) {
+            newItem.options = [{
+              option: "New Option",
+              slot: { name: "default-slot", description: "Default description" },
+              nextSlideId: "next-page"
+            }];
+          }
+        } else if (newItem.type === 'story') {
+          delete newItem.options; // Ensure options are removed if it's a story
+        }
+
+        // Declare newIndex with const
+        const newIndex = parseInt(container.getAttribute('data-index')) + 1;
+        dataArray.splice(newIndex, 0, newItem);
+        displayData(dataArray);
+      });
+      buttonContainer.appendChild(plusButton);
+
+      const minusButton = document.createElement('button');
+      minusButton.className = 'remove-button';
+      minusButton.textContent = '-';
+      minusButton.addEventListener('click', function(event) {
+        event.stopPropagation();
+        const indexToRemove = parseInt(container.getAttribute('data-index'));
+        if (dataArray.length > 1) {
+          dataArray.splice(indexToRemove, 1);
+          displayData(dataArray);
+        } else {
+          console.log("Cannot remove the last page.");
+        }
+      });
+      buttonContainer.appendChild(minusButton);
+      container.appendChild(buttonContainer);
+
+      return container;
+    }
+
+    function displayData(dataArray) {
+      const mainContainer = document.getElementById('main-container');
+      if (!mainContainer) {
+        console.error("Main container not found.");
+        return;
+      }
+      console.log("--- Starting displayData() ---");
+      console.log("Current dataArray state for rendering:", dataArray);
+      mainContainer.innerHTML = '';
+
+      // Add "Pages" header at the very top
+      const appHeader = document.createElement('h1');
+      appHeader.className = 'app-header';
+      appHeader.textContent = 'Pages';
+      mainContainer.appendChild(appHeader);
+
+      const jsonButton = document.createElement('button');
+      jsonButton.className = 'json-button';
+      jsonButton.textContent = 'View JSON';
+      jsonButton.addEventListener('click', function() {
+        const jsonContent = JSON.stringify({ pages: dataArray }, null, 2);
+        const jsonModal = document.createElement('div');
+        jsonModal.classList.add('json-modal-overlay');
+
+        const jsonContentDiv = document.createElement('div');
+        jsonContentDiv.classList.add('json-modal-content');
+
+        const pre = document.createElement('pre');
+        pre.classList.add('json-modal-pre');
+        pre.textContent = jsonContent;
+        jsonContentDiv.appendChild(pre);
+
+        const closeButton = document.createElement('button');
+        closeButton.classList.add('json-modal-close-button');
+        closeButton.textContent = 'Close';
+        closeButton.addEventListener('click', () => {
+          document.body.removeChild(jsonModal);
+        });
+        jsonContentDiv.appendChild(closeButton);
+
+        jsonModal.appendChild(jsonContentDiv);
+        document.body.appendChild(jsonModal);
+      });
+      mainContainer.appendChild(jsonButton);
+
+
+      dataArray.forEach((pageData, index) => {
+        // --- Data Normalization / Defaulting based on Type ---
+
+        // Handle isActive property based on type
+        if (pageData.type === 'simulation' || pageData.type === 'options') {
+          if (pageData.isActive === undefined) {
+            pageData.isActive = true; // Default to true for relevant types
+          }
+        } else if (pageData.type === 'story') {
+          delete pageData.isActive; // Remove isActive if type is story
+        }
+
+        // Manage preambleTimer based on type
+        if (pageData.type === 'story' && pageData.preambleTimer === undefined) {
+          pageData.preambleTimer = 0; // Default preambleTimer for story type
+        } else if (pageData.type !== 'story') {
+          delete pageData.preambleTimer; // Remove if not a story type
+        }
+        // Ensure that the old 'timer' property is removed if it exists from initial data for story type
+        if (pageData.type === 'story' && pageData.timer !== undefined) {
+          delete pageData.timer;
+        }
+
+        // Ensure options array exists and is an array if not a story
+        // Also add a default option if missing when changing from 'story' to 'simulation'/'options'
+        if (pageData.type !== 'story') {
+          if (!pageData.options || !Array.isArray(pageData.options) || pageData.options.length === 0) {
+            pageData.options = [{
+              option: "New Option (Default)",
+              slot: { name: "default-slot", description: "Default description" },
+              nextSlideId: "next-page"
+            }];
+          }
+        } else if (pageData.type === 'story') {
+          delete pageData.options; // Ensure options are removed if it's a story
+        }
+        // --- End Data Normalization ---
+
+
+        const pageFields = makeFields(pageData, index);
+        mainContainer.appendChild(pageFields);
+      });
+
+      mainContainer.addEventListener('change', function(event) {
+        const target = event.target;
+        if (target.tagName === 'INPUT' || target.tagName === 'SELECT' || target.tagName === 'TEXTAREA') {
+          const key = target.getAttribute('data-key');
+          let newValue;
+          if (target.type === 'number') {
+            newValue = parseFloat(target.value);
+            if (isNaN(newValue)) newValue = 0;
+          } else {
+            newValue = target.value;
+          }
+
+          let changedIndex = -1;
+          let currentElement = target;
+          while (currentElement && currentElement !== document.body) {
+            if (currentElement.classList.contains('page-container')) {
+              changedIndex = parseInt(currentElement.getAttribute('data-index'));
+              break;
+            }
+            currentElement = currentElement.parentElement;
+          }
+
+          if (changedIndex !== -1 && key) {
+            const keys = key.split('.');
+            let current = dataArray[changedIndex];
+
+            for (let i = 0; i < keys.length - 1; i++) {
+              const k = keys[i];
+              if (k.includes('[')) {
+                const arrayName = k.substring(0, k.indexOf('['));
+                const index = parseInt(k.substring(k.indexOf('[') + 1, k.indexOf(']')));
+                if (!current[arrayName]) current[arrayName] = [];
+                if (!current[arrayName][index]) current[arrayName][index] = {};
+                current = current[arrayName][index];
+              } else {
+                if (!current[k]) current[k] = {};
+                current = current[k];
+              }
+            }
+
+            const finalKey = keys[keys.length - 1];
+            if (finalKey.includes('[')) {
+              const arrayName = finalKey.substring(0, finalKey.indexOf('['));
+              const index = parseInt(finalKey.substring(finalKey.indexOf('[') + 1, finalKey.indexOf(']')));
+              if (!current[arrayName]) current[arrayName] = [];
+              current[arrayName][index] = newValue;
+            } else {
+              current[finalKey] = newValue;
+            }
+            console.log("Updated dataArray:", dataArray);
+          }
+        }
+      });
+    }
+
+    const initialData = {
+      "pages": [
+        {
+          "id": "intro-page",
+          "type": "simulation",
+          "isActive": true,
+          "foreground": [
+            "forest-background",
+            "character-sprite"
+          ],
+          "text": "Welcome to the magical forest. What will you do?",
+          "display": "none",
+          "options": [
+            {
+              "option": "Go deeper into the forest",
+              "slot": {
+                "name": "explore",
+                "description": "Explore the unknown paths."
+              },
+              "nextSlideId": "forest-deep"
+            },
+            {
+              "option": "Follow the sound of the river",
+              "slot": {
+                "name": "follow-river",
+                "description": "Proceed along the river bank."
+              },
+              "nextSlideId": "river-path"
+            },
+            {
+              "option": "Climb a tree",
+              "slot": {
+                "name": "climb-tree",
+                "description": "Get a better view from above."
+              },
+              "nextSlideId": "tree-top"
+            }
+          ]
+        },
+        {
+          "id": "story-chapter-1",
+          "type": "story",
+          "preambleTimer": 2000,
+          "foreground": ["ancient-ruins"],
+          "background": "/images/park.png",
+          "text": "As you walked, the trees grew denser, and the sunlight barely pierced through the canopy. You felt a chill.",
+        },
+        {
+          "id": "options-page",
+          "type": "options",
+          "isActive": true,
+          "foreground": ["ancient-ruins"],
+          "text": "You stumble upon ancient ruins. A strange inscription glows faintly. Do you dare touch it?",
+          "options": [
+            {
+              "option": "Touch the inscription",
+              "slot": {
+                "name": "touch-inscription",
+                "description": "Interact with the glowing runes."
+              },
+              "nextSlideId": "ruins-consequence"
+            },
+            {
+              "option": "Leave the ruins",
+              "slot": {
+                "name": "leave-ruins",
+                "description": "Walk away from the mysterious structure."
+              },
+              "nextSlideId": "forest-exit"
+            },
+            {
+              "option": "Study the symbols",
+              "slot": {
+                "name": "study-symbols",
+                "description": "Attempt to decipher the ancient writing."
+              },
+              "nextSlideId": "ruins-study"
+            }
+          ]
+        }
+      ]
+    };
+
+    let dataArray = [];
+
+    window.onload = function() {
+      const mainContainer = document.createElement('div');
+      mainContainer.id = 'main-container';
+      mainContainer.className = 'main-container';
+      document.body.appendChild(mainContainer);
+
+      dataArray = JSON.parse(JSON.stringify(initialData.pages));
+      displayData(dataArray);
+    };
+  </script>
+</head>
+<body>
+
+
+</body>
+</html>

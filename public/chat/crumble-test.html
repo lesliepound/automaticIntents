@@ -1,0 +1,43 @@
+<div class="crumble-box">
+    <div class="shard s1"></div>
+    <div class="shard s2"></div>
+    <div class="shard s3"></div>
+    <div class="shard s4"></div>
+</div>
+
+<style>
+    .crumble-box {
+        position: relative;
+        width: 300px;
+        height: 300px;
+        margin: 50px auto;
+        cursor: pointer;
+    }
+
+    .shard {
+        position: absolute;
+        inset: 0;
+        /* Replace with any image URL */
+        background: url('https://picsum.photos/300/300') no-repeat center;
+        background-size: cover;
+        transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Define the 4 quadrants using clip-path */
+    .s1 { clip-path: polygon(0 0, 50% 0, 50% 50%, 0 50%); }
+    .s2 { clip-path: polygon(50% 0, 100% 0, 100% 50%, 50% 50%); }
+    .s3 { clip-path: polygon(0 50%, 50% 50%, 50% 100%, 0 100%); }
+    .s4 { clip-path: polygon(50% 50%, 100% 50%, 100% 100%, 50% 100%); }
+
+    /* The Crumble Effect on Hover */
+    .crumble-box:hover .shard {
+        opacity: 0;
+        filter: blur(8px) brightness(1.5);
+    }
+
+    /* Spread the pieces in different directions with rotation */
+    .crumble-box:hover .s1 { transform: translate(-60px, -60px) rotate(-15deg); }
+    .crumble-box:hover .s2 { transform: translate(60px, -60px) rotate(25deg); }
+    .crumble-box:hover .s3 { transform: translate(-60px, 60px) rotate(10deg); }
+    .crumble-box:hover .s4 { transform: translate(60px, 60px) rotate(-20deg); }
+</style>

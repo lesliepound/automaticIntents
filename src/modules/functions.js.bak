@@ -14,12 +14,9 @@ function createProperty(propertyName, description) {
 }
 
 async function runClassifier(userInput, options, model) {
+    let properties = [];
 
     function createFunction(name, text, these_properties) {
-        const properties = {};
-        these_properties.filter(Boolean).forEach(p => {
-            properties[p.name] = { type: "string", description: p.description };
-        });
         return {
             type: "function",
             function: {
@@ -27,39 +24,29 @@ async function runClassifier(userInput, options, model) {
                 description: text,
                 parameters: {
                     type: "object",
-                    properties,
+                    properties: {
+                        slot: these_properties[0],
+                        slot1: these_properties[1],
+                    },
                     required: []
                 }
             }
         };
     }
 
-    const tools = [
-        ...options.map((opt) => {
-            const extra = opt.extra || "";
-            const optionDescription = `${opt.option} ; more examples: ${extra}`;
-            const slots = [opt.slot, opt.slot1].filter(Boolean);
-            return createFunction(opt.nextSlideId, optionDescription, slots);
-        }),
-        createFunction('clarifying_question', 'Input is ambiguous — ask user a short clarifying question', [
-            { name: 'clarifying_question', description: 'A short question (under 12 words) to resolve ambiguity' }
-        ]),
-        createFunction('fallback', 'No match found for the user input', [])
-    ];
+    const tools = options.map((opt) => {
+        const extra = opt.extra || "";
+        const optionDescription = `${opt.option} ; more examples: ${extra}`;
+
+        if (opt.slot)  properties[0] = opt.slot;
+        if (opt.slot1) properties[1] = opt.slot1;
+
+        return createFunction(opt.nextSlideId, optionDescription, properties);
+    });
 
    // logThis('tools', JSON.stringify(tools[0], null, 2));
     logThis('tools', JSON.stringify(tools, null, 2));
-    // const sysPrompt = `You are a classifier. Classify this content: "${userInput}" and match it to one of the functions. Match to the function name and description that is closest. Consider sentiment first, then literal words, synonyms, and partial matches. Select the function with the highest degree of similarity. Call optional question when there is two that match equally well`;
-    const sysPrompt = `You are an intent classifier for an interactive application.
-Your job is to match the user's input to the single best function from the list provided.
-
-Rules:
-- Use the EXACT function name as defined — never invent or shorten names
-- Match by intent and meaning, not just literal words
-- Account for synonyms, related concepts, and common misspellings
-- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it
-- Only call 'fallback' if the input has absolutely no relationship to any function
-- Fill in slot values when the input provides them`;
+    const sysPrompt = `You are a classifier. Classify this content: "${userInput}" and match it to one of the functions. Match to the function name and description that is closest. Consider sentiment first, then literal words, synonyms, and partial matches. Select the function with the highest degree of similarity. If slot values fit, fill them in. Only call the fallback function if no match is found.`;
 
     const messages = [
         { role: "system",  content: sysPrompt },
@@ -70,7 +57,7 @@ Rules:
 
     let response;
     try {
-        if (model.startsWith('gpt-')) {
+        if (model.includes('gpt')) {
             if (openai) {
                 response = await openai.chat.completions.create({
                     model: model,
@@ -113,21 +100,21 @@ Rules:
 }
 }
 
-async function runConversation(userInput, sysprompt, model = "llama-3.1-8b-instant") {
-    const chatCompletion = await getGroqChatCompletion(userInput, sysprompt, model);
+async function runConversation(userInput, sysprompt) {
+    const chatCompletion = await getGroqChatCompletion(userInput + '//' + sysprompt);
     const res = chatCompletion.choices[0].message.content;
     console.log(res);
     logThis(res);
     return res;
 }
 
-const getGroqChatCompletion = async (prompt, sysprompt, model) => {
+const getGroqChatCompletion = async (prompt) => {
     return groq.chat.completions.create({
         messages: [
-            { role: "system", content: sysprompt || "Keep answers less than 90 words" },
+            { role: "system", content: "Keep answers less than 90 words" },
             { role: "user",   content: prompt },
         ],
-        model: model,
+        model: "openai/gpt-oss-120b",
         temperature: 0.5,
         max_completion_tokens: 1024,
         top_p: 1,

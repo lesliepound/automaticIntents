@@ -2,19 +2,23 @@
   "name": "automaticintents",
   "type": "module",
   "dependencies": {
+    "@ai-sdk/groq": "^1.2.8",
     "body-parser": "^1.20.2",
     "dotenv": "^16.4.7",
     "express": "^4.18.2",
-    "groq-sdk": "^0.5.0",
+    "groq-sdk": "^0.20.1",
     "index": "^0.4.0",
     "openai": "^4.76.3"
   },
   "scripts": {
     "start": "node app.js",
-    "test": "jest --clearCache && jest",
-    "test-watch": "jest --clearCache && jest --watch"
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest --clearCache && NODE_OPTIONS=--experimental-vm-modules jest",
+    "test-watch": "NODE_OPTIONS=--experimental-vm-modules jest --clearCache && NODE_OPTIONS=--experimental-vm-modules jest --watch"
   },
   "devDependencies": {
-
+    "@babel/core": "^7.29.0",
+    "@babel/preset-env": "^7.29.0",
+    "babel-jest": "^30.2.0",
+    "jest": "^30.2.0"
   }
 }

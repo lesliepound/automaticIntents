@@ -2,79 +2,109 @@
 <html lang="en">
 <head>
     <link rel="stylesheet" href="/style/style.css">
+    <!--link rel="stylesheet" href="/style/char.css"-->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Sriracha&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <!--link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+          rel="stylesheet"-->
+    <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
-          rel="stylesheet">
-    <title>AutoIntents Demo</title>
+    <!--script src="ecg-monitor.js"></script>-->
+    <title>Guided AI Demo</title>
 </head>
 <body class="nolisten">
 <div id="main">
+
     <header>
-        <span class="header-text"> Automatic Intents</span>
+        <span class="header-text">GuidedAI:
+        <div class="header-name">
+            <span id="focalChat" class="chatLabel"></span>
+            <div id="edit-button" title="info" class="circle-button">
+                <span class="symbol" style="margin-left:6px">&#x270E;</span>
+            </div>
+        </div>
+            </span>
         <div class="button-group">
-            <!-- filenames correspond with folders in chat folder -->
-            <button class="example" filename="monsterExample">Story</button>
-            <button class="example" filename="visMap" id="visMap">visMap</button>
-            <div id="info-button" title="info" class="circle-button">
-                <span class="symbol">i</span>
-            </div>
-            <div id="settings-button" title="settings" class="circle-button">
-                <span class="symbol">⚙</span>
-            </div>
-            <div id="listen-button" title="listen" class="circle-button">
-                <span class="symbol">🎤</span>
-            </div>
+            <!-- filenames correspond with folders under /examples/chat -->
+            <button class="example" filename="openChat"  id="directChat">openChat</button>
+             <button class="example" filename="cargotrucking" id="cargotrucking">Cargo Trucking</button>
+            <button class="example" filename="ER" id="ER">ER</button>
+            <button class="example" filename="test" id="test">test</button>
+             <div id="info-button" title="info" class="circle-button"><span class="symbol">i</span></div>
+            <div id="settings-button" title="settings" class="circle-button"><span class="symbol">⚙</span></div>
+            <div id="listen-button" title="listen" class="circle-button"><span class="symbol">🎤</span></div>
         </div>
     </header>
 
-    <h2 class="demo-intro">Chat Examples<span id="focalChat" class="chatLabel"></span>
-        <span id="edit-button" class="pen-icon"> &#9998;</span>
-    </h2>
     <div class="section">
-
-        <div class="left-bubble" model="gemma2-9b-it">  <!--default model -->
+        <span id="pageId"></span>
+        <div id='left-bubble' class="left-bubble" model="AI" over="openai/gpt-oss-120b" >  <!--default model -->
             <div id="content" class="current-message"></div>
         </div>
+        <div></div>
+        <div></div>
 
-        <div></div>
-        <div></div>
-        <div>
-            <div class="right-bubble">
-                <textarea id="input-text" class="output" placeholder=""></textarea>
+            <div id='right-bubble'  class="right-bubble" style="position:absolute;min-width:700px">
+                <textarea id="user-prompt" class="output" placeholder=""></textarea>
             </div>
-        </div>
+
     </div>
+
+    <div id="manifest" data-goal="" class="vis api">
+
+        <table id="learning"></table>
+    </div>
+    <div id="visual" class="vis api"><span class="test"></span></div>
+    <div id="visual-images"></div>
+    <div id="dials"></div>
+    <div class="main-wrapper">
+        </div>
+<div style="position:absolute;top:660px">
+    <div id="request" class="on api" placeholder="PROMPT SENT TO MODEL"></div>
+    <div id="modelResponse" class="api" placeholder="MODEL RESPONSE">
+    </div>
+</div>
 
     <!-- all the pop-up dialogs -->
     <div id="dialog1" class="modal">
         <div class="modal-content">
             <span class="close-button">&times;</span>
             <h2>Automatic Intents </h2>
-            <p>AI-driven chat etc. Demo. Requires AI API model passwords. Free. See Readme. Contact
+            <p> This is a pototype for "Interactive Training Scenarios" which uses human expertise and AI</p><p>
+                With this tool: a fire chief, medical instructor, or logistics manager can visually build
+                simulations that respond intelligently based on the human guidance and  content.
+                Requires Model API licences which are often free. See Readme. Contact
                 lesliedpound@gmail.com</p>
         </div>
     </div>
     <div id="dialog3" class="modal">
-        <div class="modal-content">
+        <div id=popout class="modal-content">
             <span class="close-button">&times;</span>
+
             <h2>Try It: Edit a Chat</h2>
             <h3> Use with caution. This will overwrite the original story.json.</h3>
-            See the repo
             <section>
+                <div id="detach-button" title="Detach Pane" class="circle-button" style="margin-right:25px;float: right;">
+                    <span class="symbol">&#x2197;</span>
+                </div>
+
                 <form id="fileForm" style="max-width: 500px">
                     <label for="fileName">File Name:</label>
+                   <!-- <button onclick="scrollToLine(25)">Scroll to Line 5</button>-->
                     <input type="text" id="fileName" name="fileName" value="story.json" required>
                     <button id="fetch-button" class="optional-button">fetch</button>
                     <br>
                     <label for="fileContents">Contents:</label>
                     <div>
                         <textarea id="fileContents" name="fileContents" rows="4" cols="50" required></textarea><br><br>
-                        <button type="button" onclick="editFile()">Save File</button>
+                        <button type="button" onclick="saveEditedFile()">Save File</button>
                     </div>
+
                 </form>
             </section>
         </div>
@@ -86,11 +116,16 @@
             <h3>Choose a Model</h3>
             <div class="dropdown">
                 <select id="model">
-                    <option value="mixtral-8x7b-32768">mixtral-8x7b</option>
-                    <option selected value="gemma2-9b-it">gemma2-9b-it</option>
-                    <option value="gpt-4o">gpt-4o</option>
-                    <option value="llama-3-groq-70B-tool-use">llama3-tool</option>
-                </select>
+                    <optgroup label="Production">
+                        <option value="llama-3.1-8b-instant" selected>llama-3.1-8b-instant</option>
+                        <option value="llama-3.3-70b-versatile">llama-3.3-70b-versatile</option>
+                        <option value="openai/gpt-oss-120b">openai/gpt-oss-120b</option>
+                    </optgroup>
+                    <optgroup label="Preview">
+                        <option value="meta-llama/llama-4-scout-17b-16e-instruct">llama-4-scout-17b</option>
+                        <option value="moonshotai/kimi-k2-instruct-0905">kimi-k2</option>
+                        <option value="qwen/qwen3-32b">qwen3-32b</option>
+                    </optgroup>
                 </select>
             </div>
             <label class="switch" for="traffic">
@@ -99,30 +134,69 @@
             </label>
 
             <div style="vertical-align: bottom; display:inline-block">Show API Traffic</div>
-            <!--Style issues to work out to add continuous chat -->
-            <!--
-            <label class="switch" for="scroll-type">
-                <input type="checkbox" id="scroll-type">
-                <span class="slider round"></span>
-            </label>
-            <div style="vertical-align: bottom; display:inline-block">Continous Feed Chat</div>
-             -->
+
+        </div>
+    </div>
+
+    <div id="monitor-casing" style="display: none;">
+        <div id="screen-overlay"></div>
+
+        <div id="wave-container">
+            <canvas id="demo"></canvas>
+        </div>
+
+        <div id="vitals-panel" class="power-off">
+
+            <div class="stat-block">
+                <span class="stat-label color-hr">HR <span id="heart-icon">♥</span></span>
+                <div>
+                    <span id="bpm-display" class="stat-value color-hr">--</span>
+                    <span class="stat-unit">BPM</span>
+                </div>
+            </div>
+
+            <div class="stat-block">
+                <span class="stat-label color-spo2">SpO2</span>
+                <div>
+                    <span id="spo2-display" class="stat-value color-spo2">--</span>
+                    <span class="stat-unit">%</span>
+                </div>
+            </div>
+
+            <div class="stat-block">
+                <span class="stat-label color-bp">NIBP</span>
+                <div>
+                    <span id="bp-display" class="stat-value color-bp" style="font-size: 28px;">--/--</span>
+                    <span class="stat-unit">mmHg</span>
+                </div>
+            </div>
+
+            <div class="stat-block">
+                <span class="stat-label color-rr">Resp</span>
+                <div>
+                    <span id="rr-display" class="stat-value color-rr">--</span>
+                    <span class="stat-unit">RPM</span>
+                </div>
+            </div>
+
         </div>
     </div>
     <!-- end pop-up dialogs -->
-    <!--visChat -->
-    <div id="manifest" data-goal="" class="vis api">
-        <table id="learning"></table>
-    </div>
+<section id="tracking" style="background-color:transparent;height:300px;width:10px;margin-top:-190px;float:right;">
 
-    <div id="visual" class="vis api"><span class="test"></span></div>
-    <div id="request" class="api" placeholder="PROMPT SENT TO MODEL"></div>
-    <div id="modelResponse" class="api" placeholder="MODEL RESPONSE">
-    </div>
 
-    <script src="/js/toolsSetup.js"></script> <!-- UI & AI Connections web voice  -->
+</section>
+
+    <audio class="sound">
+        <source src="" type="audio/mp3"/>
+    </audio>
+   <script src="/js/toolsSetup.js"></script> <!-- UI & AI Connections web voice  -->
     <script src="/js/voice.js"></script> <!-- generic web voice  -->
-    <script src="/js/applied.js"></script>   <!-- Customizations can be added in here  -->
+    <script src="/js/movement-functions.js"></script>
+    <script src="/js/affordance.js"></script> <!-- UI & AI Connections web voice  -->
+    <script src="/js/widgets.js"></script>
+    <audio id="danceE"><source src="/assets/sounds/danceE.mp3" type="audio/mp3"></audio>
+    <!--playNoise('danceE')-->
 </div>
 </body>
 </html>

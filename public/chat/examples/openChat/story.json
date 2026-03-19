@@ -1,0 +1,17 @@
+{
+  "pages": [
+    {
+      "id": "startPage",
+      "type": "story",
+      "text": "This is the basic chat system that each model has.You type or say anything. Responses are limited to 200 words",
+      "timer": 11
+    },
+    {
+      "id": "Buster",
+      "type": "story",
+      "prompt": "You didnt do anything. There's a funny button the top left for voice",
+      "nextSlideId": "ending",
+      "timer": 6
+    }
+  ]
+}

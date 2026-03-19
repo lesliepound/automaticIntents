@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dynamic Form Generator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenAI Chat Demos </title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style/style.css">
+    <style>
+        .current-message > textarea  {background-color:transparent;width:100%}
+        body {
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+        .main-container {
+            width: 100%;
+            max-width: 900px;
+            position: relative;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .page-container {
+            border-bottom: 1px solid #999;
+            margin: 10px;
+            border-radius: 8px;
+            background-color: #ddd;
+
+            position: relative;
+        }
+        .page-header {
+            margin-bottom: 15px;
+            color: #333;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+            display: flex; /* Enable flexbox for alignment of header elements */
+            align-items: center; /* Align items vertically */
+        }
+        .page-header h3 {
+            margin: 0; /* Remove default margin to align with icon */
+            padding-right: 10px; /* Space between text and icon */
+        }
+        .edit-icon {
+            cursor: pointer;
+            width: 16px; /* Size of the pencil icon */
+            height: 16px; /* Size of the pencil icon */
+            fill: #555; /* Color of the pencil icon */
+            transition: fill 0.2s ease;
+        }
+        .edit-icon:hover {
+            fill: #007bff; /* Change color on hover */
+        }
+        .data-field {
+            margin-bottom: 10px;
+            display: flex; /* Use flex for inline items */
+            align-items: center; /* Align items vertically */
+        }
+        .data-field-vertical { /* New class for vertical alignment of label and input */
+            flex-direction: column;
+            align-items: flex-start; /* Align label/input to the start when stacked */
+        }
+        .data-field-vertical label {
+
+            margin-bottom: 5px; /* Add some space below the label */
+            margin-right: 0; /* Remove horizontal margin for vertical layout */
+        }
+        .data-field label {
+            display: inline-block;
+            /* Space between label and input */
+            font-weight: bold;
+        }
+        .data-field input,
+        .data-field select { /* Apply to input and select, textarea gets its own specific styles below */
+            /*flex-grow: 1;  Allow inputs to take remaining space */
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 14px;
+            color: #333;
+            margin-left:8px;
+        }
+        .data-field textarea { /* Specific styles for textarea */
+            width: 100%; /* Make it span all the way across */
+            padding: 8px;
+            border: 1px solid #ccc;
+            background-color: transparent;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 14px;
+            color: #333;
+            min-height: 48px; /* Approximately 2 lines based on font-size and padding (2 * 1.5em line-height example) */
+            resize: vertical; /* Allow vertical resizing */
+            flex-grow: 1; /* Allow it to take up space in a flex container */
+        }
+        .smallfield { /* Class for small, inline fields */
+            display: inline-block;
+            width: 20px; /* Max width 30px */
+            flex-grow: 0; /* Do not grow */
+            margin-right: 10px; /* Space after small field */
+        }
+
+        /* Styles for the options grid */
+        .options-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px; /* Spacing between options */
+            margin-top: 15px; /* Space above the options section */
+            justify-content: flex-start; /* Align items to the start */
+        }
+
+        .option-container { /* Renamed from .slot-container to clarify its role */
+            border: 1px solid #999;
+            border-radius: 5px;
+            padding: 10px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+            width: calc(33.33% - 10px); /* Calculate width for 3 items per row, accounting for gap */
+            box-sizing: border-box; /* Include padding and border in the width */
+            display: flex; /* Use flexbox for inner layout of option container */
+            flex-direction: column; /* Stack contents vertically */
+            position: relative; /* For positioning the remove button */
+        }
+
+        .slot-details-container { /* New class for the inner slot details div */
+            border: 1px solid #999; /* Lighter blue border for inner slot details */
+            border-radius: 5px;
+            padding: 10px;
+            margin-top: 10px; /* Space above the slot details */
+            flex-grow: 1; /* Allows it to expand within the option container */
+            display: flex; /* Use flex for inner content */
+            flex-direction: column; /* Stack slot name and description vertically */
+        }
+        .slot-details-container h5 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            color: #0056b3; /* Darker blue for the header */
+        }
+
+        /* Media queries for responsive options grid */
+        @media (max-width: 768px) {
+            .option-container {
+                width: calc(50% - 8px); /* 2 items per row on tablets */
+            }
+        }
+        @media (max-width: 480px) {
+            .option-container {
+                width: 100%; /* 1 item per row on mobile */
+            }
+        }
+
+        .add-remove-buttons {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            display: flex;
+        }
+        .add-remove-buttons button {
+            width: 32px; /* Increased size for icon */
+            height: 32px; /* Increased size for icon */
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            line-height: 1;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-left: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.2s ease, transform 0.2s ease;
+        }
+        .add-button {
+            background-color: #28a745; /* Bootstrap success green */
+            color: white;
+        }
+        .add-button svg {
+            fill: white; /* Ensure SVG icon is white */
+            width: 18px; /* Size the SVG */
+            height: 18px; /* Size the SVG */
+        }
+        .remove-button {
+            background-color: #dc3545; /* Bootstrap danger red */
+            color: white;
+        }
+        .add-button:hover {
+            background-color: #218838;
+            transform: translateY(-1px);
+        }
+        .remove-button:hover {
+            background-color: #c82333;
+            transform: translateY(-1px);
+        }
+        .json-button {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background-color: #007bff; /* Bootstrap primary blue */
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.2s ease, transform 0.2s ease;
+        }
+        .json-button:hover {
+            background-color: #0056b3;
+            transform: translateY(-1px);
+        }
+        .page-variables-container {
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            margin-bottom: 15px;
+
+        }
+        .id-type-container {
+            display: flex;
+            gap: 20px; /* Space between ID and Type fields */
+            margin-bottom: 10px;
+            align-items: center; /* Align items vertically */
+        }
+
+
+        /* Styles for the new type toggle buttons */
+        .type-toggle-group {
+            display: flex;
+            gap: 5px; /* Space between buttons */
+            flex-wrap: wrap; /* Allow wrapping on smaller screens */
+            flex-grow: 1; /* Allow the group to take up space in the flex container */
+        }
+        .type-toggle-button {
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            cursor: pointer;
+            background-color: #f0f0f0;
+            transition: all 0.2s ease;
+            font-size: 14px;
+            color: #333;
+            flex-grow: 1; /* Allow buttons to grow evenly */
+            text-align: center;
+            white-space: nowrap; /* Prevent text wrapping inside buttons */
+        }
+        .type-toggle-button:hover {
+            background-color: #e0e0e0;
+        }
+        .type-toggle-button.active {
+            background-color: #007bff; /* Active color */
+            color: white;
+            border-color: #007bff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Styles for slide animation */
+        .slide-container {
+            max-height: 1000px; /* A large enough value to not clip content */
+            overflow: hidden;
+            transition: max-height 0.7s ease-in-out, opacity 0.7s ease-in-out, margin-top 0.7s ease-in-out;
+            opacity: 1;
+            margin-top: 15px;
+        }
+        .slide-container.hidden {
+            max-height: 0;
+            opacity: 0;
+            margin-top: 0;
+        }
+        .options-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .add-option-button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .add-option-button:hover {
+            background-color: #0056b3;
+        }
+        .remove-option-button {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 20px;
+            height: 20px;
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 12px;
+            line-height: 20px;
+            text-align: center;
+            padding: 0;
+        }
+        .remove-option-button:hover {
+            background-color: #c82333;
+        }
+
+
+        /* The main container for the slide-down panel */
+        .slide-panel {
+            display: grid;
+            grid-template-rows: 0fr; /* Start with the content hidden */
+            transition: grid-template-rows 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+        /* When the 'open' class is added, expand the grid row to fit content */
+        .slide-panel.open {
+            grid-template-rows: 1fr;
+        }
+        /* The content wrapper that will be hidden/shown */
+        .slide-panel > div {
+            overflow: hidden;
+        }
+
+
+
+    </style>
+    <script>
+        function makeFields(pageData, index) {
+            const container = document.createElement('div');
+            container.className = 'page-container';
+            container.setAttribute('data-index', index);
+
+            const pageHeader = document.createElement('h3');
+            pageHeader.className = 'page-header';
+            const pageIdText = document.createElement('span');
+            pageHeader.appendChild(pageIdText);
+
+            const editIcon = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+            editIcon.setAttribute("class", "edit-icon");
+            editIcon.setAttribute("viewBox", "0 0 24 24");
+            pageHeader.appendChild(editIcon);
+
+            container.appendChild(pageHeader);
+
+            const idAndTypeContainer = document.createElement('div');
+            idAndTypeContainer.className = 'id-type-container';
+
+            const idField = document.createElement('div');
+            idField.className = 'data-field';
+            const idLabel = document.createElement('label');
+            idLabel.textContent = 'ID:';
+            idField.appendChild(idLabel);
+            const idInput = document.createElement('input');
+            idInput.type = 'text';
+            idInput.value = pageData.id;
+            idInput.disabled = true;
+            idInput.className = 'smallfield';
+            idInput.setAttribute('data-key', 'id');
+            idField.appendChild(idInput);
+            idAndTypeContainer.appendChild(idField);
+
+            editIcon.addEventListener('click', function() {
+                idInput.disabled = !idInput.disabled;
+                if (!idInput.disabled) {
+                    idInput.focus();
+                    pageIdText.style.display = 'none';
+                    editIcon.style.display = 'none';
+                } else {
+                    pageIdText.textContent = `Page: ${idInput.value}`;
+                    pageIdText.style.display = 'inline';
+                    editIcon.style.display = 'inline';
+                }
+            });
+
+            idInput.addEventListener('blur', function() {
+                idInput.disabled = true;
+                pageIdText.textContent = `Page: ${idInput.value}`;
+                pageIdText.style.display = 'inline';
+                editIcon.style.display = 'inline';
+            });
+
+
+            const typeField = document.createElement('div');
+            typeField.className = 'data-field';
+            const typeLabel = document.createElement('label');
+            typeLabel.textContent = 'Type:';
+            typeField.appendChild(typeLabel);
+
+            const typeButtonGroup = document.createElement('div');
+            typeButtonGroup.className = 'type-toggle-group';
+            typeButtonGroup.setAttribute('data-key', 'type');
+
+            const types = [ 'options', 'simulation', 'story' ];
+            types.forEach(typeValue => {
+                const button = document.createElement('div');
+                button.className = 'type-toggle-button';
+                button.textContent = typeValue.charAt(0).toUpperCase() + typeValue.slice(1);
+                button.setAttribute('data-value', typeValue);
+
+                if (pageData.type === typeValue) {
+                    button.classList.add('active');
+                }
+
+                button.addEventListener('click', function() {
+                    Array.from(typeButtonGroup.children).forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    const changedIndex = parseInt(container.getAttribute('data-index'));
+                    dataArray[changedIndex].type = typeValue;
+
+                    updateTypeSpecificFields(container, dataArray[changedIndex], typeValue);
+                });
+                typeButtonGroup.appendChild(button);
+            });
+            typeField.appendChild(typeButtonGroup);
+            idAndTypeContainer.appendChild(typeField);
+
+            container.appendChild(idAndTypeContainer);
+
+
+            const baseScene = document.createElement('div');
+            baseScene.className = 'page-variables-container left-bubble';
+            const serverResponse = document.createElement('div');
+            serverResponse.className = 'data-field current-message';
+
+            const textInput = document.createElement('textarea');
+            textInput.value = pageData.text || '';
+            textInput.setAttribute('data-key', 'text');
+
+            serverResponse.appendChild(textInput);
+            baseScene.appendChild(serverResponse)
+
+            const foregroundField = document.createElement('div');
+            foregroundField.className = 'data-field';
+            const foregroundLabel = document.createElement('label');
+            foregroundLabel.textContent = 'Foreground:';
+            foregroundField.appendChild(foregroundLabel);
+            if (pageData.foreground && Array.isArray(pageData.foreground)) {
+                pageData.foreground.forEach((fg, fgIndex) => {
+                    const fgInput = document.createElement('input');
+                    fgInput.type = 'text';
+                    fgInput.value = fg;
+                    fgInput.setAttribute('data-key', `foreground[${fgIndex}]`);
+                    foregroundField.appendChild(fgInput);
+                });
+            } else {
+                const fgInput = document.createElement('input');
+                fgInput.type = 'text';
+                fgInput.value = '';
+                fgInput.setAttribute('data-key', `foreground[0]`);
+                foregroundField.appendChild(fgInput);
+            }
+            baseScene.appendChild(foregroundField);
+
+            if (pageData.goal !== undefined) {
+                const goalField = document.createElement('div');
+                goalField.className = 'data-field';
+                const goalInput = document.createElement('input');
+                goalInput.type = 'text';
+                goalInput.value = pageData.goal;
+                goalInput.setAttribute('data-key', 'goal');
+                goalField.appendChild(goalInput);
+            }
+            container.appendChild(baseScene);
+
+            // --- Options Section ---
+            const optionsWrapper = document.createElement('div');
+            optionsWrapper.className = 'slide-container';
+            container.appendChild(optionsWrapper);
+
+            const optionsHeader = document.createElement('div');
+            optionsHeader.className = 'options-header';
+            optionsWrapper.appendChild(optionsHeader);
+
+            const optionsLabel = document.createElement('div');
+            optionsLabel.innerHTML = "user might say something like..";
+            optionsHeader.appendChild(optionsLabel);
+
+            const addOptionButton = document.createElement('button');
+            addOptionButton.textContent = 'Add Option';
+            addOptionButton.className = 'add-option-button';
+            addOptionButton.addEventListener('click', () => {
+                const pageIndex = parseInt(container.getAttribute('data-index'));
+                if (!dataArray[pageIndex].options) {
+                    dataArray[pageIndex].options = [];
+                }
+                dataArray[pageIndex].options.push({
+                    option: "New Option",
+                    slot: { name: "", description: "" },
+                    nextSlideId: ""
+                });
+                displayData(dataArray);
+            });
+            optionsHeader.appendChild(addOptionButton);
+
+            const optionsGridContainer = document.createElement('div');
+            optionsGridContainer.className = 'options-grid right-bubble';
+            optionsWrapper.appendChild(optionsGridContainer);
+
+            if (pageData.options && Array.isArray(pageData.options)) {
+                pageData.options.forEach((option, optionIndex) => {
+                    const optionContainer = document.createElement('div');
+                    optionContainer.className = 'option-container';
+
+                    const removeOptionButton = document.createElement('button');
+                    removeOptionButton.textContent = 'X';
+                    removeOptionButton.className = 'remove-option-button';
+                    removeOptionButton.addEventListener('click', () => {
+                        const pageIndex = parseInt(container.getAttribute('data-index'));
+                        dataArray[pageIndex].options.splice(optionIndex, 1);
+                        displayData(dataArray);
+                    });
+                    optionContainer.appendChild(removeOptionButton);
+
+                    const optionField = document.createElement('div');
+                    optionField.className = 'data-field data-field-vertical';
+                    const optionInputId = `option-text-${index}-${optionIndex}`;
+                    const optionInput = document.createElement('textarea');
+                    optionInput.id = optionInputId;
+                    optionInput.value = option.option;
+                    optionInput.setAttribute('data-key', `options[${optionIndex}].option`);
+                    optionField.appendChild(optionInput);
+                    optionContainer.appendChild(optionField);
+
+                    const slotDetailsContainer = document.createElement('div');
+                    slotDetailsContainer.className = 'slot-details-container';
+                    const slotHeader = document.createElement('h5');
+                    slotHeader.textContent = 'Slot:';
+                    slotDetailsContainer.appendChild(slotHeader);
+
+                    const slotNameField = document.createElement('div');
+                    slotNameField.className = 'data-field';
+                    const slotNameInput = document.createElement('input');
+                    slotNameInput.type = 'text';
+                    slotNameInput.value = option.slot.name;
+                    slotNameInput.setAttribute('data-key', `options[${optionIndex}].slot.name`);
+                    slotNameField.appendChild(slotNameInput);
+                    slotDetailsContainer.appendChild(slotNameField);
+
+                    const slotDescriptionField = document.createElement('div');
+                    slotDescriptionField.className = 'data-field';
+                    const slotDescriptionInput = document.createElement('input');
+                    slotDescriptionInput.type = 'text';
+                    slotDescriptionInput.value = option.slot.description;
+                    slotDescriptionInput.setAttribute('data-key', `options[${optionIndex}].slot.description`);
+                    slotDescriptionField.appendChild(slotDescriptionInput);
+                    slotDetailsContainer.appendChild(slotDescriptionField);
+                    optionContainer.appendChild(slotDetailsContainer);
+
+                    const nextSlideIdField = document.createElement('div');
+                    nextSlideIdField.className = 'data-field';
+                    const nextSlideIdLabel = document.createElement('label');
+                    nextSlideIdLabel.textContent = 'Next:';
+                    nextSlideIdField.appendChild(nextSlideIdLabel);
+                    const nextSlideIdInput = document.createElement('input');
+                    nextSlideIdInput.type = 'text';
+                    nextSlideIdInput.value = option.nextSlideId;
+                    nextSlideIdInput.setAttribute('data-key', `options[${optionIndex}].nextSlideId`);
+                    nextSlideIdField.appendChild(nextSlideIdInput);
+                    optionContainer.appendChild(nextSlideIdField);
+
+                    optionsGridContainer.appendChild(optionContainer);
+                });
+            }
+
+            const buttonContainer = document.createElement('div');
+            buttonContainer.className = 'add-remove-buttons';
+            const plusButton = document.createElement('button');
+            plusButton.className = 'add-button';
+            plusButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M16 1H4C2.9 1 2 1.9 2 3v14h2V3h12V1zm3 4H8C6.9 5 6 5.9 6 7v14c0 1.1.9 2 2 2h11c1.1 0 2-.9 2-2V7c0-1.1-.9-2-2-2zm0 16H8V7h11v14z"/></svg>`;
+            plusButton.addEventListener('click', function(event) {
+                event.stopPropagation();
+                const newItem = JSON.parse(JSON.stringify(pageData));
+                newItem.id = `new-page-${Date.now()}`;
+                const newIndex = parseInt(container.getAttribute('data-index')) + 1;
+                dataArray.splice(newIndex, 0, newItem);
+                displayData(dataArray);
+            });
+            buttonContainer.appendChild(plusButton);
+
+            const minusButton = document.createElement('button');
+            minusButton.className = 'remove-button';
+            minusButton.textContent = '-';
+            minusButton.addEventListener('click', function(event) {
+                event.stopPropagation();
+                const indexToRemove = parseInt(container.getAttribute('data-index'));
+                if (dataArray.length > 1) {
+                    dataArray.splice(indexToRemove, 1);
+                    displayData(dataArray);
+                } else {
+                    console.log("Cannot remove the last page.");
+                }
+            });
+            buttonContainer.appendChild(minusButton);
+            container.appendChild(buttonContainer);
+
+            updateTypeSpecificFields(container, pageData, pageData.type);
+
+            return container;
+        }
+
+        function updateTypeSpecificFields(pageContainer, pageData, newType) {
+            const idAndTypeContainer = pageContainer.querySelector('.id-type-container');
+
+            // Handle Timer Field
+            let timerField = idAndTypeContainer.querySelector('.timer-field-wrapper');
+            if (newType === 'story') {
+                if (!timerField) {
+                    timerField = document.createElement('div');
+                    timerField.className = 'data-field timer-field-wrapper';
+                    const timerLabel = document.createElement('label');
+                    timerLabel.textContent = 'secs:';
+                    timerField.appendChild(timerLabel);
+                    const timerInput = document.createElement('input');
+                    timerInput.type = 'number';
+                    timerInput.value = pageData.timer || '';
+                    timerInput.setAttribute('data-key', 'timer');
+                    timerField.appendChild(timerInput);
+                    idAndTypeContainer.appendChild(timerField);
+                }
+            } else {
+                if (timerField) {
+                    idAndTypeContainer.removeChild(timerField);
+                }
+            }
+
+            // Handle Options Section Visibility
+            const optionsWrapper = pageContainer.querySelector('.slide-container');
+            if (optionsWrapper) {
+                if (newType === 'story') {
+                    optionsWrapper.classList.add('hidden');
+                } else {
+                    optionsWrapper.classList.remove('hidden');
+                }
+            }
+        }
+
+        function displayData(dataArray) {
+            const mainContainer = document.getElementById('main-container');
+            if (!mainContainer) {
+                console.error("Main container not found.");
+                return;
+            }
+            const scrollTop = mainContainer.scrollTop; // Preserve scroll position
+            mainContainer.innerHTML = '';
+
+            dataArray.forEach((pageData, index) => {
+                const pageFields = makeFields(pageData, index);
+                mainContainer.appendChild(pageFields);
+            });
+            mainContainer.scrollTop = scrollTop; // Restore scroll position
+
+            mainContainer.addEventListener('change', function(event) {
+                const target = event.target;
+                if (target.tagName === 'INPUT' || target.tagName === 'SELECT' || target.tagName === 'TEXTAREA') {
+                    const key = target.getAttribute('data-key');
+                    let newValue;
+                    if (target.type === 'number') {
+                        newValue = parseFloat(target.value);
+                        if (isNaN(newValue)) newValue = 0;
+                    } else {
+                        newValue = target.value;
+                    }
+
+                    let changedIndex = -1;
+                    let currentElement = target;
+                    while (currentElement && currentElement !== document.body) {
+                        if (currentElement.classList.contains('page-container')) {
+                            changedIndex = parseInt(currentElement.getAttribute('data-index'));
+                            break;
+                        }
+                        currentElement = currentElement.parentElement;
+                    }
+
+                    if (changedIndex !== -1 && key) {
+                        const keys = key.split('.');
+                        let current = dataArray[changedIndex];
+
+                        for (let i = 0; i < keys.length - 1; i++) {
+                            const k = keys[i];
+                            if (k.includes('[')) {
+                                const arrayName = k.substring(0, k.indexOf('['));
+                                const index = parseInt(k.substring(k.indexOf('[') + 1, k.indexOf(']')));
+                                if (!current[arrayName]) current[arrayName] = [];
+                                if (!current[arrayName][index]) current[arrayName][index] = {};
+                                current = current[arrayName][index];
+                            } else {
+                                if (!current[k]) current[k] = {};
+                                current = current[k];
+                            }
+                        }
+
+                        const finalKey = keys[keys.length - 1];
+                        if (finalKey.includes('[')) {
+                            const arrayName = finalKey.substring(0, finalKey.indexOf('['));
+                            const index = parseInt(finalKey.substring(finalKey.indexOf('[') + 1, finalKey.indexOf(']')));
+                            if (!current[arrayName]) current[arrayName] = [];
+                            current[arrayName][index] = newValue;
+                        } else {
+                            current[finalKey] = newValue;
+                        }
+                        // No full re-render on change, just update data model
+                    }
+                }
+            });
+        }
+
+        const initialData = {
+            "pages": [
+                {
+                    "id": "intro-page",
+                    "type": "simulation",
+                    "foreground": [
+                        "forest-background"
+                    ],
+                    "text": "Welcome to the magical forest. What will you do?",
+                    "display": "none",
+                    "goal": "Reach the hidden waterfall",
+                    "options": [
+                        {
+                            "option": "Go deeper into the forest",
+                            "slot": {
+                                "name": "explore",
+                                "description": "Explore the unknown paths."
+                            },
+                            "nextSlideId": "forest-deep"
+                        },
+                        {
+                            "option": "Follow the sound of the river",
+                            "slot": {
+                                "name": "follow-river",
+                                "description": "Proceed along the river bank."
+                            },
+                            "nextSlideId": "river-path"
+                        },
+                        {
+                            "option": "Climb a tree",
+                            "slot": {
+                                "name": "climb-tree",
+                                "description": "Get a better view from above."
+                            },
+                            "nextSlideId": "tree-top"
+                        }
+                    ]
+                },
+                {
+                    "id": "story-chapter-1",
+                    "type": "story",
+                    "text": "As you walked, the trees grew denser, and the sunlight barely pierced through the canopy. You felt a chill.",
+                    "timer": 6
+                },
+                {
+                    "id": "options-page",
+                    "type": "options",
+                    "foreground": ["ancient-ruins"],
+                    "text": "You stumble upon ancient ruins. A strange inscription glows faintly. Do you dare touch it?",
+                    "options": [
+                        {
+                            "option": "Touch the inscription",
+                            "slot": {
+                                "name": "touch-inscription",
+                                "description": "Interact with the glowing runes."
+                            },
+                            "nextSlideId": "ruins-consequence"
+                        },
+                        {
+                            "option": "Leave the ruins",
+                            "slot": {
+                                "name": "leave-ruins",
+                                "description": "Walk away from the mysterious structure."
+                            },
+                            "nextSlideId": "forest-exit"
+                        },
+                        {
+                            "option": "Study the symbols",
+                            "slot": {
+                                "name": "study-symbols",
+                                "description": "Attempt to decipher the ancient writing."
+                            },
+                            "nextSlideId": "ruins-study"
+                        }
+                    ]
+                }
+            ]
+        };
+
+        let dataArray = [];
+
+        window.onload = function() {
+            const mainContainer = document.createElement('div');
+            mainContainer.id = 'main-container';
+            mainContainer.className = 'main-container';
+            document.body.appendChild(mainContainer);
+
+            dataArray = JSON.parse(JSON.stringify(initialData.pages));
+            displayData(dataArray);
+        };
+
+
+        // Get the necessary elements from the DOM
+        const clickableTrigger = document.getElementById('clickableTrigger');
+        const slidePanel = document.getElementById('slidePanel');
+
+        // Add a click event listener to the new trigger
+        clickableTrigger.addEventListener('click', () => {
+            slidePanel.classList.toggle('open');
+        });
+    </script>
+
+</head>
+<body>
+<hr>
+
+<div class="max-w-sm w-full ml-auto" style="border:1px solid red">
+    <div class="bg-white shadow-lg relative rounded-xl overflow-hidden">
+
+<div id="clickableTrigger" class="px-6 py-2 flex justify-end cursor-pointer group border-t border-b border-gray-200">
+    <div class="flex items-center space-x-1.5 p-2"> <!-- Extra padding for easier clicking -->
+        <span class="w-2 h-2 bg-gray-400 rounded-full group-hover:bg-blue-500 transition-colors">--</span>
+        <span class="w-2 h-2 bg-gray-400 rounded-full group-hover:bg-blue-500 transition-colors">--</span>
+        <span class="w-2 h-2 bg-gray-400 rounded-full group-hover:bg-blue-500 transition-colors">..</span>
+    </div>
+</div>
+    </div></div>
+</body>
+</html>

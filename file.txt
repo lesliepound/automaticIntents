@@ -1,0 +1,5 @@
+
+> test
+> jest --clearCache && jest
+
+Cleared /private/var/folders/sm/8gpcjddx69g6t05d2mtdhftr0000gn/T/jest_dx

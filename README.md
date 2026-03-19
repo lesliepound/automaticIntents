@@ -2,13 +2,16 @@
 
 ## Overview
 
-This is a javascript based repository demonstrating a few key concepts for building and running multimodal AI-driven chats.  __This repo can be used as a proof of concept or demo for many interactive workflows ( surveys, lessons, quizzes, etc.).__
-We use various AI models from openAI or Groq (which includes open source options). 
+This is a javascript based repository demonstrating a few key concepts for building and allowing humans (teachers, trainers, authors)  to create multimodal AI-driven chats.  __This repo is a proof of concept that there can easily be a shared context between AI and user allowing a greater range of natural language inputs. __
+Currently this uses  various AI models via Groq (which speeds up porcessing). 
 
 The goal here is 
 1. Separate chat mechanics (what happens when user does XYZ) into an easy-to-understand file (JSON)
-2. Allow for the AI model to understand and execute those mechanicns with little extra coding beyond this repo.
+2. Allow for the AI model to understand and execute those mechanicns with no extra coding beyond this repo.
+3. Modifying the JSON file changes the workflow and always more topics to be handled.
+4. There is one call to the model with no to few shot prompting.
 
+This was based off of auto Intents
 # Getting started
 
 

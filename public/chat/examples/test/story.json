@@ -1,0 +1,53 @@
+{
+  "pages": [
+    {
+      "id": "toyPage",
+      "type": "simulation",
+      "display": "none",
+      "foreground": [
+        "child",
+        "ball",
+        "jacks",
+        "jump_rope",
+        "playdoh",
+        "coloring_book"
+      ],
+      "text": "The children are playing. What would you like them to do?",
+      "affordances": {
+        "ball": [
+          "movable"
+        ],
+    "jacks": [
+          "movable"
+        ],
+        "child": [
+          "movable"
+        ],
+        "jump_rope": [
+          "movable"
+        ],
+        "playdoh": [
+          "movable"
+        ],
+        "coloring_book": [
+          "movable"
+        ]
+      },
+      "options": [
+        {
+          "option": "One of these: _FOREGROUND_ or implied acts on one of these: _FOREGROUND_",
+          "extra": "get; picks up; grabs; wants; fetches; goes to; plays with; brings",
+          "slot": {
+            "name": "source-to-move",
+            "description": "one of these _FOREGROUND_  that acts "
+          },
+          "slot1": {
+            "name": "target",
+            "description": "one of these _FOREGROUND_   that is acted upon"
+          },
+          "nextSlideId": "movable"
+        }
+      ]
+    }
+  ]
+}

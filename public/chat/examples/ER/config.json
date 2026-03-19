@@ -1,0 +1,7 @@
+{
+    "chatId": "visMap",
+    "name": "visual",
+    "logicModule": "../chat/examples/ER/config.js",
+    "data": "../chat/examples/ER/patient.txt"
+
+}

@@ -38,15 +38,14 @@ function getGroqBot() {
     }
 }
 
-function getUninsatiatedBotError(botName) {
-    if (Object.values(BotName).indexOf(botName) ===-1) {
+function getUninstantiatedBotError(botName) {
+    if (Object.values(BotName).indexOf(botName) === -1) {
         throw new Error("Invalid bot name");
     }
 
-    return `${botName} model was not instantiated. Did you supply an ${errorMap.get(botName)}? If using ennviornment variables, are they available to the terminal`;
+    return `${botName} model was not instantiated. Did you supply an ${errorMap.get(botName)}? If using environment variables, are they available to the terminal`;
 }
 
 
 
-export { getOpenAIBot, getGroqBot, getUninsatiatedBotError, BotName };
-
+export { getOpenAIBot, getGroqBot, getUninstantiatedBotError, BotName };
