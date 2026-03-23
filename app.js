@@ -10,7 +10,6 @@ const port = 3001;
 const host = 'localhost';
 
 
-
 // Setting up middleware
 const app = express();
 app.use(express.static('public'));
@@ -75,7 +74,7 @@ app.post('/runConversation', async (req, res) => {
     try {
         const {prompt, model} = req.body;
         let result = await runConversation(prompt, "answer like a professional in less than 40 words. Make sure its less than 35 ", model);
-        logThis(`--- ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} ---
+        logThis(`${new Date().toLocaleTimeString()} 
   model   : ${model}
   prompt  : ${prompt}
   response: ${JSON.stringify(result)}`);
@@ -96,7 +95,7 @@ const getGroqChatCompletion = async (prompt, sysprompt) => {
             messages: [
                 {
                     "role": "system",
-                    "content":  "answer as a professional in less than 400 words."
+                    "content": "answer as a professional in less than 400 words."
                 },
                 {
                     role: "user",
@@ -131,7 +130,7 @@ app.post('/getSpeech', async (req, res) => {
         res.setHeader('Content-Type', 'audio/mpeg'); // Or the correct audio MIME type
 
         res.send(audioStream);
-     } catch (error) {
+    } catch (error) {
         console.error("Error processing TTS:", error);
         logThis("Error:", error)
         res.status(500).json({error: "Internal Server Error"});
@@ -155,19 +154,38 @@ app.post('/getSpeech', async (req, res) => {
 app.post('/middleware', async (req, res) => {
     const start = Date.now();
     try {
-        const { prompt, model, options, foreground, story = 'unknown' } = req.body;
-        console.log('--->>',prompt,'--m',model,'f->',foreground,' options',options)
+        const {prompt, model, options, foreground, story = 'unknown'} = req.body;
+        console.log('--->>', prompt, '--m', model, 'f->', foreground, ' options', options)
         if (!Array.isArray(options)) {
             console.log("Options is not an array:", options);
             return;
         }
-        const result     = await runClassifier(prompt, options, model);
-        const latency_ms = Date.now() - start;
 
-        logThis(`--- ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()} ---
-  model   : ${model}
-  prompt  : ${prompt}
-  response: ${JSON.stringify(result)}`);
+        const result = await runClassifier(prompt, options, model);
+        const latency_ms = Date.now() - start;
+        const args = JSON.parse(result.arguments || '{}');
+
+        // logThis(`${new Date().toLocaleTimeString()}
+        // model: ${model}
+        // prompt: ${prompt}
+        // option: ${args._label}
+        // response: ${result.name}
+        // slots: ${JSON.stringify(args)}`);
+
+        //const result = await runClassifier(prompt, options, model);
+       // const latency_ms = Date.now() - start;
+
+        //const args = JSON.parse(result.arguments || '{}');
+
+
+        logThis(`${new Date().toLocaleTimeString()}   
+        model: ${model}   
+        prompt: ${prompt}   
+        option: ${args._label}   
+        response: ${result.name}   
+        slots: ${JSON.stringify(args)}`);
+
+
 
         logAnalytics({
             ts: new Date().toISOString(), source: 'live',
@@ -188,6 +206,7 @@ app.post('/middleware', async (req, res) => {
 });
 
 export function logThis(message) {
+    console.log('message', message)
     const logEntry = `[${new Date().toISOString()}] ${message}\n`;
     fs.appendFile('usage.log', logEntry, (err) => {
         if (err) console.error('Error appending to log file:', err);
@@ -200,7 +219,7 @@ function logAnalytics(entry) {
 
 function applyVariant(options, variant) {
     return options.map(opt => {
-        const o = { ...opt };
+        const o = {...opt};
         if (variant.transform === 'strip_extra') {
             o.extra = '';
         } else if (variant.transform === 'replace_separator') {
@@ -211,21 +230,21 @@ function applyVariant(options, variant) {
 }
 
 app.post('/run-tests', async (req, res) => {
-    const { suites = ['baseline'] } = req.body;
+    const {suites = ['baseline']} = req.body;
     const results = [];
 
     for (const suite of suites) {
-        const testFile   = JSON.parse(fs.readFileSync(`tests/${suite}.json`, 'utf8'));
-        const story      = testFile.story || 'ER';
-        const storyData  = JSON.parse(fs.readFileSync(`public/chat/examples/${story}/story.json`, 'utf8'));
+        const testFile = JSON.parse(fs.readFileSync(`tests/${suite}.json`, 'utf8'));
+        const story = testFile.story || 'ER';
+        const storyData = JSON.parse(fs.readFileSync(`public/chat/examples/${story}/story.json`, 'utf8'));
         const baseOptions = storyData.pages[0].options;
 
         if (suite === 'baseline') {
             const model = testFile.model || 'llama-3.1-8b-instant';
             for (const test of testFile.tests) {
-                const start  = Date.now();
+                const start = Date.now();
                 const result = await runClassifier(test.prompt, baseOptions, model);
-                const entry  = {
+                const entry = {
                     ts: new Date().toISOString(), source: 'test', suite,
                     test_id: test.id, category: test.category,
                     story, model,
@@ -245,9 +264,9 @@ app.post('/run-tests', async (req, res) => {
                 for (const variant of testFile.variants) {
                     const variantOptions = applyVariant(baseOptions, variant);
                     for (const model of testFile.models) {
-                        const start  = Date.now();
+                        const start = Date.now();
                         const result = await runClassifier(test.prompt, variantOptions, model);
-                        const entry  = {
+                        const entry = {
                             ts: new Date().toISOString(), source: 'test', suite,
                             test_id: test.id, variant: variant.name,
                             story, model,
@@ -266,13 +285,13 @@ app.post('/run-tests', async (req, res) => {
 
         } else if (suite === 'interaction') {
             // interaction.json configures live logging depth — nothing to run here
-            results.push({ suite, status: 'interaction logging is configured via analytics.jsonl during live usage' });
+            results.push({suite, status: 'interaction logging is configured via analytics.jsonl during live usage'});
         }
     }
 
     const passed = results.filter(r => r.pass).length;
-    const total  = results.filter(r => r.pass !== undefined).length;
-    res.json({ total, passed, pass_rate: total ? `${Math.round(passed/total*100)}%` : 'n/a', results });
+    const total = results.filter(r => r.pass !== undefined).length;
+    res.json({total, passed, pass_rate: total ? `${Math.round(passed / total * 100)}%` : 'n/a', results});
 });
 
 function tryParse(str) {

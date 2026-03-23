@@ -955,6 +955,11 @@ async function handleSend() {
         console.log('prompt', prompt);
         console.log('fileToSkim', fileToSkim);
         directChat(prompt, fileToSkim);
+        //updateManifest(prompt, fileToSkim);
+
+        // matched option:----, “clarifying-question”, “fallback”, “question”  in story.json
+        // response: {"name":"movable",
+
         return;
     }
 
@@ -1057,60 +1062,60 @@ function getActiveChatId() {
  * @param {string} [hint] An optional hint to use as the question if no clarifying_question is found.
  * @returns {{category: string, question: string | undefined, slot: string | undefined}} An object containing the extracted category, question, and slot.
  */
-function parseResponseObject(responseObject, hint) { // Renamed function and parameter
-    let category = 'parsing error'; // In case of failure
-    let question;
-    let slot;
-    try {
-        // Access name directly from the input object
-        if (responseObject && responseObject.name !== undefined) {
-            // Determine the category
-            category = responseObject.name === 'model needs more information' ?
-                'model needs more information' :
-                responseObject.name;
-        } else {
-            console.error("Input object is missing 'name' property:", responseObject);
-            return {category, question, slot}; // Return early if name is missing
-        }
-
-        // Check if arguments property exists and is a string
-        if (responseObject.arguments && typeof responseObject.arguments === 'string') {
-            try {
-                // Parse the arguments string
-                const args = JSON.parse(responseObject.arguments);
-
-                // Extract clarifying_question if present
-                if (args.clarifying_question !== undefined) {          // was: clariyfing_question (typo)
-                    question = args.clarifying_question;
-                }
-
-                // Extract slot ONLY if category is NOT 'model needs more information' and slot is present
-                if (category !== 'model needs more information' && args.slot !== undefined) {
-                    slot = args.slot;
-                }
-
-            } catch (e) {
-                // Log error if arguments string is not valid JSON, but continue
-                console.error("Error parsing arguments JSON string:", responseObject.arguments, e);
-            }
-        } else if (responseObject.arguments !== undefined) {
-            // Handle cases where arguments might not be a string as expected
-            console.warn("Input object has 'arguments' property but it's not a string:", responseObject.arguments);
-        }
-    } catch (e) {
-        console.error("Error processing response object:", responseObject, e);
-        // category is already 'parsing error'
-    }
-
-    // If question is not set or is blank, use the hint if provided
-    if ((question === undefined || (typeof question === 'string' && question.trim() === '')) && hint !== undefined) {
-        question = hint;
-    } else if (typeof question === 'string' && question.trim() === '') {
-        // Ensure blank strings become undefined if no hint is used
-        question = undefined;
-    }
-    return {category, question, slot};
-}
+// function parseResponseObject(responseObject, hint) { // Renamed function and parameter
+//     let category = 'parsing error'; // In case of failure
+//     let question;
+//     let slot;
+//     try {
+//         // Access name directly from the input object
+//         if (responseObject && responseObject.name !== undefined) {
+//             // Determine the category
+//             category = responseObject.name === 'model needs more information' ?
+//                 'model needs more information' :
+//                 responseObject.name;
+//         } else {
+//             console.error("Input object is missing 'name' property:", responseObject);
+//             return {category, question, slot}; // Return early if name is missing
+//         }
+//
+//         // Check if arguments property exists and is a string
+//         if (responseObject.arguments && typeof responseObject.arguments === 'string') {
+//             try {
+//                 // Parse the arguments string
+//                 const args = JSON.parse(responseObject.arguments);
+//
+//                 // Extract clarifying_question if present
+//                 if (args.clarifying_question !== undefined) {          // was: clariyfing_question (typo)
+//                     question = args.clarifying_question;
+//                 }
+//
+//                 // Extract slot ONLY if category is NOT 'model needs more information' and slot is present
+//                 if (category !== 'model needs more information' && args.slot !== undefined) {
+//                     slot = args.slot;
+//                 }
+//
+//             } catch (e) {
+//                 // Log error if arguments string is not valid JSON, but continue
+//                 console.error("Error parsing arguments JSON string:", responseObject.arguments, e);
+//             }
+//         } else if (responseObject.arguments !== undefined) {
+//             // Handle cases where arguments might not be a string as expected
+//             console.warn("Input object has 'arguments' property but it's not a string:", responseObject.arguments);
+//         }
+//     } catch (e) {
+//         console.error("Error processing response object:", responseObject, e);
+//         // category is already 'parsing error'
+//     }
+//
+//     // If question is not set or is blank, use the hint if provided
+//     if ((question === undefined || (typeof question === 'string' && question.trim() === '')) && hint !== undefined) {
+//         question = hint;
+//     } else if (typeof question === 'string' && question.trim() === '') {
+//         // Ensure blank strings become undefined if no hint is used
+//         question = undefined;
+//     }
+//     return {category, question, slot};
+// }
 
 
 function optionalQuestion(responseObject, hint) {
@@ -1126,6 +1131,7 @@ function optionalQuestion(responseObject, hint) {
             try {
                 const args = JSON.parse(responseObject.arguments);
                 let question;
+
 
                 // Look for clarifying_question first
                 if (args.clarifying_question !== undefined) {          // was: clariyfing_question (typo)
@@ -1152,30 +1158,30 @@ function optionalQuestion(responseObject, hint) {
     }
 }
 
-// Demo Hack ..Adapting hard-coded chat instructions/responses with user responses /slots
-function fillTemplate(templateString, data) {
-    console.log("hhhhhhhhere",templateString, 'd:',data)
-    let transferTemplate;
-    transferTemplate = templateString;
-    transferTemplate = transferTemplate.replace(/_FOREGROUND_/ig,getForegroundString())
-    return transferTemplate.replace(/\${(.*?)}/g, data[0]);
-}
+// // Demo Hack ..Adapting hard-coded chat instructions/responses with user responses /slots
+// function fillTemplate(templateString, data) {
+//     console.log("fillTemplate",templateString, 'd:',data)
+//     let transferTemplate;
+//     transferTemplate = templateString;
+//     transferTemplate = transferTemplate.replace(/_FOREGROUND_/ig,getForegroundString())
+//     return transferTemplate.replace(/\${(.*?)}/g, data[0]);
+// }
 
 // Replace fillTemplate with this
-function resolveReferences(obj) {
-    const resolved = { ...obj };
-
-    for (const key in resolved) {
-        if (typeof resolved[key] === 'string') {
-            resolved[key] = resolved[key].replace(/\{(\w+)}/g, (match, propName) => {
-                return resolved[propName] !== undefined ? resolved[propName] : match;
-            });
-        }
-    }
-
-    return resolved;
-}
-
+// function resolveReferences(obj) {
+//     const resolved = { ...obj };
+//
+//     for (const key in resolved) {
+//         if (typeof resolved[key] === 'string') {
+//             resolved[key] = resolved[key].replace(/\{(\w+)}/g, (match, propName) => {
+//                 return resolved[propName] !== undefined ? resolved[propName] : match;
+//             });
+//         }
+//     }
+//
+//     return resolved;
+// }
+//
 
 //Load chat example, including custom actions and settings for edit
 document.addEventListener("DOMContentLoaded", function () {
