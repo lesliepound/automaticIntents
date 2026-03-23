@@ -164,7 +164,7 @@
           }
         },
         {
-          "option": "get _DIALS",
+          "option": "get _DIALS_",
           "extra": " get the test or numbers for  _DIALS_; whats the patients _DIALS_",
           "slot": {
             "name": "dial_name",

@@ -6,6 +6,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap" rel="stylesheet">
     <!--link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
           rel="stylesheet"-->
     <link
@@ -83,28 +84,30 @@
         </div>
     </div>
     <div id="dialog3" class="modal">
-        <div id=popout class="modal-content">
-            <span class="close-button">&times;</span>
+        <div class="modal-content fe-dialog">
+            <div class="fe-dialog-actions">
+                <button type="button" id="fe-view-json-btn" class="fe-btn fe-btn-tonal fe-btn-sm" style="display:none;">View JSON</button>
+                <button type="button" id="fe-close-btn" class="fe-icon-btn" title="Close">
+                    <span class="material-symbols-rounded" style="font-size:22px;">close</span>
+                </button>
+            </div>
 
-            <h2>Try It: Edit a Chat</h2>
-            <h3> Use with caution. This will overwrite the original story.json.</h3>
+            <div class="fe-dialog-header">
+                <h2 class="fe-dialog-title">Story Editor</h2>
+                <p class="fe-dialog-subtitle">Changes overwrite the original story.json</p>
+            </div>
             <section>
-                <div id="detach-button" title="Detach Pane" class="circle-button" style="margin-right:25px;float: right;">
-                    <span class="symbol">&#x2197;</span>
+                <div id="fe-save-bar" class="fe-save-bar fe-save-bar--hidden">
+                    <span class="fe-save-bar-text">Unsaved changes</span>
+                    <button type="button" onclick="saveEditedFile()" class="fe-btn fe-btn-filled fe-btn-sm">Save File</button>
                 </div>
-
-                <form id="fileForm" style="max-width: 500px">
-                    <label for="fileName">File Name:</label>
-                   <!-- <button onclick="scrollToLine(25)">Scroll to Line 5</button>-->
-                    <input type="text" id="fileName" name="fileName" value="story.json" required>
-                    <button id="fetch-button" class="optional-button">fetch</button>
-                    <br>
-                    <label for="fileContents">Contents:</label>
-                    <div>
-                        <textarea id="fileContents" name="fileContents" rows="4" cols="50" required></textarea><br><br>
-                        <button type="button" onclick="saveEditedFile()">Save File</button>
+                <form id="fileForm" class="fe-file-form">
+                    <div class="fe-file-bar">
+                        <label for="fileName" class="fe-file-label">File</label>
+                        <input type="text" id="fileName" name="fileName" value="story.json" required class="fe-file-input">
+                        <button id="fetch-button" type="button" class="fe-btn fe-btn-tonal fe-btn-sm">Fetch</button>
                     </div>
-
+                    <div id="formEditorContainer"></div>
                 </form>
             </section>
         </div>
@@ -190,6 +193,7 @@
     <audio class="sound">
         <source src="" type="audio/mp3"/>
     </audio>
+   <script src="/js/formEditor.js"></script> <!-- GUI form editor for story.json -->
    <script src="/js/toolsSetup.js"></script> <!-- UI & AI Connections web voice  -->
     <script src="/js/voice.js"></script> <!-- generic web voice  -->
     <script src="/js/movement-functions.js"></script>

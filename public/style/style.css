@@ -458,6 +458,257 @@ input[type='number'] {
     width: 550px
 }
 
+/* ─── Story Editor dialog (dialog3) ─── */
+#dialog3 .modal-content {
+    position: relative;
+    width: 90%;
+    max-width: 940px;
+    max-height: 85vh;
+    overflow: hidden;
+    border: none;
+    border-radius: 16px;
+    padding: 0;
+    box-shadow: 0 4px 8px 3px rgba(0,0,0,.15), 0 1px 3px rgba(0,0,0,.3);
+    display: flex;
+    flex-direction: column;
+}
+#dialog3 .modal-content > section {
+    overflow-y: auto;
+    flex: 1;
+    min-height: 0;
+}
+.fe-dialog-actions {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    z-index: 2;
+}
+.fe-dialog .close-button {
+    display: none; /* replaced by fe-dialog-actions */
+}
+.fe-dialog-header {
+    padding: 20px 28px 0;
+}
+.fe-dialog-title {
+    font-family: 'Roboto', 'Poppins', sans-serif;
+    font-size: 22px;
+    font-weight: 500;
+    margin: 0 0 2px;
+    color: #1f1f1f;
+}
+.fe-dialog-subtitle {
+    font-family: 'Roboto', 'Poppins', sans-serif;
+    font-size: 13px;
+    color: #5f6368;
+    margin: 0 0 12px;
+}
+.fe-file-form {
+    padding: 0 28px 20px;
+    max-width: 100%;
+}
+.fe-file-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 0 16px;
+    border-bottom: 1px solid #dadce0;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+.fe-save-bar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 10px 28px;
+    background: #e8f0fe;
+    border-bottom: 1px solid #c5d7f2;
+    transition: transform .25s cubic-bezier(.2,0,0,1), opacity .2s ease;
+}
+.fe-save-bar--hidden {
+    transform: translateY(-100%);
+    opacity: 0;
+    pointer-events: none;
+    height: 0;
+    padding: 0 28px;
+    overflow: hidden;
+}
+.fe-save-bar-text {
+    font-family: 'Roboto', 'Poppins', sans-serif;
+    font-size: 13px;
+    color: #1a73e8;
+    font-weight: 500;
+    flex: 1;
+}
+.fe-file-label {
+    font-family: 'Roboto', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    color: #5f6368;
+}
+.fe-file-input {
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    padding: 8px 14px;
+    border: 1px solid #dadce0;
+    border-radius: 8px;
+    outline: none;
+    color: #1f1f1f;
+    background: #fff;
+    min-width: 200px;
+    transition: border-color .2s, box-shadow .2s;
+}
+.fe-file-input:focus {
+    border-color: #1a73e8;
+    box-shadow: 0 0 0 1px #1a73e8;
+}
+
+/* ─── MD3 Snackbar / Toast ─── */
+.md-snackbar {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    min-width: 280px;
+    max-width: 560px;
+    padding: 14px 16px 14px 20px;
+    border-radius: 12px;
+    font-family: 'Roboto', 'Poppins', sans-serif;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 100000;
+    opacity: 0;
+    transition: transform .3s cubic-bezier(.2,0,0,1), opacity .25s ease;
+    box-shadow: 0 4px 8px 3px rgba(0,0,0,.15), 0 1px 3px rgba(0,0,0,.3);
+}
+.md-snackbar--show {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+}
+.md-snackbar--success {
+    background: #1e4620;
+    color: #c4eed0;
+}
+.md-snackbar--error {
+    background: #601410;
+    color: #f9dedc;
+}
+.md-snackbar--info {
+    background: #2d2d2d;
+    color: #e8eaed;
+}
+.md-snackbar-text {
+    flex: 1;
+    line-height: 1.4;
+}
+.md-snackbar-close {
+    background: none;
+    border: none;
+    color: inherit;
+    opacity: .7;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 4px 6px;
+    border-radius: 50%;
+    transition: opacity .15s, background .15s;
+}
+.md-snackbar-close:hover {
+    opacity: 1;
+    background: rgba(255,255,255,.12);
+}
+
+/* ─── MD3 Confirmation Dialog ─── */
+.md-confirm-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 200000;
+    opacity: 0;
+    transition: opacity .2s ease;
+}
+.md-confirm--show {
+    opacity: 1;
+}
+.md-confirm-dialog {
+    background: #fff;
+    border-radius: 28px;
+    padding: 28px 32px 20px;
+    min-width: 300px;
+    max-width: 420px;
+    box-shadow: 0 4px 8px 3px rgba(0,0,0,.15), 0 1px 3px rgba(0,0,0,.3);
+    transform: scale(.92);
+    transition: transform .25s cubic-bezier(.2,0,0,1);
+}
+.md-confirm--show .md-confirm-dialog {
+    transform: scale(1);
+}
+.md-confirm-title {
+    font-family: 'Roboto', 'Poppins', sans-serif;
+    font-size: 22px;
+    font-weight: 500;
+    color: #1f1f1f;
+    margin: 0 0 12px;
+}
+.md-confirm-body {
+    font-family: 'Roboto', 'Poppins', sans-serif;
+    font-size: 14px;
+    color: #5f6368;
+    line-height: 1.5;
+    margin: 0 0 20px;
+}
+.md-confirm-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+.md-confirm-btn {
+    font-family: 'Roboto', 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: .25px;
+    border: none;
+    border-radius: 9999px;
+    padding: 10px 24px;
+    cursor: pointer;
+    transition: background .15s, box-shadow .15s;
+}
+.md-confirm-btn--cancel {
+    background: transparent;
+    color: #1a73e8;
+}
+.md-confirm-btn--cancel:hover {
+    background: rgba(26,115,232,.08);
+}
+.md-confirm-btn--confirm {
+    background: #d93025;
+    color: #fff;
+}
+.md-confirm-btn--confirm:hover {
+    background: #c5221f;
+    box-shadow: 0 1px 2px rgba(0,0,0,.3), 0 1px 3px 1px rgba(0,0,0,.15);
+}
+.md-confirm-btn--save {
+    background: #1a73e8;
+    color: #fff;
+}
+.md-confirm-btn--save:hover {
+    background: #1765cc;
+    box-shadow: 0 1px 2px rgba(0,0,0,.3), 0 1px 3px 1px rgba(0,0,0,.15);
+}
+
 /* The Close Button */
 .close-button {
     color: #aaaaaa;

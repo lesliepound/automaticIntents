@@ -44,10 +44,11 @@ function setListeners() {
     const elements = {
         'info-button': () => showDialogBox('dialog1'),
         'settings-button': () => showDialogBox('dialog2'),
-        'detach-button': popOutDialog,   // pops into seperate dialog
         'edit-button': editDialog,   // shows chat meachnics file
         'fetch-button': getFile,     // fetches latest copy of chat
-        'model': handleModelChange
+        'model': handleModelChange,
+        'fe-close-btn': closeEditorDialog,
+        'fe-view-json-btn': () => { if (window.formEditor) window.formEditor._showJsonPreview(); }
     };
 
     Object.entries(elements).forEach(([id, handler]) => {
@@ -56,6 +57,11 @@ function setListeners() {
 
     document.querySelectorAll('.close-button').forEach(button => {
         button.addEventListener('click', closeDialog);
+    });
+
+    // Backdrop click closes modals
+    document.querySelectorAll('.modal').forEach(modal => {
+        modal.addEventListener('click', closeDialog);
     });
     const toggle = document.getElementById('traffic');
     if (toggle) {
@@ -208,12 +214,37 @@ function showDialogBox(modalId) {
 
 
 function closeDialog(event) {
-    if (!event.target.classList.contains('close-button')) {
+    // Close on close-button click or backdrop click
+    if (event && !event.target.classList.contains('close-button') && !event.target.classList.contains('modal')) {
         return;
+    }
+    // Route dialog3 through the editor-aware close
+    const dialog3 = document.getElementById('dialog3');
+    if (dialog3 && dialog3.style.display === 'block') {
+        if (event && event.target.classList.contains('modal')) {
+            closeEditorDialog();
+            return;
+        }
     }
     let modal;
     modal = document.querySelector('.modal[style*="display: block"], .modal:not([style*="display: none"])');
-    modal.style.display = 'none';
+    if (modal) modal.style.display = 'none';
+}
+
+async function closeEditorDialog() {
+    if (window.formEditor && window.formEditor.isDirty()) {
+        const choice = await showConfirmThreeWay(
+            'Unsaved changes',
+            'You have unsaved changes. What would you like to do?'
+        );
+        if (choice === 'cancel') return;
+        if (choice === 'save') {
+            await window.saveEditedFile();
+            return; // saveEditedFile already closes the dialog
+        }
+        // choice === 'discard' — fall through to close
+    }
+    document.getElementById('dialog3').style.display = 'none';
 }
 
 function handleModelChange(event) {
@@ -1224,13 +1255,11 @@ async function getFile(event) {
     if (fileName) {
         const response = await fetch(urlName, {
             method: 'GET',
-            headers: {'Content-Type': 'application/json'}// Stringify for sending
+            headers: {'Content-Type': 'application/json'}
         });
         const fileData = await response.json();
-        const formattedJson = JSON.stringify(fileData, null, 2); // 2 spaces for indentation
-        document.getElementById("fileContents").value = formattedJson;
-        scrollTextareaToChar(16)
-
+        const container = document.getElementById('formEditorContainer');
+        window.formEditor = new FormEditor(fileData, container);
     }
 }
 //consilidate with getFile LDP
@@ -1307,13 +1336,25 @@ function editDialog() {
     document.getElementById('focalChat').innerHTML = " " + filename;
     document.getElementById('fileName').value = filename + "/story.json";
     showDialogBox('dialog3');
+    getFile(); // auto-load the form
 }
 
 window.saveEditedFile = async function (newContent) {
-
-    let fileContents = (newContent) ? newContent : document.getElementById('fileContents').value;
-    //this saves edits
+    let fileContents;
+    if (newContent) {
+        fileContents = newContent;
+    } else if (window.formEditor) {
+        fileContents = window.formEditor.toJSON();
+    } else {
+        return;
+    }
     const fileName = document.getElementById('fileName').value;
+
+    const confirmed = await showConfirm(
+        'Overwrite file?',
+        `This will overwrite "${fileName}". This cannot be undone.`
+    );
+    if (!confirmed) return;
 
     const response = await fetch('/create-file', {
         method: 'POST',
@@ -1324,97 +1365,165 @@ window.saveEditedFile = async function (newContent) {
     });
 
     if (response.ok) {
-        alert(" ✓ file edited successfully!");
+        if (window.formEditor) window.formEditor.markClean();
+        showToast('File saved successfully', 'success');
     } else {
-        alert(" ✗ error editing file.");
+        showToast('Error saving file', 'error');
     }
     closeDialog();
 }
 
 
-let popOutWindow;
 
-function popOutDialog() {
-    const features = 'width=650,height=600,resizable=yes,scrollbars=yes';
-    const dialogContentContainer = document.getElementById('dialog3');
-    const textareaElement = document.getElementById('fileContents'); // Assuming this is inside #dialog3
 
-    if (!dialogContentContainer || !textareaElement) {
-        console.error("Error: Required elements not found. Check IDs: #dialog3 and #fileContents.");
-        return;
+// ── MD3 Snackbar / Toast ──────────────────────────
+function showToast(message, type = 'info', duration = 3500) {
+    const existing = document.getElementById('md-snackbar');
+    if (existing) existing.remove();
+
+    const bar = document.createElement('div');
+    bar.id = 'md-snackbar';
+    bar.className = 'md-snackbar md-snackbar--' + type;
+
+    const text = document.createElement('span');
+    text.className = 'md-snackbar-text';
+    text.textContent = message;
+    bar.appendChild(text);
+
+    const close = document.createElement('button');
+    close.className = 'md-snackbar-close';
+    close.textContent = '✕';
+    close.onclick = () => dismiss();
+    bar.appendChild(close);
+
+    document.body.appendChild(bar);
+    requestAnimationFrame(() => bar.classList.add('md-snackbar--show'));
+
+    const timer = setTimeout(dismiss, duration);
+    function dismiss() {
+        clearTimeout(timer);
+        bar.classList.remove('md-snackbar--show');
+        bar.addEventListener('transitionend', () => bar.remove(), { once: true });
     }
+}
 
-    const liveTextValue = textareaElement.value;
+// ── MD3 Confirmation Dialog ───────────────────────
+function showConfirm(title, message) {
+    return new Promise(resolve => {
+        const existing = document.getElementById('md-confirm-overlay');
+        if (existing) existing.remove();
 
-    //  Get the default HTML (which is MISSING from the placeholder)
-    let contentHTML = dialogContentContainer.innerHTML;
+        const overlay = document.createElement('div');
+        overlay.id = 'md-confirm-overlay';
+        overlay.className = 'md-confirm-overlay';
 
-    popOutWindow = window.open('about:blank', 'DialogPopOut', features);
-    if (popOutWindow) {
-        const placeholderTextareaTag = '<textarea id="fileContents"'; // Start of tag
-        const newTextareaTag = `${placeholderTextareaTag} rows="20" cols="80">${liveTextValue}</textarea>`;
+        const dialog = document.createElement('div');
+        dialog.className = 'md-confirm-dialog';
 
-        // For simplicity and safety, let's use a temporary attribute method on the live element:
-        textareaElement.textContent = liveTextValue;
-        contentHTML = dialogContentContainer.innerHTML;
-        textareaElement.textContent = ''; // Reset parent for next time
+        const h = document.createElement('h3');
+        h.className = 'md-confirm-title';
+        h.textContent = title;
+        dialog.appendChild(h);
 
-        const newWindowHTML = `
-            <!DOCTYPE html>
-            <html>
-          <head>    <link rel="stylesheet" href="/style/style.css">
-         <link rel="stylesheet" href="/style/char.css">
-         <link rel="preconnect" href="https://fonts.googleapis.com">
-         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-         <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
-         <link rel="preconnect" href="https://fonts.googleapis.com">
-         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-         <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
-               rel="stylesheet">
- 
-                <title>File Editor</title>
-                <style>
-                    body { font-family: sans-serif; padding: 10px; margin: 0; }
-                </style>
-            </head>
-            <body>
-                ${contentHTML} 
-                
-                <script>
-                 function saveEditedFile() {
-                      const editedContent = document.getElementById('fileContents').value;
-                      window.opener.saveEditedFile(editedContent); 
-                      window.close();
-                 }
-                
-                    // saveAndClose function for the child window
-                    async function saveAndClose() {
-                        const editedContent = document.getElementById('fileContents').value;
-                        //console.log('🔎', editedContent)
-                        if (window.opener){ //} && !window.opener.closed) {
-                            await window.opener.saveEditedFile(editedContent); 
-                        }
-                        window.close();
-                        
-                    }
-                </script>
-            </body>
-            </html>
-        `;
+        const p = document.createElement('p');
+        p.className = 'md-confirm-body';
+        p.textContent = message;
+        dialog.appendChild(p);
 
-        popOutWindow.document.write(newWindowHTML);
-        popOutWindow.document.close();
+        const actions = document.createElement('div');
+        actions.className = 'md-confirm-actions';
 
-        // Optional cleanup handlers
-        dialogContentContainer.style.display = 'none';
-        popOutWindow.onbeforeunload = function () {
-            dialogContentContainer.style.display = 'block';
-            popOutWindow = null;
-        };
+        const cancelBtn = document.createElement('button');
+        cancelBtn.className = 'md-confirm-btn md-confirm-btn--cancel';
+        cancelBtn.textContent = 'Cancel';
+        cancelBtn.onclick = () => { cleanup(); resolve(false); };
+        actions.appendChild(cancelBtn);
 
-    } else {
-        alert("Pop-up blocked! Please allow pop-ups for this feature.");
-    }
+        const confirmBtn = document.createElement('button');
+        confirmBtn.className = 'md-confirm-btn md-confirm-btn--confirm';
+        confirmBtn.textContent = 'Confirm';
+        confirmBtn.onclick = () => { cleanup(); resolve(true); };
+        actions.appendChild(confirmBtn);
+
+        dialog.appendChild(actions);
+        overlay.appendChild(dialog);
+
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) { cleanup(); resolve(false); }
+        });
+
+        document.body.appendChild(overlay);
+        requestAnimationFrame(() => overlay.classList.add('md-confirm--show'));
+        confirmBtn.focus();
+
+        function cleanup() {
+            overlay.classList.remove('md-confirm--show');
+            overlay.addEventListener('transitionend', () => overlay.remove(), { once: true });
+        }
+    });
+}
+window.showConfirm = showConfirm;
+
+// ── MD3 Three-way Confirmation (Save / Discard / Cancel) ──
+function showConfirmThreeWay(title, message) {
+    return new Promise(resolve => {
+        const existing = document.getElementById('md-confirm-overlay');
+        if (existing) existing.remove();
+
+        const overlay = document.createElement('div');
+        overlay.id = 'md-confirm-overlay';
+        overlay.className = 'md-confirm-overlay';
+
+        const dialog = document.createElement('div');
+        dialog.className = 'md-confirm-dialog';
+
+        const h = document.createElement('h3');
+        h.className = 'md-confirm-title';
+        h.textContent = title;
+        dialog.appendChild(h);
+
+        const p = document.createElement('p');
+        p.className = 'md-confirm-body';
+        p.textContent = message;
+        dialog.appendChild(p);
+
+        const actions = document.createElement('div');
+        actions.className = 'md-confirm-actions';
+
+        const discardBtn = document.createElement('button');
+        discardBtn.className = 'md-confirm-btn md-confirm-btn--confirm';
+        discardBtn.textContent = 'Discard';
+        discardBtn.onclick = () => { cleanup(); resolve('discard'); };
+        actions.appendChild(discardBtn);
+
+        const cancelBtn = document.createElement('button');
+        cancelBtn.className = 'md-confirm-btn md-confirm-btn--cancel';
+        cancelBtn.textContent = 'Cancel';
+        cancelBtn.onclick = () => { cleanup(); resolve('cancel'); };
+        actions.appendChild(cancelBtn);
+
+        const saveBtn = document.createElement('button');
+        saveBtn.className = 'md-confirm-btn md-confirm-btn--save';
+        saveBtn.textContent = 'Save';
+        saveBtn.onclick = () => { cleanup(); resolve('save'); };
+        actions.appendChild(saveBtn);
+
+        dialog.appendChild(actions);
+        overlay.appendChild(dialog);
+
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) { cleanup(); resolve('cancel'); }
+        });
+
+        document.body.appendChild(overlay);
+        requestAnimationFrame(() => overlay.classList.add('md-confirm--show'));
+        saveBtn.focus();
+
+        function cleanup() {
+            overlay.classList.remove('md-confirm--show');
+            overlay.addEventListener('transitionend', () => overlay.remove(), { once: true });
+        }
+    });
 }
 
     // ── Internal state ─────────────────────────────
