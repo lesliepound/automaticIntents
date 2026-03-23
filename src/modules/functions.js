@@ -68,9 +68,16 @@ Rules:
 
     console.log(model);
 
+    // Build debug metadata for result logging
+    const provider = model.startsWith('gpt-') ? 'openai' : 'groq';
+    const temp = provider === 'groq' ? 0.8 : undefined;
+    const toolNames = tools.map(t => t.function.name);
+    const sysHash = simpleHash(sysPrompt);
+
     let response;
+    const classifierStart = Date.now();
     try {
-        if (model.startsWith('gpt-')) {
+        if (provider === 'openai') {
             if (openai) {
                 response = await openai.chat.completions.create({
                     model: model,
@@ -79,7 +86,7 @@ Rules:
                     tool_choice: "auto",
                 });
             } else {
-                return { name: "fallback", arguments: "" };
+                return { name: "fallback", arguments: "", _debug: makeDebug(null) };
             }
         } else {
             if (groq) {
@@ -92,25 +99,45 @@ Rules:
                 });
             } else {
                 logThis('Groq not instantiated', getUninstantiatedBotError(BotName.GROQ));
-                return { name: "fallback", arguments: "" };
+                return { name: "fallback", arguments: "", _debug: makeDebug(null) };
             }
         }
 
-        if (response.choices[0].message.tool_calls?.length > 0) {
-            return response.choices[0].message.tool_calls[0].function;
+        const msg = response.choices[0].message;
+        const _debug = makeDebug(msg);
+
+        if (msg.tool_calls?.length > 0) {
+            return { ...msg.tool_calls[0].function, _debug };
         } else {
             console.log("No tool calls found. Sending to fallback");
-            return { name: "fallback", arguments: "" };
+            return { name: "fallback", arguments: "", _debug };
         }
 
-    // } catch (e) {
-    //     console.warn("Classifier failed, returning fallback.", e);
-    //     return { name: "fallback", arguments: "" };
-    // }
-} catch (e) {
-    console.warn("Classifier failed, returning fallback.", e);
-    return { name: "fallback", arguments: "" };
+    } catch (e) {
+        console.warn("Classifier failed, returning fallback.", e);
+        return { name: "fallback", arguments: "", _debug: makeDebug(null) };
+    }
+
+    function makeDebug(msg) {
+        return {
+            provider,
+            temperature: temp,
+            tools_count: tools.length,
+            tool_names: toolNames,
+            system_prompt_hash: sysHash,
+            raw_tool_calls: msg?.tool_calls ?? [],
+            raw_content: msg?.content ?? '',
+            latency_ms: Date.now() - classifierStart
+        };
+    }
 }
+
+function simpleHash(str) {
+    let h = 0;
+    for (let i = 0; i < str.length; i++) {
+        h = ((h << 5) - h + str.charCodeAt(i)) | 0;
+    }
+    return (h >>> 0).toString(16).padStart(8, '0');
 }
 
 async function runConversation(userInput, sysprompt, model = "llama-3.1-8b-instant") {

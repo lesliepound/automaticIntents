@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Result Viewer</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f7; color: #1d1d1f; padding: 24px; }
+        h1 { font-size: 1.4em; margin-bottom: 16px; }
+        .controls { margin-bottom: 20px; display: flex; gap: 12px; align-items: center; }
+        select { font-size: 14px; padding: 6px 10px; border-radius: 6px; border: 1px solid #ccc; }
+        .count { font-size: 13px; color: #666; }
+
+        /* Card grid — one card per log row */
+        .cards { display: flex; flex-direction: column; gap: 14px; }
+        .card {
+            background: #fff; border-radius: 10px; padding: 16px 20px;
+            box-shadow: 0 1px 3px rgba(0,0,0,.08);
+            display: grid; grid-template-columns: 1fr 1fr; gap: 6px 24px;
+        }
+        .card:hover { box-shadow: 0 2px 8px rgba(0,0,0,.12); }
+
+        /* Full-width rows */
+        .card .full { grid-column: 1 / -1; }
+        .card .prompt-row {
+            grid-column: 1 / -1;
+            font-size: 1.1em; font-weight: 600;
+            padding-bottom: 8px; margin-bottom: 4px;
+            border-bottom: 1px solid #eee;
+        }
+        .card .raw-row {
+            grid-column: 1 / -1;
+            background: #f8f8f8; border-radius: 6px;
+            padding: 8px 10px; margin-top: 4px;
+            font-family: 'SF Mono', Menlo, monospace; font-size: 12px;
+            white-space: pre-wrap; word-break: break-all;
+        }
+
+        .field { font-size: 13px; line-height: 1.5; }
+        .field .label { color: #888; font-size: 11px; text-transform: uppercase; letter-spacing: .5px; }
+        .field .value { font-weight: 500; }
+
+        /* Badges */
+        .badge {
+            display: inline-block; padding: 2px 8px; border-radius: 4px;
+            font-size: 11px; font-weight: 600; text-transform: uppercase;
+        }
+        .badge-option    { background: #e0f2e9; color: #1b7340; }
+        .badge-fallback  { background: #fce4e4; color: #b91c1c; }
+        .badge-clarify   { background: #fef3cd; color: #856404; }
+        .badge-prompt    { background: #dbeafe; color: #1d4ed8; }
+
+        .empty { text-align: center; padding: 60px; color: #999; font-size: 15px; }
+
+        /* Table view toggle */
+        .view-toggle { margin-left: auto; }
+        .view-toggle button { font-size: 12px; padding: 4px 10px; border: 1px solid #ccc; background: #fff; border-radius: 4px; cursor: pointer; }
+        .view-toggle button.active { background: #1d1d1f; color: #fff; border-color: #1d1d1f; }
+
+        table { width: 100%; border-collapse: collapse; font-size: 12px; background: #fff; border-radius: 8px; overflow: hidden; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+        th { background: #f0f0f0; text-align: left; padding: 8px 10px; font-weight: 600; white-space: nowrap; }
+        td { padding: 6px 10px; border-top: 1px solid #eee; max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        tr:hover td { background: #fafafa; }
+
+        /* Column filter */
+        .col-filter { position: relative; display: none; }
+        .col-filter.show { display: inline-block; }
+        .col-filter-btn { font-size: 12px; padding: 4px 10px; border: 1px solid #ccc; background: #fff; border-radius: 4px; cursor: pointer; }
+        .col-filter-panel {
+            display: none; position: absolute; top: 30px; right: 0; z-index: 10;
+            background: #fff; border: 1px solid #ddd; border-radius: 8px; padding: 10px 14px;
+            box-shadow: 0 4px 16px rgba(0,0,0,.12); max-height: 360px; overflow-y: auto; min-width: 220px;
+        }
+        .col-filter-panel.open { display: block; }
+        .col-filter-panel label { display: block; font-size: 12px; padding: 3px 0; cursor: pointer; white-space: nowrap; }
+        .col-filter-panel label input { margin-right: 6px; }
+        .col-filter-actions { display: flex; gap: 8px; margin-bottom: 6px; border-bottom: 1px solid #eee; padding-bottom: 6px; }
+        .col-filter-actions button { font-size: 11px; background: none; border: none; color: #007aff; cursor: pointer; padding: 0; }
+    </style>
+</head>
+<body>
+    <h1>Result Logs</h1>
+    <div class="controls">
+        <select id="filePicker"><option value="">Select a log file…</option></select>
+        <span class="count" id="rowCount"></span>
+        <div class="view-toggle">
+            <button id="btnCards" class="active" onclick="setView('cards')">Cards</button>
+            <button id="btnTable" onclick="setView('table')">Table</button>
+        </div>
+        <div class="col-filter" id="colFilter">
+            <button class="col-filter-btn" onclick="toggleFilterPanel()">Columns ▾</button>
+            <div class="col-filter-panel" id="colFilterPanel"></div>
+        </div>
+    </div>
+    <div id="content"><p class="empty">Select a log file above to view results.</p></div>
+
+<script>
+const picker = document.getElementById('filePicker');
+const contentEl = document.getElementById('content');
+const rowCountEl = document.getElementById('rowCount');
+let currentView = 'cards';
+let currentRows = [];
+let currentHeaders = [];
+
+// Default visible columns for table view
+const DEFAULT_VISIBLE = new Set([
+    'timestamp','prompt','parsed_intent','response_type','model',
+    'latency_ms','client_route','final_action','final_action_args'
+]);
+let visibleColumns = new Set(DEFAULT_VISIBLE);
+
+// Load file list
+fetch('/api/result-logs')
+    .then(r => r.json())
+    .then(files => {
+        files.forEach(f => {
+            const opt = document.createElement('option');
+            opt.value = f;
+            opt.textContent = f.replace('.csv', '');
+            picker.appendChild(opt);
+        });
+        // Auto-select most recent
+        if (files.length) {
+            picker.value = files[0];
+            loadFile(files[0]);
+        }
+    });
+
+picker.addEventListener('change', () => {
+    if (picker.value) loadFile(picker.value);
+});
+
+function loadFile(name) {
+    fetch('/api/result-logs/' + encodeURIComponent(name))
+        .then(r => r.text())
+        .then(csv => {
+            const parsed = parseCSV(csv);
+            currentHeaders = parsed.headers;
+            currentRows = parsed.rows;
+            rowCountEl.textContent = currentRows.length + ' entries';
+            buildFilterPanel();
+            render();
+        });
+}
+
+function parseCSV(text) {
+    const rows = parseCsvRows(text.trim());
+    if (!rows.length) return { headers: [], rows: [] };
+    const headers = rows[0];
+    const data = rows.slice(1).map(vals => {
+        const obj = {};
+        headers.forEach((h, i) => obj[h] = vals[i] || '');
+        return obj;
+    });
+    return { headers, rows: data };
+}
+
+// Full CSV parser that handles quoted fields with commas, quotes, and newlines
+function parseCsvRows(text) {
+    const rows = [];
+    let fields = [];
+    let current = '';
+    let inQuotes = false;
+    for (let i = 0; i < text.length; i++) {
+        const ch = text[i];
+        if (inQuotes) {
+            if (ch === '"' && text[i + 1] === '"') {
+                current += '"';
+                i++;
+            } else if (ch === '"') {
+                inQuotes = false;
+            } else {
+                current += ch;
+            }
+        } else {
+            if (ch === '"') {
+                inQuotes = true;
+            } else if (ch === ',') {
+                fields.push(current);
+                current = '';
+            } else if (ch === '\n' || (ch === '\r' && text[i + 1] === '\n')) {
+                if (ch === '\r') i++; // skip \n after \r
+                fields.push(current);
+                current = '';
+                rows.push(fields);
+                fields = [];
+            } else {
+                current += ch;
+            }
+        }
+    }
+    // last field / last row
+    if (current || fields.length) {
+        fields.push(current);
+        rows.push(fields);
+    }
+    return rows;
+}
+
+function setView(view) {
+    currentView = view;
+    document.getElementById('btnCards').classList.toggle('active', view === 'cards');
+    document.getElementById('btnTable').classList.toggle('active', view === 'table');
+    document.getElementById('colFilter').classList.toggle('show', view === 'table');
+    render();
+}
+
+function toggleFilterPanel() {
+    const panel = document.getElementById('colFilterPanel');
+    panel.classList.toggle('open');
+}
+
+function buildFilterPanel() {
+    const panel = document.getElementById('colFilterPanel');
+    let html = '<div class="col-filter-actions">';
+    html += '<button onclick="setAllCols(true)">All</button>';
+    html += '<button onclick="setAllCols(false)">None</button>';
+    html += '<button onclick="resetCols()">Default</button>';
+    html += '</div>';
+    currentHeaders.forEach(h => {
+        const checked = visibleColumns.has(h) ? 'checked' : '';
+        html += `<label><input type="checkbox" value="${esc(h)}" ${checked} onchange="toggleCol(this)">${esc(h)}</label>`;
+    });
+    panel.innerHTML = html;
+}
+
+function toggleCol(cb) {
+    if (cb.checked) visibleColumns.add(cb.value);
+    else visibleColumns.delete(cb.value);
+    render();
+}
+
+function setAllCols(on) {
+    if (on) currentHeaders.forEach(h => visibleColumns.add(h));
+    else visibleColumns.clear();
+    buildFilterPanel();
+    render();
+}
+
+function resetCols() {
+    visibleColumns = new Set(DEFAULT_VISIBLE);
+    buildFilterPanel();
+    render();
+}
+
+function render() {
+    if (!currentRows.length) {
+        contentEl.innerHTML = '<p class="empty">No entries in this file.</p>';
+        return;
+    }
+    if (currentView === 'cards') renderCards();
+    else renderTable();
+}
+
+function badge(type) {
+    const cls = type === 'fallback' ? 'badge-fallback'
+        : type === 'clarifying_question' ? 'badge-clarify'
+        : type === '@prompt' ? 'badge-prompt'
+        : 'badge-option';
+    return `<span class="badge ${cls}">${esc(type)}</span>`;
+}
+
+function field(label, value) {
+    return `<div class="field"><div class="label">${esc(label)}</div><div class="value">${esc(value)}</div></div>`;
+}
+
+function esc(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function prettyJson(s) {
+    try { return JSON.stringify(JSON.parse(s), null, 2); } catch { return s; }
+}
+
+function renderCards() {
+    const html = currentRows.map(r => `
+        <div class="card">
+            <div class="prompt-row">"${esc(r.prompt)}"</div>
+            <div class="field full">${badge(r.response_type)} &nbsp; <span style="color:#888;font-size:12px">${esc(r.timestamp)}</span></div>
+            ${field('Intent', r.parsed_intent)}
+            ${field('Model', r.model)}
+            ${field('Provider', r.provider)}
+            ${field('Story', r.story)}
+            ${field('Latency', r.latency_ms + ' ms')}
+            ${field('Temperature', r.temperature)}
+            ${field('Tools Count', r.tools_count)}
+            ${field('Client Route', r.client_route)}
+            ${field('Affordance Valid', r.affordance_valid)}
+            ${field('Slot Swap', r.slot_swap)}
+            ${field('Final Action', r.final_action)}
+            ${field('Final Action Args', r.final_action_args)}
+            ${field('Sys Prompt Hash', r.system_prompt_hash)}
+            ${field('Tool Names', (r.tool_names || '').replace(/\|/g, ', '))}
+            <div class="full" style="margin-top:6px">
+                <div class="field"><div class="label">Parsed Arguments</div></div>
+                <div class="raw-row">${esc(prettyJson(r.parsed_arguments))}</div>
+            </div>
+            <div class="full">
+                <div class="field"><div class="label">Raw Tool Calls</div></div>
+                <div class="raw-row">${esc(prettyJson(r.raw_response_tool_calls))}</div>
+            </div>
+            ${r.raw_response_content ? `<div class="full">
+                <div class="field"><div class="label">Raw Response Content</div></div>
+                <div class="raw-row">${esc(r.raw_response_content)}</div>
+            </div>` : ''}
+        </div>
+    `).join('');
+    contentEl.innerHTML = '<div class="cards">' + html + '</div>';
+}
+
+function renderTable() {
+    const cols = currentHeaders.filter(h => visibleColumns.has(h));
+    const ths = cols.map(h => `<th>${esc(h)}</th>`).join('');
+    const trs = currentRows.map(r => {
+        const tds = cols.map(h => `<td title="${esc(r[h])}">${esc(r[h])}</td>`).join('');
+        return `<tr>${tds}</tr>`;
+    }).join('');
+    contentEl.innerHTML = `<div style="overflow-x:auto"><table><thead><tr>${ths}</tr></thead><tbody>${trs}</tbody></table></div>`;
+}
+</script>
+</body>
+</html>

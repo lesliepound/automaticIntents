@@ -896,6 +896,22 @@ const transformText = (input) => {
         // 2. Convert * item to <li>item</li>
         .replace(/^\*\s+(.*)$/gm, '<li>$1</li>');
 };
+
+// ── Result Logging ──────────────────────────────────────
+function logResult(fields) {
+    const now = new Date();
+    const row = {
+        timestamp: now.toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true }),
+        date: now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' }),
+        ...fields
+    };
+    fetch('/log-result', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(row),
+    }).catch(err => console.warn('logResult failed:', err));
+}
+
 async function handleSend() {
 
     // ─────────────────────────────────────────────
@@ -958,6 +974,29 @@ async function handleSend() {
         return null;
     }
 
+    // Build base log fields from _debug metadata
+    const _d = responseObject._debug || {};
+    const baseLog = {
+        story: getActiveChatId(),
+        model,
+        provider: _d.provider || '',
+        prompt,
+        system_prompt_hash: _d.system_prompt_hash || '',
+        tools_count: _d.tools_count || '',
+        tool_names: (_d.tool_names || []).join('|'),
+        temperature: _d.temperature ?? '',
+        raw_response_tool_calls: JSON.stringify(_d.raw_tool_calls || []),
+        raw_response_content: _d.raw_content || '',
+        parsed_intent: responseObject.name,
+        parsed_arguments: responseObject.arguments || '',
+        response_type: responseObject.name === 'fallback' ? 'fallback'
+            : responseObject.name === 'clarifying_question' ? 'clarifying_question'
+            : responseObject.name.includes('@prompt') ? '@prompt'
+            : 'option',
+        is_fallback: responseObject.name === 'fallback',
+        latency_ms: _d.latency_ms || ''
+    };
+
 
     // ─────────────────────────────────────────────
     // 4. GUIDED CLARIFICATION
@@ -968,6 +1007,7 @@ async function handleSend() {
     const question = optionalQuestion(responseObject);
     if (question) {
         console.log('AI requesting clarification');
+        logResult({ ...baseLog, client_route: 'clarifying_question', final_action: 'displayPage' });
         displayPage(0, question);
         return;
     }
@@ -985,6 +1025,7 @@ async function handleSend() {
         const fileToSkim = await getData(resourceFile);
         console.log('prompt', prompt);
         console.log('fileToSkim', fileToSkim);
+        logResult({ ...baseLog, client_route: '@prompt_passthrough', final_action: 'directChat' });
         directChat(prompt, fileToSkim);
         return;
     }
@@ -1001,7 +1042,10 @@ async function handleSend() {
         const fallbackResource = currentPage.fallbackResource;
         if (fallbackResource) {
             const fileData = await getData(fallbackResource);
+            logResult({ ...baseLog, client_route: 'fallback_resource', final_action: 'directChat' });
             directChat(prompt, fileData);
+        } else {
+            logResult({ ...baseLog, client_route: 'fallback_dead_end', final_action: 'none' });
         }
         return;
     }
@@ -1054,10 +1098,25 @@ async function handleSend() {
         }
 
         // If the primary slot isn't on the page, swap slot order
+        let slotSwapped = false;
         if (slots.length > 1 && !targetPage.affordances?.[slots[0].value]) {
             console.log(`🔄 Swapping slots: ${slots[0].value} not found, trying ${slots[1].value}`);
             [slots[0], slots[1]] = [slots[1], slots[0]];
+            slotSwapped = true;
         }
+
+        const primary = slots[0]?.value || '';
+        const affordValid = !!targetPage.affordances?.[primary]?.includes(category);
+        const actionArgs = slots.map(s => s.value).join('|');
+
+        logResult({
+            ...baseLog,
+            client_route: 'simulation',
+            affordance_valid: affordValid,
+            slot_swap: slotSwapped,
+            final_action: category,
+            final_action_args: actionArgs
+        });
 
         processAction(targetPage, category, slots);
 
@@ -1069,6 +1128,7 @@ async function handleSend() {
         // ─────────────────────────────────────────────
 
     } else {
+        logResult({ ...baseLog, client_route: 'standard_page', final_action: 'displayPage' });
         displayPage(pageIndex, "");
         processPageActions(pageIndex);
     }

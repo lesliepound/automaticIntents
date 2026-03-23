@@ -9,6 +9,9 @@ import {generateSpeech} from "./src/modules/tts.js";
 const port = 3001;
 const host = 'localhost';
 
+// Ensure result-logs directory exists
+fs.mkdirSync('result-logs', { recursive: true });
+
 
 
 // Setting up middleware
@@ -185,6 +188,62 @@ app.post('/middleware', async (req, res) => {
         logThis("Error:", error);
         res.status(500).json({error: "Internal Server Error"});
     }
+});
+
+// ── CSV Result Logging ──────────────────────────────────
+const CSV_COLUMNS = [
+    'timestamp','date','story','model','provider','prompt',
+    'system_prompt_hash','tools_count','tool_names','temperature',
+    'raw_response_tool_calls','raw_response_content',
+    'parsed_intent','parsed_arguments','response_type','is_fallback',
+    'latency_ms','client_route','affordance_valid','slot_swap',
+    'final_action','final_action_args'
+];
+
+function escapeCsvField(value) {
+    const str = String(value ?? '');
+    if (str.includes(',') || str.includes('"') || str.includes('\n') || str.includes('\r')) {
+        return '"' + str.replace(/"/g, '""') + '"';
+    }
+    return str;
+}
+
+app.post('/log-result', (req, res) => {
+    const row = req.body;
+    const now = new Date();
+    const dateStr = now.toISOString().slice(0, 10);
+    const csvPath = path.join('result-logs', `${dateStr}.csv`);
+
+    const fileExists = fs.existsSync(csvPath);
+    if (!fileExists) {
+        fs.writeFileSync(csvPath, CSV_COLUMNS.join(',') + '\n');
+    }
+
+    const line = CSV_COLUMNS.map(col => escapeCsvField(row[col])).join(',') + '\n';
+    fs.appendFileSync(csvPath, line);
+    res.json({ ok: true });
+});
+
+// ── Result Log API (for viewer) ─────────────────────────
+app.get('/api/result-logs', (req, res) => {
+    const dir = 'result-logs';
+    const files = fs.readdirSync(dir)
+        .filter(f => f.endsWith('.csv'))
+        .sort()
+        .reverse();
+    res.json(files);
+});
+
+app.get('/api/result-logs/:filename', (req, res) => {
+    const name = path.basename(req.params.filename);
+    if (!name.endsWith('.csv') || name.includes('..')) {
+        return res.status(400).json({ error: 'Invalid filename' });
+    }
+    const filePath = path.join('result-logs', name);
+    if (!fs.existsSync(filePath)) {
+        return res.status(404).json({ error: 'Not found' });
+    }
+    res.type('text/csv').sendFile(path.resolve(filePath));
 });
 
 export function logThis(message) {
