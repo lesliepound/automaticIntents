@@ -20,3 +20,5 @@ result-logs/
 .claude/worktrees/relaxed-burnell/
 .claude/worktrees/vigorous-germain/
 pins.txt
+Intent classifier with model \[    \].md
+analytics.jsonl

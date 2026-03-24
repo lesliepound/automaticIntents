@@ -62,3 +62,6 @@
 {"ts":"2026-03-23T02:16:24.498Z","source":"live","story":"ER","model":"llama-3.1-8b-instant","prompt":"give pills to the patient","intent":"fallback","slots":{},"fallback":true,"latency_ms":495}
 {"ts":"2026-03-23T02:16:24.874Z","source":"live","story":"ER","model":"llama-3.1-8b-instant","prompt":"give pills to the patient","intent":"fallback","slots":{},"fallback":true,"latency_ms":656}
 {"ts":"2026-03-23T02:16:25.014Z","source":"live","story":"ER","model":"llama-3.1-8b-instant","prompt":"give pills to the patient","intent":"movable","slots":{"item-to-move":"pills","the-target-item":"patient"},"fallback":false,"latency_ms":651}
+{"ts":"2026-03-23T06:06:53.517Z","source":"live","story":"ER","model":"llama-3.1-8b-instant","prompt":"give me a tester","intent":"fallback","slots":{"name":"fallback"},"fallback":true,"latency_ms":466}
+{"ts":"2026-03-23T06:06:54.928Z","source":"live","story":"ER","model":"llama-3.1-8b-instant","prompt":"give me a tester","intent":"fallback","slots":{},"fallback":true,"latency_ms":369}
+{"ts":"2026-03-23T06:06:55.038Z","source":"live","story":"ER","model":"llama-3.1-8b-instant","prompt":"give me a tester","intent":"fallback","slots":{"message":"No match found for the user input"},"fallback":true,"latency_ms":313}
