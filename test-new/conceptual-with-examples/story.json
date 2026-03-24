@@ -1,0 +1,18 @@
+{
+  "pages": [
+    {
+      "id": "dogPage",
+      "type": "simulation",
+      "foreground": ["dog"],
+      "text": "You see a dog in front of you.",
+      "options": [
+        {
+          "option": "get me the dog; a domesticated canine; a pet that barks and wags its tail",
+          "extra": "fetch the puppy; bring the hound; I want the pooch; give me the good boy",
+          "nextSlideId": "bark"
+        }
+      ]
+    }
+  ],
+  "startPageId": "dogPage"
+}

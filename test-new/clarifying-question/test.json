@@ -1,0 +1,10 @@
+{
+  "page": "toyPage",
+  "tests": [
+    { "prompt": "I want to play with that thing", "expect": "clarifying_question", "category": "ambiguous" },
+    { "prompt": "give me one of those", "expect": "clarifying_question", "category": "ambiguous" },
+    { "prompt": "let me play", "expect": "clarifying_question", "category": "ambiguous" },
+    { "prompt": "I want to play with the ball", "expect": "bounce", "category": "specific-control" },
+    { "prompt": "make some chocolate cake", "expect": "fallback", "category": "unrelated-control" }
+  ]
+}

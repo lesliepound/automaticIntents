@@ -14,8 +14,6 @@ The goal here is
 This was based off of auto Intents
 # Getting started
 
-
-
 ## Helpful Tools
 ### using `nvm`
 

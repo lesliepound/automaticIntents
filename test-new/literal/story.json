@@ -1,0 +1,17 @@
+{
+  "pages": [
+    {
+      "id": "dogPage",
+      "type": "simulation",
+      "foreground": ["dog"],
+      "text": "You see a dog in front of you.",
+      "options": [
+        {
+          "option": "get me the dog",
+          "nextSlideId": "bark"
+        }
+      ]
+    }
+  ],
+  "startPageId": "dogPage"
+}

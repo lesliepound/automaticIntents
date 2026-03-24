@@ -44,18 +44,30 @@ function setListeners() {
     const elements = {
         'info-button': () => showDialogBox('dialog1'),
         'settings-button': () => showDialogBox('dialog2'),
-        'detach-button': popOutDialog,   // pops into seperate dialog
         'edit-button': editDialog,   // shows chat meachnics file
         'fetch-button': getFile,     // fetches latest copy of chat
+        'fe-close-btn': closeEditorDialog,
+        'fe-view-json-btn': () => { if (window.formEditor) window.formEditor._showJsonPreview(); },
         'model': handleModelChange
     };
 
     Object.entries(elements).forEach(([id, handler]) => {
-        document.getElementById(id).addEventListener('click', handler);
+        const el = document.getElementById(id);
+        if (el) el.addEventListener('click', handler);
     });
 
     document.querySelectorAll('.close-button').forEach(button => {
         button.addEventListener('click', closeDialog);
+    });
+
+    // Backdrop click closes modals
+    document.querySelectorAll('.modal').forEach(modal => {
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) {
+                if (modal.id === 'dialog3') { closeEditorDialog(); }
+                else { modal.style.display = 'none'; }
+            }
+        });
     });
     const toggle = document.getElementById('traffic');
     if (toggle) {
@@ -206,14 +218,114 @@ function showDialogBox(modalId) {
     document.getElementById(modalId).style.display = 'block';
 }
 
+/* ═══ MD3 Toast / Snackbar ═══ */
+function showToast(message, type = 'info') {
+    const toast = document.createElement('div');
+    toast.className = `md-snackbar md-snackbar--${type}`;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    requestAnimationFrame(() => {
+        toast.classList.add('md-snackbar--visible');
+    });
+    setTimeout(() => {
+        toast.classList.remove('md-snackbar--visible');
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
+/* ═══ MD3 Confirm Dialog (2-button) ═══ */
+function showConfirm(title, message) {
+    return new Promise((resolve) => {
+        const overlay = document.createElement('div');
+        overlay.className = 'md-confirm-overlay';
+        const dialog = document.createElement('div');
+        dialog.className = 'md-confirm-dialog';
+        dialog.innerHTML =
+            `<div class="md-confirm-title">${escapeHtml(title)}</div>` +
+            `<div class="md-confirm-message">${escapeHtml(message)}</div>` +
+            `<div class="md-confirm-actions">` +
+                `<button class="md-confirm-btn md-confirm-btn--cancel">Cancel</button>` +
+                `<button class="md-confirm-btn md-confirm-btn--confirm">Confirm</button>` +
+            `</div>`;
+        overlay.appendChild(dialog);
+        function close(val) { overlay.remove(); resolve(val); }
+        overlay.addEventListener('click', (e) => { if (e.target === overlay) close(false); });
+        dialog.querySelector('.md-confirm-btn--cancel').onclick = () => close(false);
+        dialog.querySelector('.md-confirm-btn--confirm').onclick = () => close(true);
+        document.body.appendChild(overlay);
+    });
+}
+window.showConfirm = showConfirm;
+
+function escapeHtml(str) {
+    const d = document.createElement('div');
+    d.textContent = str;
+    return d.innerHTML;
+}
+
+/* ═══ MD3 Three-Way Confirm Dialog ═══ */
+function showConfirmThreeWay(title, message, saveLabel, discardLabel, cancelLabel) {
+    return new Promise((resolve) => {
+        const overlay = document.createElement('div');
+        overlay.className = 'md-confirm-overlay';
+        const dialog = document.createElement('div');
+        dialog.className = 'md-confirm-dialog';
+        dialog.innerHTML =
+            `<div class="md-confirm-title">${escapeHtml(title)}</div>` +
+            `<div class="md-confirm-message">${escapeHtml(message)}</div>` +
+            `<div class="md-confirm-actions">` +
+                `<button class="md-confirm-btn md-confirm-btn--cancel">${escapeHtml(cancelLabel)}</button>` +
+                `<button class="md-confirm-btn md-confirm-btn--discard">${escapeHtml(discardLabel)}</button>` +
+                `<button class="md-confirm-btn md-confirm-btn--save">${escapeHtml(saveLabel)}</button>` +
+            `</div>`;
+        overlay.appendChild(dialog);
+        function close(val) { overlay.remove(); resolve(val); }
+        overlay.addEventListener('click', (e) => { if (e.target === overlay) close(null); });
+        dialog.querySelector('.md-confirm-btn--cancel').onclick = () => close(null);
+        dialog.querySelector('.md-confirm-btn--discard').onclick = () => close('discard');
+        dialog.querySelector('.md-confirm-btn--save').onclick = () => close('save');
+        document.body.appendChild(overlay);
+    });
+}
+
+/* ═══ Close Editor Dialog (with unsaved-changes guard) ═══ */
+async function closeEditorDialog() {
+    const dialog = document.getElementById('dialog3');
+    if (window.formEditor && window.formEditor.isDirty()) {
+        const result = await showConfirmThreeWay(
+            'Unsaved changes',
+            'You have unsaved changes. What would you like to do?',
+            'Save & Close',
+            'Discard',
+            'Cancel'
+        );
+        if (result === 'save') {
+            await saveEditedFile(true); // true = skip confirm, auto-close
+            dialog.style.display = 'none';
+        } else if (result === 'discard') {
+            dialog.style.display = 'none';
+            window.formEditor = null;
+        } else {
+            return; // Cancel — stay open
+        }
+    } else {
+        dialog.style.display = 'none';
+        window.formEditor = null;
+    }
+}
+
 
 function closeDialog(event) {
-    if (!event.target.classList.contains('close-button')) {
+    if (!event || !event.target || !event.target.classList.contains('close-button')) {
         return;
     }
-    let modal;
-    modal = document.querySelector('.modal[style*="display: block"], .modal:not([style*="display: none"])');
-    modal.style.display = 'none';
+    const modal = event.target.closest('.modal');
+    if (!modal) return;
+    if (modal.id === 'dialog3') {
+        closeEditorDialog();
+    } else {
+        modal.style.display = 'none';
+    }
 }
 
 function handleModelChange(event) {
@@ -1267,18 +1379,36 @@ document.addEventListener("DOMContentLoaded", function () {
 /* Chat Mechanics */
 
 async function getFile(event) {
-    let fileName = document.getElementById('fileName').value;
-    const urlName = "/chat/examples/" + fileName
-    if (fileName) {
+    const fileName = document.getElementById('fileName').value;
+    if (!fileName) return;
+    const urlName = "/chat/examples/" + fileName;
+    try {
         const response = await fetch(urlName, {
             method: 'GET',
-            headers: {'Content-Type': 'application/json'}// Stringify for sending
+            headers: {'Content-Type': 'application/json'}
         });
         const fileData = await response.json();
-        const formattedJson = JSON.stringify(fileData, null, 2); // 2 spaces for indentation
-        document.getElementById("fileContents").value = formattedJson;
-        scrollTextareaToChar(16)
-
+        const container = document.getElementById('formEditorContainer');
+        container.innerHTML = '';
+        window.formEditor = new FormEditor(fileData, container);
+        // Dirty-state listener — poll on input/change events
+        const saveBar = document.getElementById('fe-save-bar');
+        if (saveBar) {
+            const updateSaveBar = () => {
+                if (window.formEditor && window.formEditor.isDirty()) {
+                    saveBar.classList.remove('fe-save-bar--hidden');
+                } else {
+                    saveBar.classList.add('fe-save-bar--hidden');
+                }
+            };
+            container.addEventListener('input', updateSaveBar);
+            container.addEventListener('change', updateSaveBar);
+            container.addEventListener('click', () => setTimeout(updateSaveBar, 50));
+            saveBar.classList.add('fe-save-bar--hidden');
+        }
+    } catch (err) {
+        console.error('Error fetching file:', err);
+        showToast('Error loading file', 'error');
     }
 }
 //consilidate with getFile LDP
@@ -1355,113 +1485,40 @@ function editDialog() {
     document.getElementById('focalChat').innerHTML = " " + filename;
     document.getElementById('fileName').value = filename + "/story.json";
     showDialogBox('dialog3');
+    getFile(); // Auto-load the form editor
 }
 
-window.saveEditedFile = async function (newContent) {
-
-    let fileContents = (newContent) ? newContent : document.getElementById('fileContents').value;
-    //this saves edits
+window.saveEditedFile = async function (skipConfirm) {
     const fileName = document.getElementById('fileName').value;
+    let fileContents;
 
-    const response = await fetch('/create-file', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({fileName, fileContents}),
-    });
-
-    if (response.ok) {
-        alert(" ✓ file edited successfully!");
+    if (window.formEditor) {
+        fileContents = window.formEditor.toJSON();
     } else {
-        alert(" ✗ error editing file.");
-    }
-    closeDialog();
-}
-
-
-let popOutWindow;
-
-function popOutDialog() {
-    const features = 'width=650,height=600,resizable=yes,scrollbars=yes';
-    const dialogContentContainer = document.getElementById('dialog3');
-    const textareaElement = document.getElementById('fileContents'); // Assuming this is inside #dialog3
-
-    if (!dialogContentContainer || !textareaElement) {
-        console.error("Error: Required elements not found. Check IDs: #dialog3 and #fileContents.");
+        showToast('No editor data to save', 'error');
         return;
     }
 
-    const liveTextValue = textareaElement.value;
+    if (!skipConfirm) {
+        const ok = await showConfirm('Save file?', `Overwrite ${fileName}?`);
+        if (!ok) return;
+    }
 
-    //  Get the default HTML (which is MISSING from the placeholder)
-    let contentHTML = dialogContentContainer.innerHTML;
+    const response = await fetch('/create-file', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ fileName, fileContents }),
+    });
 
-    popOutWindow = window.open('about:blank', 'DialogPopOut', features);
-    if (popOutWindow) {
-        const placeholderTextareaTag = '<textarea id="fileContents"'; // Start of tag
-        const newTextareaTag = `${placeholderTextareaTag} rows="20" cols="80">${liveTextValue}</textarea>`;
-
-        // For simplicity and safety, let's use a temporary attribute method on the live element:
-        textareaElement.textContent = liveTextValue;
-        contentHTML = dialogContentContainer.innerHTML;
-        textareaElement.textContent = ''; // Reset parent for next time
-
-        const newWindowHTML = `
-            <!DOCTYPE html>
-            <html>
-          <head>    <link rel="stylesheet" href="/style/style.css">
-         <link rel="stylesheet" href="/style/char.css">
-         <link rel="preconnect" href="https://fonts.googleapis.com">
-         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-         <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
-         <link rel="preconnect" href="https://fonts.googleapis.com">
-         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-         <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
-               rel="stylesheet">
- 
-                <title>File Editor</title>
-                <style>
-                    body { font-family: sans-serif; padding: 10px; margin: 0; }
-                </style>
-            </head>
-            <body>
-                ${contentHTML} 
-                
-                <script>
-                 function saveEditedFile() {
-                      const editedContent = document.getElementById('fileContents').value;
-                      window.opener.saveEditedFile(editedContent); 
-                      window.close();
-                 }
-                
-                    // saveAndClose function for the child window
-                    async function saveAndClose() {
-                        const editedContent = document.getElementById('fileContents').value;
-                        //console.log('🔎', editedContent)
-                        if (window.opener){ //} && !window.opener.closed) {
-                            await window.opener.saveEditedFile(editedContent); 
-                        }
-                        window.close();
-                        
-                    }
-                </script>
-            </body>
-            </html>
-        `;
-
-        popOutWindow.document.write(newWindowHTML);
-        popOutWindow.document.close();
-
-        // Optional cleanup handlers
-        dialogContentContainer.style.display = 'none';
-        popOutWindow.onbeforeunload = function () {
-            dialogContentContainer.style.display = 'block';
-            popOutWindow = null;
-        };
-
+    if (response.ok) {
+        showToast('File saved successfully', 'success');
+        if (window.formEditor) {
+            window.formEditor.markClean();
+            const saveBar = document.getElementById('fe-save-bar');
+            if (saveBar) saveBar.classList.add('fe-save-bar--hidden');
+        }
     } else {
-        alert("Pop-up blocked! Please allow pop-ups for this feature.");
+        showToast('Error saving file', 'error');
     }
 }
 

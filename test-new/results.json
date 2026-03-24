@@ -1,0 +1,173 @@
+{
+  "timestamp": "2026-03-24T15:39:59.964Z",
+  "model": "llama-3.1-8b-instant",
+  "totalPassed": 15,
+  "totalTests": 26,
+  "suites": [
+    {
+      "name": "clarifying-question",
+      "passed": 0,
+      "total": 5,
+      "rows": [
+        {
+          "prompt": "I want to play with that thing",
+          "expect": "clarifying_question",
+          "actual": "fallback"
+        },
+        {
+          "prompt": "give me one of those",
+          "expect": "clarifying_question",
+          "actual": "fallback"
+        },
+        {
+          "prompt": "let me play",
+          "expect": "clarifying_question",
+          "actual": "fallback"
+        },
+        {
+          "prompt": "I want to play with the ball",
+          "expect": "bounce",
+          "actual": "fallback"
+        },
+        {
+          "prompt": "make some chocolate cake",
+          "expect": "fallback",
+          "actual": "clarifying_question"
+        }
+      ]
+    },
+    {
+      "name": "conceptual",
+      "passed": 4,
+      "total": 6,
+      "rows": [
+        {
+          "prompt": "get me man's best friend",
+          "expect": "bark",
+          "actual": "bark"
+        },
+        {
+          "prompt": "I want the four-legged companion",
+          "expect": "bark",
+          "actual": "bark"
+        },
+        {
+          "prompt": "bring me the loyal pet",
+          "expect": "bark",
+          "actual": "bark"
+        },
+        {
+          "prompt": "fetch the animal that barks",
+          "expect": "bark",
+          "actual": "fallback"
+        },
+        {
+          "prompt": "get me the swimming creature",
+          "expect": "fallback",
+          "actual": "bark"
+        },
+        {
+          "prompt": "ill be bach",
+          "expect": "fallback",
+          "actual": "fallback"
+        }
+      ]
+    },
+    {
+      "name": "conceptual-with-examples",
+      "passed": 3,
+      "total": 5,
+      "rows": [
+        {
+          "prompt": "get me man's best friend",
+          "expect": "bark",
+          "actual": "bark"
+        },
+        {
+          "prompt": "I want the four-legged companion",
+          "expect": "bark",
+          "actual": "fallback"
+        },
+        {
+          "prompt": "bring me the loyal pet",
+          "expect": "bark",
+          "actual": "bark"
+        },
+        {
+          "prompt": "fetch the animal that barks",
+          "expect": "bark",
+          "actual": "bark"
+        },
+        {
+          "prompt": "get me the swimming creature",
+          "expect": "fallback",
+          "actual": "bark"
+        }
+      ]
+    },
+    {
+      "name": "literal",
+      "passed": 4,
+      "total": 5,
+      "rows": [
+        {
+          "prompt": "get me the dog",
+          "expect": "bark",
+          "actual": "bark"
+        },
+        {
+          "prompt": "Get me the dog",
+          "expect": "bark",
+          "actual": "fallback"
+        },
+        {
+          "prompt": "get me the dog please",
+          "expect": "bark",
+          "actual": "bark"
+        },
+        {
+          "prompt": "I want to get the dog",
+          "expect": "bark",
+          "actual": "bark"
+        },
+        {
+          "prompt": "get me the cat",
+          "expect": "fallback",
+          "actual": "fallback"
+        }
+      ]
+    },
+    {
+      "name": "synonyms",
+      "passed": 4,
+      "total": 5,
+      "rows": [
+        {
+          "prompt": "get me the canine",
+          "expect": "bark",
+          "actual": "bark"
+        },
+        {
+          "prompt": "fetch the hound",
+          "expect": "bark",
+          "actual": "bark"
+        },
+        {
+          "prompt": "bring me the puppy",
+          "expect": "bark",
+          "actual": "bark"
+        },
+        {
+          "prompt": "hand me the pooch",
+          "expect": "bark",
+          "actual": "bark"
+        },
+        {
+          "prompt": "get me the feline",
+          "expect": "fallback",
+          "actual": "bark"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Intent Classifier — Test Results</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<style>
+  :root {
+    --md-sys-color-primary: #6750A4;
+    --md-sys-color-on-primary: #FFFFFF;
+    --md-sys-color-primary-container: #EADDFF;
+    --md-sys-color-on-primary-container: #21005D;
+    --md-sys-color-surface: #FEF7FF;
+    --md-sys-color-surface-container: #F3EDF7;
+    --md-sys-color-surface-container-low: #F7F2FA;
+    --md-sys-color-surface-container-high: #ECE6F0;
+    --md-sys-color-on-surface: #1D1B20;
+    --md-sys-color-on-surface-variant: #49454F;
+    --md-sys-color-outline: #79747E;
+    --md-sys-color-outline-variant: #CAC4D0;
+    --md-sys-color-error: #B3261E;
+    --md-sys-color-error-container: #F9DEDC;
+    --md-sys-color-on-error-container: #410E0B;
+    --md-sys-color-tertiary: #7D5260;
+    --md-sys-color-tertiary-container: #FFD8E4;
+    --md-pass: #386A20;
+    --md-pass-container: #D4F5B5;
+    --md-fail: #BA1A1A;
+    --md-fail-container: #FFDAD6;
+    --md-info: #0061A4;
+    --md-info-container: #D1E4FF;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Roboto', sans-serif;
+    background: var(--md-sys-color-surface);
+    color: var(--md-sys-color-on-surface);
+    min-height: 100vh;
+  }
+
+  /* Top app bar */
+  .top-bar {
+    background: var(--md-sys-color-surface);
+    padding: 16px 24px 8px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .top-bar h1 {
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: var(--md-sys-color-on-surface);
+    margin-bottom: 4px;
+  }
+  .meta {
+    font-size: 0.875rem;
+    color: var(--md-sys-color-on-surface-variant);
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .meta .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--md-sys-color-surface-container);
+    border: 1px solid var(--md-sys-color-outline-variant);
+    border-radius: 8px;
+    padding: 4px 12px;
+    font-size: 0.8rem;
+  }
+  .meta .chip .material-icons { font-size: 16px; color: var(--md-sys-color-on-surface-variant); }
+
+  .content { padding: 0 24px 32px; max-width: 1200px; margin: 0 auto; }
+
+  /* Filter chips */
+  .filters { display: flex; gap: 8px; margin: 16px 0; }
+  .filter-chip {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--md-sys-color-surface);
+    border: 1px solid var(--md-sys-color-outline);
+    border-radius: 8px;
+    padding: 6px 16px;
+    font-size: 0.8125rem;
+    font-family: 'Roboto', sans-serif;
+    cursor: pointer;
+    color: var(--md-sys-color-on-surface-variant);
+    transition: all 0.2s;
+  }
+  .filter-chip:hover { background: var(--md-sys-color-surface-container-low); }
+  .filter-chip.active {
+    background: var(--md-sys-color-primary-container);
+    border-color: transparent;
+    color: var(--md-sys-color-on-primary-container);
+  }
+  .filter-chip .material-icons { font-size: 18px; }
+
+  /* History selector */
+  .history-select {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.8125rem;
+  }
+  .history-select select {
+    background: var(--md-sys-color-surface);
+    border: 1px solid var(--md-sys-color-outline);
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.8125rem;
+    color: var(--md-sys-color-on-surface);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .history-select select:hover {
+    border-color: var(--md-sys-color-primary);
+    background: var(--md-sys-color-surface-container);
+  }
+  .history-select select:focus {
+    outline: 2px solid var(--md-sys-color-primary);
+    outline-offset: 2px;
+  }
+
+  /* Summary cards */
+  .summary { display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
+  .card {
+    background: var(--md-sys-color-surface-container-low);
+    border-radius: 12px;
+    padding: 16px 20px;
+    min-width: 140px;
+    flex: 1;
+  }
+  .card.ring-card { display: flex; align-items: center; gap: 14px; min-width: 200px; }
+  .card .label {
+    font-size: 0.6875rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--md-sys-color-on-surface-variant);
+    margin-bottom: 4px;
+  }
+  .card .value { font-size: 2rem; font-weight: 500; }
+  .card .value.pass { color: var(--md-pass); }
+  .card .value.fail { color: var(--md-fail); }
+  .card .value.neutral { color: var(--md-info); }
+
+  /* Ring */
+  .ring { width: 52px; height: 52px; flex-shrink: 0; }
+  .ring circle { fill: none; stroke-width: 5; }
+  .ring .bg { stroke: var(--md-sys-color-outline-variant); }
+  .ring .fg { stroke-linecap: round; transition: stroke-dashoffset 0.6s ease; }
+
+  /* Suite sections */
+  .suite {
+    background: var(--md-sys-color-surface-container-low);
+    border-radius: 12px;
+    margin-bottom: 12px;
+    overflow: hidden;
+    border: 1px solid var(--md-sys-color-outline-variant);
+  }
+  .suite-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 16px;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.15s;
+  }
+  .suite-header:hover { background: var(--md-sys-color-surface-container); }
+  .suite-left { display: flex; align-items: center; gap: 10px; }
+  .suite-left .material-icons {
+    font-size: 20px;
+    color: var(--md-sys-color-on-surface-variant);
+    transition: transform 0.25s;
+  }
+  .suite-header.open .material-icons.expand { transform: rotate(180deg); }
+  .suite-name { font-weight: 500; font-size: 0.9375rem; }
+  .suite-badge {
+    font-size: 0.75rem;
+    padding: 3px 12px;
+    border-radius: 100px;
+    font-weight: 500;
+  }
+  .suite-badge.all-pass { background: var(--md-pass-container); color: var(--md-pass); }
+  .suite-badge.some-fail { background: var(--md-fail-container); color: var(--md-fail); }
+  .suite-body { border-top: 1px solid var(--md-sys-color-outline-variant); }
+  .suite-body.collapsed { display: none; }
+
+  /* Table */
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    text-align: left;
+    padding: 10px 16px;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--md-sys-color-on-surface-variant);
+    background: var(--md-sys-color-surface-container);
+  }
+  td {
+    padding: 10px 16px;
+    border-top: 1px solid var(--md-sys-color-outline-variant);
+    font-size: 0.875rem;
+    color: var(--md-sys-color-on-surface);
+  }
+  td.prompt-cell {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 0.8125rem;
+  }
+  td.intent {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 0.8125rem;
+  }
+  tr.pass td.result-cell { color: var(--md-pass); font-weight: 500; }
+  tr.fail td { background: color-mix(in srgb, var(--md-fail-container) 30%, transparent); }
+  tr.fail td.result-cell { color: var(--md-fail); font-weight: 500; }
+  tr.fail td.mismatch { text-decoration: underline wavy var(--md-fail); text-underline-offset: 3px; }
+
+  /* Empty state */
+  .empty { text-align: center; padding: 64px 24px; }
+  .empty .material-icons { font-size: 48px; color: var(--md-sys-color-outline); margin-bottom: 12px; }
+  .empty h2 { font-size: 1.125rem; font-weight: 500; margin-bottom: 8px; }
+  .empty p { color: var(--md-sys-color-on-surface-variant); font-size: 0.875rem; }
+  .empty code {
+    background: var(--md-sys-color-surface-container);
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 0.8125rem;
+  }
+</style>
+</head>
+<body>
+
+<div class="top-bar">
+  <h1>Intent Classifier — Test Results</h1>
+  <div class="meta" id="meta">
+    <div class="history-select" id="history-container" style="display:none;">
+      <span class="material-icons" style="font-size:18px;color:var(--md-sys-color-on-surface-variant);">history</span>
+      <select id="history-select"></select>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+  <div class="filters" id="filters">
+    <button class="filter-chip active" data-filter="all">
+      <span class="material-icons">done_all</span> All
+    </button>
+    <button class="filter-chip" data-filter="fail">
+      <span class="material-icons">error_outline</span> Failures only
+    </button>
+  </div>
+
+  <div class="summary" id="summary"></div>
+  <div id="suites"></div>
+  <div class="empty" id="empty" style="display:none;">
+    <span class="material-icons">science</span>
+    <h2>No results yet</h2>
+    <p>Run tests first, then refresh:<br><code>node test-new/run-test.js --all</code></p>
+  </div>
+</div>
+
+<script>
+// CSV parser for historical data
+function parseCSV(text) {
+  const lines = text.split('\n').filter(line => line.trim());
+  if (lines.length === 0) return [];
+  
+  const header = lines[0].split(',');
+  const rows = [];
+  
+  for (let i = 1; i < lines.length; i++) {
+    const line = lines[i];
+    const fields = [];
+    let current = '';
+    let inQuotes = false;
+    
+    for (let j = 0; j < line.length; j++) {
+      const char = line[j];
+      if (char === '"') {
+        if (inQuotes && line[j + 1] === '"') {
+          current += '"';
+          j++;
+        } else {
+          inQuotes = !inQuotes;
+        }
+      } else if (char === ',' && !inQuotes) {
+        fields.push(current);
+        current = '';
+      } else {
+        current += char;
+      }
+    }
+    fields.push(current);
+    
+    const obj = {};
+    header.forEach((h, idx) => obj[h] = fields[idx] || '');
+    rows.push(obj);
+  }
+  
+  // Group by suite
+  const suiteMap = {};
+  rows.forEach(row => {
+    if (!suiteMap[row.suite]) {
+      suiteMap[row.suite] = [];
+    }
+    suiteMap[row.suite].push(row);
+  });
+  
+  // Build data structure
+  const suites = [];
+  let totalPassed = 0;
+  let totalTests = 0;
+  
+  Object.entries(suiteMap).forEach(([suiteName, suiteCsvRows]) => {
+    const rows = suiteCsvRows.map(r => ({
+      prompt: r.prompt,
+      expect: r.expected,
+      actual: r.actual
+    }));
+    const passed = rows.filter(r => r.actual === r.expect).length;
+    suites.push({
+      name: suiteName,
+      passed,
+      total: rows.length,
+      rows
+    });
+    totalPassed += passed;
+    totalTests += rows.length;
+  });
+  
+  const timestamp = rows[0]?.timestamp || new Date().toISOString();
+  const model = rows[0]?.model || 'unknown';
+  
+  return {
+    timestamp,
+    model,
+    totalPassed,
+    totalTests,
+    suites
+  };
+}
+
+// Main rendering function
+function renderData(data) {
+  const currentFilter = document.querySelector('.filter-chip.active')?.dataset.filter || 'all';
+  
+  // Meta chips
+  const ts = new Date(data.timestamp);
+  const metaChips = 
+    `<span class="chip"><span class="material-icons">smart_toy</span>${esc(data.model)}</span>` +
+    `<span class="chip"><span class="material-icons">schedule</span>${ts.toLocaleDateString()} ${ts.toLocaleTimeString()}</span>`;
+  
+  // Find history container and set its innerHTML
+  const historyContainer = document.getElementById('history-container');
+  const metaDiv = document.getElementById('meta');
+  metaDiv.innerHTML = metaChips;
+  if (historyContainer) {
+    metaDiv.appendChild(historyContainer);
+  }
+
+  // Summary cards
+  const pct = data.totalTests ? Math.round(data.totalPassed / data.totalTests * 100) : 0;
+  const failed = data.totalTests - data.totalPassed;
+  const circ = 2 * Math.PI * 22;
+  document.getElementById('summary').innerHTML = `
+    <div class="card ring-card">
+      <svg class="ring" viewBox="0 0 52 52">
+        <circle class="bg" cx="26" cy="26" r="22"/>
+        <circle class="fg" cx="26" cy="26" r="22"
+          stroke="${pct === 100 ? 'var(--md-pass)' : 'var(--md-fail)'}"
+          stroke-dasharray="${circ}"
+          stroke-dashoffset="${circ * (1 - pct / 100)}"
+          transform="rotate(-90 26 26)"/>
+      </svg>
+      <div><div class="label">Pass rate</div><div class="value ${pct === 100 ? 'pass' : 'fail'}">${pct}%</div></div>
+    </div>
+    <div class="card"><div class="label">Passed</div><div class="value pass">${data.totalPassed}</div></div>
+    <div class="card"><div class="label">Failed</div><div class="value ${failed ? 'fail' : 'pass'}">${failed}</div></div>
+    <div class="card"><div class="label">Suites</div><div class="value neutral">${data.suites.length}</div></div>
+    <div class="card"><div class="label">Total tests</div><div class="value neutral">${data.totalTests}</div></div>
+  `;
+
+  // Suites
+  const container = document.getElementById('suites');
+  container.innerHTML = '';
+  for (const suite of data.suites) {
+    const allPass = suite.passed === suite.total;
+    const div = document.createElement('div');
+    div.className = 'suite';
+    div.dataset.hasFailures = allPass ? 'false' : 'true';
+
+    div.innerHTML = `
+      <div class="suite-header${allPass ? '' : ' open'}" onclick="this.classList.toggle('open'); this.nextElementSibling.classList.toggle('collapsed');">
+        <div class="suite-left">
+          <span class="material-icons expand">expand_more</span>
+          <span class="suite-name">${esc(suite.name)}</span>
+        </div>
+        <span class="suite-badge ${allPass ? 'all-pass' : 'some-fail'}">${suite.passed}/${suite.total} passed</span>
+      </div>
+      <div class="suite-body${allPass ? ' collapsed' : ''}">
+        <table>
+          <tr><th>Prompt</th><th>Expected</th><th>Actual</th><th>Result</th></tr>
+          ${suite.rows.map(r => {
+            const ok = r.actual === r.expect;
+            return `<tr class="${ok ? 'pass' : 'fail'}">
+              <td class="prompt-cell">${esc(r.prompt)}</td>
+              <td class="intent">${esc(r.expect)}</td>
+              <td class="intent${ok ? '' : ' mismatch'}">${esc(r.actual)}</td>
+              <td class="result-cell">${ok
+                ? '<span class="material-icons" style="font-size:18px;color:var(--md-pass)">check_circle</span>'
+                : '<span class="material-icons" style="font-size:18px;color:var(--md-fail)">cancel</span>'}</td>
+            </tr>`;
+          }).join('')}
+        </table>
+      </div>
+    `;
+    container.appendChild(div);
+  }
+
+  // Apply current filter
+  document.querySelectorAll('.suite').forEach(s => {
+    if (currentFilter === 'all') s.style.display = '';
+    else s.style.display = s.dataset.hasFailures === 'true' ? '' : 'none';
+  });
+
+  function esc(s) {
+    const d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+  }
+}
+
+// Initialize
+(async function () {
+  let data;
+  let historyManifest = [];
+  
+  // Load history manifest
+  try {
+    const resp = await fetch('result-logs/index.json');
+    if (resp.ok) {
+      historyManifest = await resp.json();
+    }
+  } catch (e) {}
+
+  // Load current results
+  try {
+    const resp = await fetch('results.json');
+    if (!resp.ok) throw new Error(resp.status);
+    data = await resp.json();
+  } catch {
+    document.getElementById('empty').style.display = '';
+    document.getElementById('summary').style.display = 'none';
+    document.getElementById('filters').style.display = 'none';
+    return;
+  }
+
+  // Setup history dropdown if we have history
+  if (historyManifest.length > 0) {
+    const select = document.getElementById('history-select');
+    const container = document.getElementById('history-container');
+    
+    const latestOption = document.createElement('option');
+    latestOption.value = '';
+    latestOption.textContent = `Latest run (${new Date(data.timestamp).toLocaleTimeString()})`;
+    select.appendChild(latestOption);
+    
+    // Sort by timestamp descending (newest first)
+    const sorted = [...historyManifest].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+    
+    sorted.forEach(run => {
+      const ts = new Date(run.timestamp);
+      const option = document.createElement('option');
+      option.value = run.file;
+      option.textContent = `${ts.toLocaleDateString()} ${ts.toLocaleTimeString()} — ${run.model} (${run.totalPassed}/${run.totalTests})`;
+      select.appendChild(option);
+    });
+    
+    container.style.display = 'flex';
+    
+    select.addEventListener('change', async (e) => {
+      if (!e.target.value) {
+        renderData(data);
+      } else {
+        try {
+          const resp = await fetch(`result-logs/${e.target.value}`);
+          if (!resp.ok) throw new Error('Failed to load CSV');
+          const csv = await resp.text();
+          const csvData = parseCSV(csv);
+          renderData(csvData);
+        } catch (err) {
+          console.error('Failed to load historical run:', err);
+        }
+      }
+    });
+  }
+
+  renderData(data);
+
+  // Filters
+  document.getElementById('filters').addEventListener('click', e => {
+    const btn = e.target.closest('.filter-chip');
+    if (!btn) return;
+    document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const f = btn.dataset.filter;
+    document.querySelectorAll('.suite').forEach(s => {
+      if (f === 'all') s.style.display = '';
+      else s.style.display = s.dataset.hasFailures === 'true' ? '' : 'none';
+    });
+  });
+
+  function esc(s) {
+    const d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+  }
+})();
+</script>
+</body>
+</html>

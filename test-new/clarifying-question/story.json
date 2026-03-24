@@ -1,0 +1,25 @@
+{
+  "pages": [
+    {
+      "id": "toyPage",
+      "type": "simulation",
+      "foreground": ["ball", "jump_rope", "coloring_book"],
+      "text": "You see several toys on the floor.",
+      "options": [
+        {
+          "option": "play with the ball",
+          "nextSlideId": "bounce"
+        },
+        {
+          "option": "play with the jump rope",
+          "nextSlideId": "skip"
+        },
+        {
+          "option": "play with the coloring book",
+          "nextSlideId": "color"
+        }
+      ]
+    }
+  ],
+  "startPageId": "toyPage"
+}

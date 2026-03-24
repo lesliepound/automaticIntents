@@ -1,0 +1,6 @@
+timestamp,model,suite,prompt,expected,actual,result
+2026-03-24T15:36:06.771Z,llama-3.1-8b-instant,literal,get me the dog,bark,bark,PASS
+2026-03-24T15:36:06.771Z,llama-3.1-8b-instant,literal,Get me the dog,bark,bark,PASS
+2026-03-24T15:36:06.771Z,llama-3.1-8b-instant,literal,get me the dog please,bark,bark,PASS
+2026-03-24T15:36:06.771Z,llama-3.1-8b-instant,literal,I want to get the dog,bark,fallback,FAIL
+2026-03-24T15:36:06.771Z,llama-3.1-8b-instant,literal,get me the cat,fallback,fallback,PASS

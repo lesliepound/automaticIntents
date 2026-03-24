@@ -473,6 +473,276 @@ input[type='number'] {
     cursor: pointer;
 }
 
+/* ═══ Dialog 3 — Form Editor Modal ═══ */
+#dialog3 .modal-content {
+    position: relative;
+    width: 90%;
+    max-width: 940px;
+    max-height: 85vh;
+    overflow: hidden;
+    border: none;
+    border-radius: 0;
+    box-shadow: 0 8px 32px rgba(0,0,0,.28);
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+}
+#dialog3 .modal-content > section {
+    overflow-y: auto;
+    flex: 1;
+    padding: 16px 24px 24px;
+}
+
+/* ─── Action bar (top) ─── */
+.fe-dialog-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 8px 6px 20px;
+    background: #1a73e8;
+    color: #fff;
+    min-height: 48px;
+    flex-shrink: 0;
+}
+.fe-dialog-actions-title {
+    font-family: 'Roboto', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: .25px;
+}
+.fe-dialog-actions-right {
+    display: flex;
+    gap: 4px;
+}
+.fe-dialog-icon-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: #fff;
+    width: 40px;
+    height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0;
+    transition: background .15s;
+    padding: 0;
+}
+.fe-dialog-icon-btn:hover {
+    background: rgba(255,255,255,.15);
+}
+.fe-dialog-icon-btn .material-symbols-rounded {
+    font-size: 22px;
+}
+
+/* ─── Header ─── */
+.fe-dialog-header {
+    padding: 16px 24px 12px;
+    border-bottom: 1px solid #dadce0;
+    flex-shrink: 0;
+}
+.fe-dialog-title {
+    font-family: 'Roboto', sans-serif;
+    font-size: 20px;
+    font-weight: 500;
+    color: #1f1f1f;
+    margin: 0 0 4px;
+}
+.fe-dialog-subtitle {
+    font-family: 'Roboto', sans-serif;
+    font-size: 13px;
+    font-weight: 400;
+    color: #5f6368;
+    margin: 0;
+}
+
+/* ─── Save bar (sticky) ─── */
+.fe-save-bar {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 24px;
+    background: #fef7e0;
+    border-bottom: 1px solid #f9de80;
+    flex-shrink: 0;
+    transition: opacity .25s, transform .25s;
+}
+.fe-save-bar--hidden {
+    opacity: 0;
+    pointer-events: none;
+    max-height: 0;
+    padding: 0 24px;
+    overflow: hidden;
+    border-bottom: none;
+}
+.fe-save-bar-text {
+    font-family: 'Roboto', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: #7c6900;
+    flex: 1;
+}
+.fe-save-btn {
+    background: #1a73e8;
+    color: #fff;
+    border: none;
+    border-radius: 0;
+    font-family: 'Roboto', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    padding: 7px 20px;
+    cursor: pointer;
+    transition: background .15s;
+}
+.fe-save-btn:hover {
+    background: #1765cc;
+}
+
+/* ─── File bar ─── */
+.fe-file-bar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 24px;
+    border-bottom: 1px solid #dadce0;
+    background: #f8f9fa;
+    flex-shrink: 0;
+}
+.fe-file-label {
+    font-family: 'Roboto', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: #5f6368;
+}
+.fe-file-input {
+    flex: 1;
+    max-width: 320px;
+    padding: 6px 12px;
+    border: 1px solid #dadce0;
+    border-radius: 0;
+    font-family: 'Roboto', sans-serif;
+    font-size: 13px;
+    color: #1f1f1f;
+    background: #fff;
+    outline: none;
+    transition: border-color .2s;
+}
+.fe-file-input:focus {
+    border-color: #1a73e8;
+}
+.fe-file-fetch-btn {
+    background: #e8eaed;
+    border: none;
+    border-radius: 0;
+    font-family: 'Roboto', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: #1f1f1f;
+    padding: 7px 18px;
+    cursor: pointer;
+    transition: background .15s;
+}
+.fe-file-fetch-btn:hover {
+    background: #d2d4d7;
+}
+
+/* ═══ MD3 Snackbar (Toast) ═══ */
+.md-snackbar {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 100000;
+    padding: 12px 24px;
+    border-radius: 0;
+    color: #fff;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: 0 4px 12px rgba(0,0,0,.25);
+    opacity: 0;
+    transition: opacity .3s;
+    pointer-events: none;
+}
+.md-snackbar--visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+.md-snackbar--success { background: #1e8e3e; }
+.md-snackbar--error   { background: #d93025; }
+.md-snackbar--info    { background: #3c4043; }
+
+/* ═══ MD3 Confirm Dialog ═══ */
+.md-confirm-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 200000;
+}
+.md-confirm-dialog {
+    background: #fff;
+    border-radius: 0;
+    padding: 24px;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 8px 32px rgba(0,0,0,.28);
+}
+.md-confirm-title {
+    font-family: 'Roboto', sans-serif;
+    font-size: 18px;
+    font-weight: 500;
+    color: #1f1f1f;
+    margin: 0 0 8px;
+}
+.md-confirm-message {
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    color: #5f6368;
+    margin: 0 0 20px;
+    line-height: 1.5;
+}
+.md-confirm-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+}
+.md-confirm-btn {
+    border: none;
+    border-radius: 0;
+    font-family: 'Roboto', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 8px 20px;
+    cursor: pointer;
+    transition: background .15s;
+}
+.md-confirm-btn--cancel {
+    background: transparent;
+    color: #5f6368;
+}
+.md-confirm-btn--cancel:hover { background: #f1f3f4; }
+.md-confirm-btn--confirm {
+    background: #1a73e8;
+    color: #fff;
+}
+.md-confirm-btn--confirm:hover { background: #1765cc; }
+.md-confirm-btn--save {
+    background: #1a73e8;
+    color: #fff;
+}
+.md-confirm-btn--save:hover { background: #1765cc; }
+.md-confirm-btn--discard {
+    background: transparent;
+    color: #d93025;
+}
+.md-confirm-btn--discard:hover { background: #fce8e6; }
+
 #send-button {
     margin: 6px;
 }
