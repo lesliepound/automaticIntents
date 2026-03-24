@@ -3,6 +3,10 @@
     {
       "id": "toyPage",
       "type": "simulation",
+
+      "setup": {
+        "focus": "child"
+      },
       "display": "none",
       "foreground": [
         "child",
@@ -35,7 +39,7 @@
       },
       "options": [
         {
-          "option": "One of these: _FOREGROUND_ or implied acts on one of these: _FOREGROUND_",
+          "option": "One of these: _FOREGROUND_ plays or is played on one of these: _FOREGROUND_",
           "extra": "get; picks up; grabs; wants; fetches; goes to; plays with; brings",
           "slot": {
             "name": "source-to-move",
