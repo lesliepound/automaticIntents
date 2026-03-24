@@ -1,0 +1,27 @@
+timestamp,model,suite,prompt,expected,actual,result
+2026-03-24T15:39:59.964Z,llama-3.1-8b-instant,clarifying-question,I want to play with that thing,clarifying_question,fallback,FAIL
+2026-03-24T15:39:59.964Z,llama-3.1-8b-instant,clarifying-question,give me one of those,clarifying_question,fallback,FAIL
+2026-03-24T15:39:59.964Z,llama-3.1-8b-instant,clarifying-question,let me play,clarifying_question,fallback,FAIL
+2026-03-24T15:39:59.964Z,llama-3.1-8b-instant,clarifying-question,I want to play with the ball,bounce,fallback,FAIL
+2026-03-24T15:39:59.964Z,llama-3.1-8b-instant,clarifying-question,make some chocolate cake,fallback,clarifying_question,FAIL
+2026-03-24T15:39:59.964Z,llama-3.1-8b-instant,conceptual,get me man's best friend,bark,bark,PASS
+2026-03-24T15:39:59.964Z,llama-3.1-8b-instant,conceptual,I want the four-legged companion,bark,bark,PASS
+2026-03-24T15:39:59.964Z,llama-3.1-8b-instant,conceptual,bring me the loyal pet,bark,bark,PASS
+2026-03-24T15:39:59.964Z,llama-3.1-8b-instant,conceptual,fetch the animal that barks,bark,fallback,FAIL
+2026-03-24T15:39:59.964Z,llama-3.1-8b-instant,conceptual,get me the swimming creature,fallback,bark,FAIL
+2026-03-24T15:39:59.964Z,llama-3.1-8b-instant,conceptual,ill be bach,fallback,fallback,PASS
+2026-03-24T15:39:59.964Z,llama-3.1-8b-instant,conceptual-with-examples,get me man's best friend,bark,bark,PASS
+2026-03-24T15:39:59.964Z,llama-3.1-8b-instant,conceptual-with-examples,I want the four-legged companion,bark,fallback,FAIL
+2026-03-24T15:39:59.964Z,llama-3.1-8b-instant,conceptual-with-examples,bring me the loyal pet,bark,bark,PASS
+2026-03-24T15:39:59.964Z,llama-3.1-8b-instant,conceptual-with-examples,fetch the animal that barks,bark,bark,PASS
+2026-03-24T15:39:59.964Z,llama-3.1-8b-instant,conceptual-with-examples,get me the swimming creature,fallback,bark,FAIL
+2026-03-24T15:39:59.964Z,llama-3.1-8b-instant,literal,get me the dog,bark,bark,PASS
+2026-03-24T15:39:59.964Z,llama-3.1-8b-instant,literal,Get me the dog,bark,fallback,FAIL
+2026-03-24T15:39:59.964Z,llama-3.1-8b-instant,literal,get me the dog please,bark,bark,PASS
+2026-03-24T15:39:59.964Z,llama-3.1-8b-instant,literal,I want to get the dog,bark,bark,PASS
+2026-03-24T15:39:59.964Z,llama-3.1-8b-instant,literal,get me the cat,fallback,fallback,PASS
+2026-03-24T15:39:59.964Z,llama-3.1-8b-instant,synonyms,get me the canine,bark,bark,PASS
+2026-03-24T15:39:59.964Z,llama-3.1-8b-instant,synonyms,fetch the hound,bark,bark,PASS
+2026-03-24T15:39:59.964Z,llama-3.1-8b-instant,synonyms,bring me the puppy,bark,bark,PASS
+2026-03-24T15:39:59.964Z,llama-3.1-8b-instant,synonyms,hand me the pooch,bark,bark,PASS
+2026-03-24T15:39:59.964Z,llama-3.1-8b-instant,synonyms,get me the feline,fallback,bark,FAIL

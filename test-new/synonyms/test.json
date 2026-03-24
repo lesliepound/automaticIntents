@@ -1,0 +1,10 @@
+{
+  "page": "dogPage",
+  "tests": [
+    { "prompt": "get me the canine", "expect": "bark", "category": "synonym" },
+    { "prompt": "fetch the hound", "expect": "bark", "category": "synonym" },
+    { "prompt": "bring me the puppy", "expect": "bark", "category": "synonym" },
+    { "prompt": "hand me the pooch", "expect": "bark", "category": "synonym" },
+    { "prompt": "get me the feline", "expect": "fallback", "category": "wrong-synonym" }
+  ]
+}

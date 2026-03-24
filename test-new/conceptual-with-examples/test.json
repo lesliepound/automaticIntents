@@ -1,0 +1,10 @@
+{
+  "page": "dogPage",
+  "tests": [
+    { "prompt": "get me man's best friend", "expect": "bark", "category": "conceptual-with-examples" },
+    { "prompt": "I want the four-legged companion", "expect": "bark", "category": "conceptual-with-examples" },
+    { "prompt": "bring me the loyal pet", "expect": "bark", "category": "conceptual-with-examples" },
+    { "prompt": "fetch the animal that barks", "expect": "bark", "category": "conceptual-with-examples" },
+    { "prompt": "get me the swimming creature", "expect": "fallback", "category": "wrong-concept" }
+  ]
+}
