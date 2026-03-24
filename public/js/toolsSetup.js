@@ -480,6 +480,7 @@ async function handleFirstPage() {
             const fileContents = await getData(page.setup.data);
             const randomRow = Math.floor(Math.random() * 3) + 1;
             focal = await getCsvRow(fileContents, randomRow);
+            focal.id = page.setup.focus;   // ← add this
             console.log('setup', focal);
         }
 
@@ -496,6 +497,30 @@ async function handleFirstPage() {
         }
     }
 }
+// async function handleFirstPage() {
+//     const page = deckData.pages[0];
+//
+//     if (page.setup) {
+//         if (page.setup.data) {
+//             const fileContents = await getData(page.setup.data);
+//             const randomRow = Math.floor(Math.random() * 3) + 1;
+//             focal = await getCsvRow(fileContents, randomRow);
+//             console.log('setup', focal);
+//         }
+//
+//         if (page.dials) {
+//             loadDials(page.dials);
+//
+//             Object.entries(monitors).forEach(([id, monitor]) => {
+//                 const value = focal?.[id];
+//                 if (value !== undefined) {
+//                     monitor.el.querySelector('.value').textContent = value;
+//                     monitor.current = value;
+//                 }
+//             });
+//         }
+//     }
+// }
 function displayPage(index, content) {
 
     const page = deckData.pages[index];
@@ -936,7 +961,7 @@ async function handleSend() {
 
     const question = optionalQuestion(responseObject);
     if (question) {
-        console.log('AI requesting clarification');
+        console.log('AI requesting clarification', responseObject);
         displayPage(0, question);
         return;
     }
@@ -1001,8 +1026,10 @@ async function handleSend() {
     // ─────────────────────────────────────────────
 
     if (isSim) {
-        console.log('............ Starting simulation ............');
+        console.log('............ Starting simulation ............', responseObject);
+        console.log('............ Starting simulation ............', responseObject);
 
+        //category is the affordance  mostly
         const category = responseObject.name.toLowerCase();
 
         // If this is a 'start' command and directed chat is open, just display the page
@@ -1027,13 +1054,27 @@ async function handleSend() {
             console.log('✅ Slots:', slots);
         }
 
-        // If the primary slot isn't on the page, swap slot order
-        if (slots.length > 1 && !targetPage.affordances?.[slots[0].value]) {
-            console.log(`🔄 Swapping slots: ${slots[0].value} not found, trying ${slots[1].value}`);
-            [slots[0], slots[1]] = [slots[1], slots[0]];
-        }
+        // 1. Filter out the element where key is '_label'
+        const cleanSlots = slots.filter(slot => slot.key !== '_label');
 
-        processAction(targetPage, category, slots);
+       // 2. Now perform your logic on the cleaned array
+       //  if (cleanSlots.length > 1 && !targetPage.affordances?.[cleanSlots.value]) {
+       //      console.log(`🔄 Swapping slots: ${cleanSlots.value} not found, trying ${cleanSlots.value}`);
+       //      [cleanSlots[0], cleanSlots[1]] = [cleanSlots[0], cleanSlots[1]];
+       //  }
+
+        // If the primary slot isn't on the page, swap slot order
+        // if (slots.length > 1 && !targetPage.affordances?.[slots[0].value]) {
+        //     console.log(`🔄 Swapping slots: ${slots[0].value} not found, trying ${slots[1].value}`);
+        //     [slots[0], slots[1]] = [slots[1], slots[0]];
+        // }
+        // function processAction(page, affordance, slots) {
+        //     const primary   = slots[0]?.value ?? '';
+        //     const secondary = slots[1]?.value ?? '';
+        //responseObject.name = affordance needed
+        //processAction(<page-name>, <responseObject.name>, cleanSlots);
+
+        processAction(targetPage, category, cleanSlots);
 
 
         // ─────────────────────────────────────────────
@@ -1126,6 +1167,7 @@ function optionalQuestion(responseObject, hint) {
         responseObject.name === 'model needs more information'
     );
     if (isClarifying) {
+
         // Process arguments if it's a string containing JSON
         if (responseObject.arguments && typeof responseObject.arguments === 'string') {
             try {
