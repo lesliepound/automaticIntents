@@ -4,7 +4,53 @@ import { logThis } from "../../app.js";
 const openai = getOpenAIBot();
 const groq = getGroqBot();
 
-const CLASSIFIER_PROMPT = `You are an intent classifier for an interactive application.
+function createProperty(propertyName, description) {
+    return {
+        [propertyName]: {
+            type: "string",
+            description: description
+        }
+    };
+}
+
+async function runClassifier(userInput, options, model) {
+
+    function createFunction(name, text, these_properties) {
+        const properties = {};
+        these_properties.filter(Boolean).forEach(p => {
+            properties[p.name] = { type: "string", description: p.description };
+        });
+        return {
+            type: "function",
+            function: {
+                name: name,
+                description: text,
+                parameters: {
+                    type: "object",
+                    properties,
+                    required: []
+                }
+            }
+        };
+    }
+
+    const tools = [
+        ...options.map((opt) => {
+            const extra = opt.extra || "";
+            const optionDescription = `${opt.option} ; more examples: ${extra}`;
+            const slots = [opt.slot, opt.slot1].filter(Boolean);
+            return createFunction(opt.nextSlideId, optionDescription, slots);
+        }),
+        createFunction('clarifying_question', 'Input is ambiguous — ask user a short clarifying question', [
+            { name: 'clarifying_question', description: 'A short question (under 12 words) to resolve ambiguity' }
+        ]),
+        createFunction('fallback', 'No match found for the user input', [])
+    ];
+
+   // logThis('tools', JSON.stringify(tools[0], null, 2));
+    logThis('tools', JSON.stringify(tools, null, 2));
+    // const sysPrompt = `You are a classifier. Classify this content: "${userInput}" and match it to one of the functions. Match to the function name and description that is closest. Consider sentiment first, then literal words, synonyms, and partial matches. Select the function with the highest degree of similarity. Call optional question when there is two that match equally well`;
+    const sysPrompt = `You are an intent classifier for an interactive application.
 Your job is to match the user's input to the single best function from the list provided.
 
 Rules:
@@ -15,61 +61,23 @@ Rules:
 - Only call 'fallback' if the input has absolutely no relationship to any function
 - Fill in slot values when the input provides them`;
 
-function createFunction(name, text, these_properties,optionLabel='none') {
-    const properties = {};
-    these_properties.filter(Boolean).forEach(p => {
-        properties[p.name] = { type: "string", description: p.description };
-    });
-    if (optionLabel) {
-       // properties._label = { type: "string", enum: [optionLabel] };
-        properties._label = {
-            type: "string",
-            description: `Always return exactly this value: "${optionLabel}"`
-        };
-
-    }
-    return {
-        type: "function",
-        function: {
-            name: name,
-            description: text,
-            parameters: {
-                type: "object",
-                properties,
-                required: optionLabel ? ['_label'] : []
-            }
-        }
-    };
-}
-
-async function runClassifier(userInput, options, model) {
-
-    const tools = [
-        ...options.map((opt) => {
-            const extra = opt.extra || "";
-            const optionDescription = `${opt.option} ; more examples: ${extra}`;
-            const slots = [opt.slot, opt.slot1].filter(Boolean);
-            //opt.option.slice(0, 30)) is to identify the option for looging.
-            return createFunction(opt.nextSlideId, optionDescription, slots, opt.option.slice(0, 50));
-        }),
-        createFunction('clarifying_question', 'Input is ambiguous — ask user a short clarifying question', [
-            { name: 'clarifying_question', description: 'A short question (under 12 words) to resolve ambiguity' }
-        ]),
-        createFunction('fallback', 'No match found for the user input', [])
-    ];
-
-    logThis('tools', JSON.stringify(tools, null, 2));
-
     const messages = [
-        { role: "system", content: CLASSIFIER_PROMPT },
-        { role: "user",   content: `"${userInput}"` },
+        { role: "system",  content: sysPrompt },
+        { role: "user",    content: `"${userInput}"` },
     ];
 
     console.log(model);
 
+    // Build debug metadata for result logging
+    const provider = model.startsWith('gpt-') ? 'openai' : 'groq';
+    const temp = provider === 'groq' ? 0.8 : undefined;
+    const toolNames = tools.map(t => t.function.name);
+    const sysHash = simpleHash(sysPrompt);
+
     let response;
+    const classifierStart = Date.now();
     try {
-        if (model.startsWith('gpt-')) {
+        if (provider === 'openai') {
             if (openai) {
                 response = await openai.chat.completions.create({
                     model: model,
@@ -78,7 +86,7 @@ async function runClassifier(userInput, options, model) {
                     tool_choice: "auto",
                 });
             } else {
-                return { name: "fallback", arguments: "" };
+                return { name: "fallback", arguments: "", _debug: makeDebug(null) };
             }
         } else {
             if (groq) {
@@ -91,21 +99,45 @@ async function runClassifier(userInput, options, model) {
                 });
             } else {
                 logThis('Groq not instantiated', getUninstantiatedBotError(BotName.GROQ));
-                return { name: "fallback", arguments: "" };
+                return { name: "fallback", arguments: "", _debug: makeDebug(null) };
             }
         }
 
-        if (response.choices[0].message.tool_calls?.length > 0) {
-            return response.choices[0].message.tool_calls[0].function;
+        const msg = response.choices[0].message;
+        const _debug = makeDebug(msg);
+
+        if (msg.tool_calls?.length > 0) {
+            return { ...msg.tool_calls[0].function, _debug };
         } else {
             console.log("No tool calls found. Sending to fallback");
-            return { name: "fallback", arguments: "" };
+            return { name: "fallback", arguments: "", _debug };
         }
 
     } catch (e) {
         console.warn("Classifier failed, returning fallback.", e);
-        return { name: "fallback", arguments: "" };
+        return { name: "fallback", arguments: "", _debug: makeDebug(null) };
     }
+
+    function makeDebug(msg) {
+        return {
+            provider,
+            temperature: temp,
+            tools_count: tools.length,
+            tool_names: toolNames,
+            system_prompt_hash: sysHash,
+            raw_tool_calls: msg?.tool_calls ?? [],
+            raw_content: msg?.content ?? '',
+            latency_ms: Date.now() - classifierStart
+        };
+    }
+}
+
+function simpleHash(str) {
+    let h = 0;
+    for (let i = 0; i < str.length; i++) {
+        h = ((h << 5) - h + str.charCodeAt(i)) | 0;
+    }
+    return (h >>> 0).toString(16).padStart(8, '0');
 }
 
 async function runConversation(userInput, sysprompt, model = "llama-3.1-8b-instant") {

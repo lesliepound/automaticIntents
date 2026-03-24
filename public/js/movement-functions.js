@@ -1,7 +1,8 @@
+// =============================================================================
 // === UTILITIES ===============================================================
+// =============================================================================
 
-// CANDIDATE FOR REMOVAL: sleep() — not called anywhere in this file. Keep only if used externally.
-// const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
+const sleep = (delay) => new Promise((resolve) => setTimeout(resolve, delay));
 
 function random(itemArray) {
     const max = itemArray.length;
@@ -25,7 +26,9 @@ window.getJsonValue = function (jsonStr, targetKey) {
 };
 
 
+// =============================================================================
 // === DOM HELPERS =============================================================
+// =============================================================================
 
 function show(selector) {
     $(selector).fadeIn();
@@ -42,11 +45,11 @@ function remove(selector) {
 }
 
 function flash(selector) {
-    // console.log('about to', selector);
+    console.log( 'about to',selector)
     animateCSS(selector, 'flash');
     const element = document.querySelector(selector);
     element.style.visibility = 'visible';
-    showDial(selector);
+    showDial(selector)
     animateCSS(selector, 'flash');
 }
 
@@ -60,11 +63,16 @@ function scaleTo(selector, factor, speed = 0.4) {
 function placeItem(selector, thisX, thisY) {
     const el = document.querySelector(selector);
     if (!el) return;
+
     el.style.left = thisX + 'vw';
     el.style.top = thisY + 'vh';
     el.style.display = 'block';
     el.style.opacity = '0';
-    el.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 400, fill: 'forwards' });
+
+    el.animate([{ opacity: 0 }, { opacity: 1 }], {
+        duration: 400,
+        fill: 'forwards'
+    });
 }
 
 function onScreen(id) {
@@ -72,18 +80,20 @@ function onScreen(id) {
 }
 
 window.diagnose = function(condition) {
-    const final = focal.diagnosis.toLowerCase();
-    if (condition.toLowerCase().includes(final)) {
-        document.getElementById("content").innerHTML = "Congratulations";
-    } else {
+    console.log('final',condition);
+    const final =focal.diagnosis.toLowerCase()
+    if (condition.toLowerCase().includes(final)){
+    document.getElementById("content").innerHTML = "Congratulations";}
+    else
         document.getElementById("content").innerHTML = "Try again. Ask for more tests";
-    }
-};
+    // has met both ?
+    // has met only one.
+}
 
-function order(test) {
-     console.log('In movement-functions, order was called; Test ordered for', test, 'is', focal[test]);
-    showDial(test);
-    setValue(test, 344);
+function order(test){
+    console.log('test ordered for ', test , ' is',focal[test])
+    //showDial(test)
+    //setValue(test,344)
 }
 
 function getElementVhVw(elementId) {
@@ -117,7 +127,9 @@ async function sequence(steps) {
 }
 
 
+// =============================================================================
 // === ANIMATION ===============================================================
+// =============================================================================
 
 const animateCSS = (element, animation, prefix, repeat, callback) =>
     new Promise((resolve) => {
@@ -143,27 +155,32 @@ const animateCSS = (element, animation, prefix, repeat, callback) =>
         node.addEventListener('animationend', handleAnimationEnd, { once: true });
     }).then(() => { if (callback) callback(); });
 
-// CANDIDATE FOR REMOVAL: aniEndings() — hardcoded animation names and element IDs ('anna', 'thoughtBuble')
-// suggest this belongs to an earlier story engine, not the current scenario system. Not a window function.
-// function aniEndings(eventObject) {
-//     return (
-//         eventObject.animationName === 'smileMotion' ||
-//         eventObject.animationName === 'moveRight' ||
-//         (eventObject.animationName === 'zoomOutUp' && eventObject.target.id === 'thoughtBuble') ||
-//         eventObject.animationName === 'hopIn' ||
-//         eventObject.animationName === 'blowing' ||
-//         eventObject.animationName === 'mymove' ||
-//         (eventObject.animationName === 'bounceInLeft' && eventObject.target.id === 'anna') ||
-//         eventObject.animationName === 'yawnMotion'
-//     );
-// }
+// Determine if a given animation event should advance the story
+function aniEndings(eventObject) {
+    return (
+        eventObject.animationName === 'smileMotion' ||
+        eventObject.animationName === 'moveRight' ||
+        (eventObject.animationName === 'zoomOutUp' && eventObject.target.id === 'thoughtBuble') ||
+        eventObject.animationName === 'hopIn' ||
+        eventObject.animationName === 'blowing' ||
+        eventObject.animationName === 'mymove' ||
+        (eventObject.animationName === 'bounceInLeft' && eventObject.target.id === 'anna') ||
+        eventObject.animationName === 'yawnMotion'
+    );
+}
 
-// function audioEndNoted(e) {} // reserved — no-op
+function audioEndNoted(e) {
+    // Reserved for audio end handling
+}
 
 
+// =============================================================================
 // === MOVEMENT ================================================================
+// =============================================================================
 
-// Safely extracts the current X/Y translation from an element's computed transform
+/**
+ * Safely extracts the current X/Y translation from an element's computed transform.
+ */
 function getTranslateOffset(element) {
     const transformValue = window.getComputedStyle(element).transform;
     if (!transformValue || transformValue === 'none') return { x: 0, y: 0 };
@@ -189,12 +206,14 @@ window.moveThis = function (item, _horizontal, _vertical, _speed) {
 
     const currentTransform = window.getComputedStyle(element).transform;
     const newTransform = `translate3d(${h}, ${v}, 0px)`;
-    element.style.transform = currentTransform === 'none' ? newTransform : `${currentTransform} ${newTransform}`;
+
+    element.style.transform = currentTransform === 'none'
+        ? newTransform
+        : `${currentTransform} ${newTransform}`;
 };
 
-// CANDIDATE FOR REMOVAL: moveThisByGrid — identical to moveThis(), just an alias. If nothing calls this name specifically, delete it.
-// const moveThisByGrid = (item, horizontal, vertical, speed) =>
-//     window.moveThis(item, horizontal, vertical, speed);
+const moveThisByGrid = (item, horizontal, vertical, speed) =>
+    window.moveThis(item, horizontal, vertical, speed);
 
 window.directionalMove = function (item, direction) {
     const step = 10;
@@ -203,14 +222,14 @@ window.directionalMove = function (item, direction) {
     let vertical = 0;
 
     switch ((direction ?? '').toLowerCase()) {
-        case 'up':        case 'north':     vertical = -step / 2; break;
-        case 'down':      case 'south':     vertical = step;      break;
-        case 'left':      case 'west':      horizontal = -step;   break;
-        case 'right':     case 'east':      horizontal = step;    break;
-        case 'northwest': horizontal = -step; vertical = -step;   break;
-        case 'northeast': horizontal =  step; vertical = -step;   break;
-        case 'southwest': horizontal = -step; vertical =  step;   break;
-        case 'southeast': horizontal =  step; vertical =  step;   break;
+        case 'up':    case 'north':     vertical = -step / 2; break;
+        case 'down':  case 'south':     vertical = step;      break;
+        case 'left':  case 'west':      horizontal = -step;   break;
+        case 'right': case 'east':      horizontal = step;    break;
+        case 'northwest': horizontal = -step; vertical = -step; break;
+        case 'northeast': horizontal =  step; vertical = -step; break;
+        case 'southwest': horizontal = -step; vertical =  step; break;
+        case 'southeast': horizontal =  step; vertical =  step; break;
         default:
             console.error(`directionalMove: Unknown direction "${direction}"`);
             return;
@@ -275,20 +294,20 @@ window.moveTowards = function (
         return { x: rect.left + rect.width / 2, y: rect.top + rect.height / 2, width: rect.width, height: rect.height };
     }
 
-    const start   = getCenter(source);
-    const end     = getCenter(target);
-    const deltaX  = end.x - start.x;
-    const deltaY  = end.y - start.y;
-    const dist    = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+    const start = getCenter(source);
+    const end   = getCenter(target);
+    const deltaX = end.x - start.x;
+    const deltaY = end.y - start.y;
+    const dist   = Math.sqrt(deltaX * deltaX + deltaY * deltaY);
 
     if (dist <= 1) { if (callback) callback(); return; }
 
-    const dirX        = deltaX / dist;
-    const dirY        = deltaY / dist;
-    const moveDist    = dist + overlay;
+    const dirX = deltaX / dist;
+    const dirY = deltaY / dist;
+    const moveDist = dist + overlay;
     const currentOffset = getTranslateOffset(source);
-    const finalAbsX   = currentOffset.x + dirX * moveDist;
-    const finalAbsY   = currentOffset.y + dirY * moveDist;
+    const finalAbsX = currentOffset.x + dirX * moveDist;
+    const finalAbsY = currentOffset.y + dirY * moveDist;
 
     source.style.transition = `transform ${speed}s`;
     source.style.transform  = `translate(${finalAbsX}px, ${finalAbsY}px)`;
@@ -298,6 +317,7 @@ window.moveTowards = function (
         label.style.transform  = `translate(${finalAbsX}px, ${finalAbsY}px)`;
     }
 
+    // Proximity polling
     if (onProximity) {
         let triggered = false;
         let active    = true;
@@ -325,7 +345,9 @@ window.moveTowards = function (
     if (callback) setTimeout(callback, speed * 1000);
 };
 
-// Move + stop mid-flight when element collides with a target
+/**
+ * Move + stop mid-flight when element collides with a target.
+ */
 function moveThisAsync(item, horizontal, vertical, speed = 0.5, callback, target, proximityThreshold = 1) {
     return new Promise((resolve, reject) => {
         if (!item) return reject(new Error("The 'item' element is required."));
@@ -346,11 +368,11 @@ function moveThisAsync(item, horizontal, vertical, speed = 0.5, callback, target
                 const ir = item.getBoundingClientRect();
                 const tr = target.getBoundingClientRect();
 
-                const overlapping   = ir.left < tr.right && ir.right > tr.left && ir.top < tr.bottom && ir.bottom > tr.top;
-                const closeToLeft   = Math.abs(ir.right  - tr.left)   <= proximityThreshold;
-                const closeToRight  = Math.abs(ir.left   - tr.right)  <= proximityThreshold;
-                const closeToTop    = Math.abs(ir.bottom - tr.top)    <= proximityThreshold;
-                const closeToBottom = Math.abs(ir.top    - tr.bottom) <= proximityThreshold;
+                const overlapping  = ir.left < tr.right && ir.right > tr.left && ir.top < tr.bottom && ir.bottom > tr.top;
+                const closeToLeft  = Math.abs(ir.right  - tr.left)   <= proximityThreshold;
+                const closeToRight = Math.abs(ir.left   - tr.right)  <= proximityThreshold;
+                const closeToTop   = Math.abs(ir.bottom - tr.top)    <= proximityThreshold;
+                const closeToBottom= Math.abs(ir.top    - tr.bottom) <= proximityThreshold;
 
                 if (closeToLeft || closeToRight || closeToTop || closeToBottom || overlapping) {
                     motionStopped = true;
@@ -383,7 +405,6 @@ function moveThisAsync(item, horizontal, vertical, speed = 0.5, callback, target
     });
 }
 
-// Thin wrapper — promisified moveThisAsync with error handling
 window.startMovement = async function (item, horizontal, vertical, speed) {
     try {
         await moveThisAsync(item, horizontal, vertical, speed);
@@ -393,13 +414,15 @@ window.startMovement = async function (item, horizontal, vertical, speed) {
 };
 
 
+// =============================================================================
 // === COLLISION / PROXIMITY ===================================================
+// =============================================================================
 
 window.areTouching = function (el1, el2, amountX, amountY = amountX) {
     const r1 = el1.getBoundingClientRect();
     const r2 = el2.getBoundingClientRect();
     return (r1.right + amountX) >= r2.left && (r2.right + amountX) >= r1.left &&
-        (r1.bottom + amountY) >= r2.top  && (r2.bottom + amountY) >= r1.top;
+           (r1.bottom + amountY) >= r2.top  && (r2.bottom + amountY) >= r1.top;
 };
 
 window.checkPosition = function (item1, item2, amount) {
@@ -426,13 +449,17 @@ window.checkCloseness = function (id1, id2, cp) {
 function proximity(el1, el2, constraint) {
     const x = el1 instanceof HTMLElement ? el1 : document.querySelector(el1);
     const y = el2 instanceof HTMLElement ? el2 : document.querySelector(el2);
+
     const rectX = x.getBoundingClientRect();
     const rectY = y.getBoundingClientRect();
+
     const lFirst  = rectX.left + window.scrollX + Math.floor(x.offsetWidth  / 2);
     const lSecond = rectY.left + window.scrollX + Math.floor(y.offsetWidth  / 2);
     const tFirst  = rectX.top  + window.scrollY + Math.floor(x.offsetHeight / 2);
     const tSecond = rectY.top  + window.scrollY + Math.floor(y.offsetHeight / 2);
+
     const totalDistance = Math.floor(Math.abs(lFirst - lSecond) + Math.abs(tFirst - tSecond));
+
     if (constraint !== undefined) return totalDistance > constraint ? 100 : 0;
     return totalDistance;
 }
@@ -441,8 +468,9 @@ function proximity(el1, el2, constraint) {
 function itemRelationship(control, id2) {
     const r1 = document.getElementById(control).getBoundingClientRect();
     const r2 = document.getElementById(id2).getBoundingClientRect();
-    if (r1.top  > r2.top)   return 'above';
-    if (r1.top  < r2.top)   return 'below';
+
+    if (r1.top  > r2.top)  return 'above';
+    if (r1.top  < r2.top)  return 'below';
     if (r1.right > r2.left) return 'left';
     return 'right';
 }
@@ -461,17 +489,18 @@ window.monitorAnimation = function (el, testFn) {
     });
 };
 
-function rotateAround(sourceSelector) {
+function rotateAround(sourceSelector)  {
     if (typeof sourceSelector === 'string' && !sourceSelector.startsWith('#')) sourceSelector = '#' + sourceSelector;
+    //if (typeof targetSelector === 'string' && !targetSelector.startsWith('#')) targetSelector = '#' + targetSelector;
+
     animateCSS(sourceSelector, 'flip-2-hor-top-1');
 }
+// =============================================================================
+// =============================================================================
 
-
-// === TALK BUBBLES ============================================================
-
-function askOthers(askee, sayingThis) {
-    animateCSS('#' + askee, randomHighlight());
-    createTalkBubble('#' + askee, sayingThis);
+function askOthers(askee, speaking) {
+    animateCSS('#'+askee, randomHighlight());
+    createTalkBubble('#'+askee, speaking);
     return true;
 }
 
@@ -482,8 +511,8 @@ window.createTalkBubble = function (selector, text = 'hi') {
         return;
     }
 
-    const top       = element.getBoundingClientRect().y - 100;
-    const left      = element.getBoundingClientRect().x - 20;
+    const top   = element.getBoundingClientRect().y - 100;
+    const left  = element.getBoundingClientRect().x - 20;
     const finalLeft = left < 60 ? left + 50 : left;
 
     const bubble = document.createElement('div');
@@ -506,7 +535,8 @@ window.createTalkBubble = function (selector, text = 'hi') {
 };
 
 
-// === WIDGETS =================================================================
+// =============================================================================
+// === WIDGITS ===============================================
 
 function setguage(elementId, direction) {
     const container = document.getElementById(elementId);
@@ -539,11 +569,11 @@ function setGuageAmount(elementId, amount) {
 }
 
 window.getTest = function(testname) {
-    showDial(testname);
-};
+     // fetch amount?
+     showDial(testname)
+}
 
 window.drawConnection = function (sourceSelector, targetSelector = 'patient', duration = 0.5, color = 'red', width = 3) {
-    // console.log('drawConnection-------', focal);
     if (typeof sourceSelector === 'string' && !sourceSelector.startsWith('#')) sourceSelector = '#' + sourceSelector;
     if (typeof targetSelector === 'string' && !targetSelector.startsWith('#')) targetSelector = '#' + targetSelector;
 
@@ -585,15 +615,30 @@ window.drawConnection = function (sourceSelector, targetSelector = 'patient', du
 
     source.classList.add('connected');
     target.classList.add('connected');
+
+  //  if (focal.)
 };
 
 
+// // =============================================================================
+// // === TAGS ====================================================================
+// // =============================================================================
+//
+// const addTag = (target, tag, niceName) => {
+//     $(target).addClass(tag);
+// };
+//
+// const removeTag = (target, tag) => {
+//     $(target).removeClass(tag);
+// };
+
+
+
+
+// =============================================================================
 // === MISC ====================================================================
 
-// const addTag = (target, tag, niceName) => { $(target).addClass(tag); };
-// const removeTag = (target, tag) => { $(target).removeClass(tag); };
+function listenOff(off) {
+    if (off) $('#listen-button').click();
+}
 
-// CANDIDATE FOR REMOVAL: listenOff() — hardcoded '#listen-button'; not a window function. Verify the button still exists.
-// function listenOff(off) {
-//     if (off) $('#listen-button').click();
-// }

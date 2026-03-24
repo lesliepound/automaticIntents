@@ -44,10 +44,11 @@ function setListeners() {
     const elements = {
         'info-button': () => showDialogBox('dialog1'),
         'settings-button': () => showDialogBox('dialog2'),
-        'detach-button': popOutDialog,   // pops into seperate dialog
         'edit-button': editDialog,   // shows chat meachnics file
         'fetch-button': getFile,     // fetches latest copy of chat
-        'model': handleModelChange
+        'model': handleModelChange,
+        'fe-close-btn': closeEditorDialog,
+        'fe-view-json-btn': () => { if (window.formEditor) window.formEditor._showJsonPreview(); }
     };
 
     Object.entries(elements).forEach(([id, handler]) => {
@@ -56,6 +57,11 @@ function setListeners() {
 
     document.querySelectorAll('.close-button').forEach(button => {
         button.addEventListener('click', closeDialog);
+    });
+
+    // Backdrop click closes modals
+    document.querySelectorAll('.modal').forEach(modal => {
+        modal.addEventListener('click', closeDialog);
     });
     const toggle = document.getElementById('traffic');
     if (toggle) {
@@ -208,12 +214,37 @@ function showDialogBox(modalId) {
 
 
 function closeDialog(event) {
-    if (!event.target.classList.contains('close-button')) {
+    // Close on close-button click or backdrop click
+    if (event && !event.target.classList.contains('close-button') && !event.target.classList.contains('modal')) {
         return;
+    }
+    // Route dialog3 through the editor-aware close
+    const dialog3 = document.getElementById('dialog3');
+    if (dialog3 && dialog3.style.display === 'block') {
+        if (event && event.target.classList.contains('modal')) {
+            closeEditorDialog();
+            return;
+        }
     }
     let modal;
     modal = document.querySelector('.modal[style*="display: block"], .modal:not([style*="display: none"])');
-    modal.style.display = 'none';
+    if (modal) modal.style.display = 'none';
+}
+
+async function closeEditorDialog() {
+    if (window.formEditor && window.formEditor.isDirty()) {
+        const choice = await showConfirmThreeWay(
+            'Unsaved changes',
+            'You have unsaved changes. What would you like to do?'
+        );
+        if (choice === 'cancel') return;
+        if (choice === 'save') {
+            await window.saveEditedFile();
+            return; // saveEditedFile already closes the dialog
+        }
+        // choice === 'discard' — fall through to close
+    }
+    document.getElementById('dialog3').style.display = 'none';
 }
 
 function handleModelChange(event) {
@@ -480,7 +511,6 @@ async function handleFirstPage() {
             const fileContents = await getData(page.setup.data);
             const randomRow = Math.floor(Math.random() * 3) + 1;
             focal = await getCsvRow(fileContents, randomRow);
-            focal.id = page.setup.focus;   // ← add this
             console.log('setup', focal);
         }
 
@@ -497,30 +527,6 @@ async function handleFirstPage() {
         }
     }
 }
-// async function handleFirstPage() {
-//     const page = deckData.pages[0];
-//
-//     if (page.setup) {
-//         if (page.setup.data) {
-//             const fileContents = await getData(page.setup.data);
-//             const randomRow = Math.floor(Math.random() * 3) + 1;
-//             focal = await getCsvRow(fileContents, randomRow);
-//             console.log('setup', focal);
-//         }
-//
-//         if (page.dials) {
-//             loadDials(page.dials);
-//
-//             Object.entries(monitors).forEach(([id, monitor]) => {
-//                 const value = focal?.[id];
-//                 if (value !== undefined) {
-//                     monitor.el.querySelector('.value').textContent = value;
-//                     monitor.current = value;
-//                 }
-//             });
-//         }
-//     }
-// }
 function displayPage(index, content) {
 
     const page = deckData.pages[index];
@@ -890,6 +896,22 @@ const transformText = (input) => {
         // 2. Convert * item to <li>item</li>
         .replace(/^\*\s+(.*)$/gm, '<li>$1</li>');
 };
+
+// ── Result Logging ──────────────────────────────────────
+function logResult(fields) {
+    const now = new Date();
+    const row = {
+        timestamp: now.toLocaleString('en-US', { month: 'short', day: 'numeric', year: 'numeric', hour: 'numeric', minute: '2-digit', second: '2-digit', hour12: true }),
+        date: now.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' }),
+        ...fields
+    };
+    fetch('/log-result', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(row),
+    }).catch(err => console.warn('logResult failed:', err));
+}
+
 async function handleSend() {
 
     // ─────────────────────────────────────────────
@@ -952,6 +974,29 @@ async function handleSend() {
         return null;
     }
 
+    // Build base log fields from _debug metadata
+    const _d = responseObject._debug || {};
+    const baseLog = {
+        story: getActiveChatId(),
+        model,
+        provider: _d.provider || '',
+        prompt,
+        system_prompt_hash: _d.system_prompt_hash || '',
+        tools_count: _d.tools_count || '',
+        tool_names: (_d.tool_names || []).join('|'),
+        temperature: _d.temperature ?? '',
+        raw_response_tool_calls: JSON.stringify(_d.raw_tool_calls || []),
+        raw_response_content: _d.raw_content || '',
+        parsed_intent: responseObject.name,
+        parsed_arguments: responseObject.arguments || '',
+        response_type: responseObject.name === 'fallback' ? 'fallback'
+            : responseObject.name === 'clarifying_question' ? 'clarifying_question'
+            : responseObject.name.includes('@prompt') ? '@prompt'
+            : 'option',
+        is_fallback: responseObject.name === 'fallback',
+        latency_ms: _d.latency_ms || ''
+    };
+
 
     // ─────────────────────────────────────────────
     // 4. GUIDED CLARIFICATION
@@ -961,7 +1006,8 @@ async function handleSend() {
 
     const question = optionalQuestion(responseObject);
     if (question) {
-        console.log('AI requesting clarification', responseObject);
+        console.log('AI requesting clarification');
+        logResult({ ...baseLog, client_route: 'clarifying_question', final_action: 'displayPage' });
         displayPage(0, question);
         return;
     }
@@ -979,12 +1025,8 @@ async function handleSend() {
         const fileToSkim = await getData(resourceFile);
         console.log('prompt', prompt);
         console.log('fileToSkim', fileToSkim);
+        logResult({ ...baseLog, client_route: '@prompt_passthrough', final_action: 'directChat' });
         directChat(prompt, fileToSkim);
-        //updateManifest(prompt, fileToSkim);
-
-        // matched option:----, “clarifying-question”, “fallback”, “question”  in story.json
-        // response: {"name":"movable",
-
         return;
     }
 
@@ -1000,7 +1042,10 @@ async function handleSend() {
         const fallbackResource = currentPage.fallbackResource;
         if (fallbackResource) {
             const fileData = await getData(fallbackResource);
+            logResult({ ...baseLog, client_route: 'fallback_resource', final_action: 'directChat' });
             directChat(prompt, fileData);
+        } else {
+            logResult({ ...baseLog, client_route: 'fallback_dead_end', final_action: 'none' });
         }
         return;
     }
@@ -1026,10 +1071,8 @@ async function handleSend() {
     // ─────────────────────────────────────────────
 
     if (isSim) {
-        console.log('............ Starting simulation ............', responseObject);
-        console.log('............ Starting simulation ............', responseObject);
+        console.log('............ Starting simulation ............');
 
-        //category is the affordance  mostly
         const category = responseObject.name.toLowerCase();
 
         // If this is a 'start' command and directed chat is open, just display the page
@@ -1054,27 +1097,28 @@ async function handleSend() {
             console.log('✅ Slots:', slots);
         }
 
-        // 1. Filter out the element where key is '_label'
-        const cleanSlots = slots.filter(slot => slot.key !== '_label');
-
-       // 2. Now perform your logic on the cleaned array
-       //  if (cleanSlots.length > 1 && !targetPage.affordances?.[cleanSlots.value]) {
-       //      console.log(`🔄 Swapping slots: ${cleanSlots.value} not found, trying ${cleanSlots.value}`);
-       //      [cleanSlots[0], cleanSlots[1]] = [cleanSlots[0], cleanSlots[1]];
-       //  }
-
         // If the primary slot isn't on the page, swap slot order
-        // if (slots.length > 1 && !targetPage.affordances?.[slots[0].value]) {
-        //     console.log(`🔄 Swapping slots: ${slots[0].value} not found, trying ${slots[1].value}`);
-        //     [slots[0], slots[1]] = [slots[1], slots[0]];
-        // }
-        // function processAction(page, affordance, slots) {
-        //     const primary   = slots[0]?.value ?? '';
-        //     const secondary = slots[1]?.value ?? '';
-        //responseObject.name = affordance needed
-        //processAction(<page-name>, <responseObject.name>, cleanSlots);
+        let slotSwapped = false;
+        if (slots.length > 1 && !targetPage.affordances?.[slots[0].value]) {
+            console.log(`🔄 Swapping slots: ${slots[0].value} not found, trying ${slots[1].value}`);
+            [slots[0], slots[1]] = [slots[1], slots[0]];
+            slotSwapped = true;
+        }
 
-        processAction(targetPage, category, cleanSlots);
+        const primary = slots[0]?.value || '';
+        const affordValid = !!targetPage.affordances?.[primary]?.includes(category);
+        const actionArgs = slots.map(s => s.value).join('|');
+
+        logResult({
+            ...baseLog,
+            client_route: 'simulation',
+            affordance_valid: affordValid,
+            slot_swap: slotSwapped,
+            final_action: category,
+            final_action_args: actionArgs
+        });
+
+        processAction(targetPage, category, slots);
 
 
         // ─────────────────────────────────────────────
@@ -1084,6 +1128,7 @@ async function handleSend() {
         // ─────────────────────────────────────────────
 
     } else {
+        logResult({ ...baseLog, client_route: 'standard_page', final_action: 'displayPage' });
         displayPage(pageIndex, "");
         processPageActions(pageIndex);
     }
@@ -1103,60 +1148,60 @@ function getActiveChatId() {
  * @param {string} [hint] An optional hint to use as the question if no clarifying_question is found.
  * @returns {{category: string, question: string | undefined, slot: string | undefined}} An object containing the extracted category, question, and slot.
  */
-// function parseResponseObject(responseObject, hint) { // Renamed function and parameter
-//     let category = 'parsing error'; // In case of failure
-//     let question;
-//     let slot;
-//     try {
-//         // Access name directly from the input object
-//         if (responseObject && responseObject.name !== undefined) {
-//             // Determine the category
-//             category = responseObject.name === 'model needs more information' ?
-//                 'model needs more information' :
-//                 responseObject.name;
-//         } else {
-//             console.error("Input object is missing 'name' property:", responseObject);
-//             return {category, question, slot}; // Return early if name is missing
-//         }
-//
-//         // Check if arguments property exists and is a string
-//         if (responseObject.arguments && typeof responseObject.arguments === 'string') {
-//             try {
-//                 // Parse the arguments string
-//                 const args = JSON.parse(responseObject.arguments);
-//
-//                 // Extract clarifying_question if present
-//                 if (args.clarifying_question !== undefined) {          // was: clariyfing_question (typo)
-//                     question = args.clarifying_question;
-//                 }
-//
-//                 // Extract slot ONLY if category is NOT 'model needs more information' and slot is present
-//                 if (category !== 'model needs more information' && args.slot !== undefined) {
-//                     slot = args.slot;
-//                 }
-//
-//             } catch (e) {
-//                 // Log error if arguments string is not valid JSON, but continue
-//                 console.error("Error parsing arguments JSON string:", responseObject.arguments, e);
-//             }
-//         } else if (responseObject.arguments !== undefined) {
-//             // Handle cases where arguments might not be a string as expected
-//             console.warn("Input object has 'arguments' property but it's not a string:", responseObject.arguments);
-//         }
-//     } catch (e) {
-//         console.error("Error processing response object:", responseObject, e);
-//         // category is already 'parsing error'
-//     }
-//
-//     // If question is not set or is blank, use the hint if provided
-//     if ((question === undefined || (typeof question === 'string' && question.trim() === '')) && hint !== undefined) {
-//         question = hint;
-//     } else if (typeof question === 'string' && question.trim() === '') {
-//         // Ensure blank strings become undefined if no hint is used
-//         question = undefined;
-//     }
-//     return {category, question, slot};
-// }
+function parseResponseObject(responseObject, hint) { // Renamed function and parameter
+    let category = 'parsing error'; // In case of failure
+    let question;
+    let slot;
+    try {
+        // Access name directly from the input object
+        if (responseObject && responseObject.name !== undefined) {
+            // Determine the category
+            category = responseObject.name === 'model needs more information' ?
+                'model needs more information' :
+                responseObject.name;
+        } else {
+            console.error("Input object is missing 'name' property:", responseObject);
+            return {category, question, slot}; // Return early if name is missing
+        }
+
+        // Check if arguments property exists and is a string
+        if (responseObject.arguments && typeof responseObject.arguments === 'string') {
+            try {
+                // Parse the arguments string
+                const args = JSON.parse(responseObject.arguments);
+
+                // Extract clarifying_question if present
+                if (args.clarifying_question !== undefined) {          // was: clariyfing_question (typo)
+                    question = args.clarifying_question;
+                }
+
+                // Extract slot ONLY if category is NOT 'model needs more information' and slot is present
+                if (category !== 'model needs more information' && args.slot !== undefined) {
+                    slot = args.slot;
+                }
+
+            } catch (e) {
+                // Log error if arguments string is not valid JSON, but continue
+                console.error("Error parsing arguments JSON string:", responseObject.arguments, e);
+            }
+        } else if (responseObject.arguments !== undefined) {
+            // Handle cases where arguments might not be a string as expected
+            console.warn("Input object has 'arguments' property but it's not a string:", responseObject.arguments);
+        }
+    } catch (e) {
+        console.error("Error processing response object:", responseObject, e);
+        // category is already 'parsing error'
+    }
+
+    // If question is not set or is blank, use the hint if provided
+    if ((question === undefined || (typeof question === 'string' && question.trim() === '')) && hint !== undefined) {
+        question = hint;
+    } else if (typeof question === 'string' && question.trim() === '') {
+        // Ensure blank strings become undefined if no hint is used
+        question = undefined;
+    }
+    return {category, question, slot};
+}
 
 
 function optionalQuestion(responseObject, hint) {
@@ -1167,13 +1212,11 @@ function optionalQuestion(responseObject, hint) {
         responseObject.name === 'model needs more information'
     );
     if (isClarifying) {
-
         // Process arguments if it's a string containing JSON
         if (responseObject.arguments && typeof responseObject.arguments === 'string') {
             try {
                 const args = JSON.parse(responseObject.arguments);
                 let question;
-
 
                 // Look for clarifying_question first
                 if (args.clarifying_question !== undefined) {          // was: clariyfing_question (typo)
@@ -1200,30 +1243,30 @@ function optionalQuestion(responseObject, hint) {
     }
 }
 
-// // Demo Hack ..Adapting hard-coded chat instructions/responses with user responses /slots
-// function fillTemplate(templateString, data) {
-//     console.log("fillTemplate",templateString, 'd:',data)
-//     let transferTemplate;
-//     transferTemplate = templateString;
-//     transferTemplate = transferTemplate.replace(/_FOREGROUND_/ig,getForegroundString())
-//     return transferTemplate.replace(/\${(.*?)}/g, data[0]);
-// }
+// Demo Hack ..Adapting hard-coded chat instructions/responses with user responses /slots
+function fillTemplate(templateString, data) {
+    console.log("hhhhhhhhere",templateString, 'd:',data)
+    let transferTemplate;
+    transferTemplate = templateString;
+    transferTemplate = transferTemplate.replace(/_FOREGROUND_/ig,getForegroundString())
+    return transferTemplate.replace(/\${(.*?)}/g, data[0]);
+}
 
 // Replace fillTemplate with this
-// function resolveReferences(obj) {
-//     const resolved = { ...obj };
-//
-//     for (const key in resolved) {
-//         if (typeof resolved[key] === 'string') {
-//             resolved[key] = resolved[key].replace(/\{(\w+)}/g, (match, propName) => {
-//                 return resolved[propName] !== undefined ? resolved[propName] : match;
-//             });
-//         }
-//     }
-//
-//     return resolved;
-// }
-//
+function resolveReferences(obj) {
+    const resolved = { ...obj };
+
+    for (const key in resolved) {
+        if (typeof resolved[key] === 'string') {
+            resolved[key] = resolved[key].replace(/\{(\w+)}/g, (match, propName) => {
+                return resolved[propName] !== undefined ? resolved[propName] : match;
+            });
+        }
+    }
+
+    return resolved;
+}
+
 
 //Load chat example, including custom actions and settings for edit
 document.addEventListener("DOMContentLoaded", function () {
@@ -1272,13 +1315,11 @@ async function getFile(event) {
     if (fileName) {
         const response = await fetch(urlName, {
             method: 'GET',
-            headers: {'Content-Type': 'application/json'}// Stringify for sending
+            headers: {'Content-Type': 'application/json'}
         });
         const fileData = await response.json();
-        const formattedJson = JSON.stringify(fileData, null, 2); // 2 spaces for indentation
-        document.getElementById("fileContents").value = formattedJson;
-        scrollTextareaToChar(16)
-
+        const container = document.getElementById('formEditorContainer');
+        window.formEditor = new FormEditor(fileData, container);
     }
 }
 //consilidate with getFile LDP
@@ -1355,13 +1396,25 @@ function editDialog() {
     document.getElementById('focalChat').innerHTML = " " + filename;
     document.getElementById('fileName').value = filename + "/story.json";
     showDialogBox('dialog3');
+    getFile(); // auto-load the form
 }
 
 window.saveEditedFile = async function (newContent) {
-
-    let fileContents = (newContent) ? newContent : document.getElementById('fileContents').value;
-    //this saves edits
+    let fileContents;
+    if (newContent) {
+        fileContents = newContent;
+    } else if (window.formEditor) {
+        fileContents = window.formEditor.toJSON();
+    } else {
+        return;
+    }
     const fileName = document.getElementById('fileName').value;
+
+    const confirmed = await showConfirm(
+        'Overwrite file?',
+        `This will overwrite "${fileName}". This cannot be undone.`
+    );
+    if (!confirmed) return;
 
     const response = await fetch('/create-file', {
         method: 'POST',
@@ -1372,97 +1425,165 @@ window.saveEditedFile = async function (newContent) {
     });
 
     if (response.ok) {
-        alert(" ✓ file edited successfully!");
+        if (window.formEditor) window.formEditor.markClean();
+        showToast('File saved successfully', 'success');
     } else {
-        alert(" ✗ error editing file.");
+        showToast('Error saving file', 'error');
     }
     closeDialog();
 }
 
 
-let popOutWindow;
 
-function popOutDialog() {
-    const features = 'width=650,height=600,resizable=yes,scrollbars=yes';
-    const dialogContentContainer = document.getElementById('dialog3');
-    const textareaElement = document.getElementById('fileContents'); // Assuming this is inside #dialog3
 
-    if (!dialogContentContainer || !textareaElement) {
-        console.error("Error: Required elements not found. Check IDs: #dialog3 and #fileContents.");
-        return;
+// ── MD3 Snackbar / Toast ──────────────────────────
+function showToast(message, type = 'info', duration = 3500) {
+    const existing = document.getElementById('md-snackbar');
+    if (existing) existing.remove();
+
+    const bar = document.createElement('div');
+    bar.id = 'md-snackbar';
+    bar.className = 'md-snackbar md-snackbar--' + type;
+
+    const text = document.createElement('span');
+    text.className = 'md-snackbar-text';
+    text.textContent = message;
+    bar.appendChild(text);
+
+    const close = document.createElement('button');
+    close.className = 'md-snackbar-close';
+    close.textContent = '✕';
+    close.onclick = () => dismiss();
+    bar.appendChild(close);
+
+    document.body.appendChild(bar);
+    requestAnimationFrame(() => bar.classList.add('md-snackbar--show'));
+
+    const timer = setTimeout(dismiss, duration);
+    function dismiss() {
+        clearTimeout(timer);
+        bar.classList.remove('md-snackbar--show');
+        bar.addEventListener('transitionend', () => bar.remove(), { once: true });
     }
+}
 
-    const liveTextValue = textareaElement.value;
+// ── MD3 Confirmation Dialog ───────────────────────
+function showConfirm(title, message) {
+    return new Promise(resolve => {
+        const existing = document.getElementById('md-confirm-overlay');
+        if (existing) existing.remove();
 
-    //  Get the default HTML (which is MISSING from the placeholder)
-    let contentHTML = dialogContentContainer.innerHTML;
+        const overlay = document.createElement('div');
+        overlay.id = 'md-confirm-overlay';
+        overlay.className = 'md-confirm-overlay';
 
-    popOutWindow = window.open('about:blank', 'DialogPopOut', features);
-    if (popOutWindow) {
-        const placeholderTextareaTag = '<textarea id="fileContents"'; // Start of tag
-        const newTextareaTag = `${placeholderTextareaTag} rows="20" cols="80">${liveTextValue}</textarea>`;
+        const dialog = document.createElement('div');
+        dialog.className = 'md-confirm-dialog';
 
-        // For simplicity and safety, let's use a temporary attribute method on the live element:
-        textareaElement.textContent = liveTextValue;
-        contentHTML = dialogContentContainer.innerHTML;
-        textareaElement.textContent = ''; // Reset parent for next time
+        const h = document.createElement('h3');
+        h.className = 'md-confirm-title';
+        h.textContent = title;
+        dialog.appendChild(h);
 
-        const newWindowHTML = `
-            <!DOCTYPE html>
-            <html>
-          <head>    <link rel="stylesheet" href="/style/style.css">
-         <link rel="stylesheet" href="/style/char.css">
-         <link rel="preconnect" href="https://fonts.googleapis.com">
-         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-         <link href="https://fonts.googleapis.com/css2?family=Poppins&display=swap" rel="stylesheet">
-         <link rel="preconnect" href="https://fonts.googleapis.com">
-         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-         <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
-               rel="stylesheet">
- 
-                <title>File Editor</title>
-                <style>
-                    body { font-family: sans-serif; padding: 10px; margin: 0; }
-                </style>
-            </head>
-            <body>
-                ${contentHTML} 
-                
-                <script>
-                 function saveEditedFile() {
-                      const editedContent = document.getElementById('fileContents').value;
-                      window.opener.saveEditedFile(editedContent); 
-                      window.close();
-                 }
-                
-                    // saveAndClose function for the child window
-                    async function saveAndClose() {
-                        const editedContent = document.getElementById('fileContents').value;
-                        //console.log('🔎', editedContent)
-                        if (window.opener){ //} && !window.opener.closed) {
-                            await window.opener.saveEditedFile(editedContent); 
-                        }
-                        window.close();
-                        
-                    }
-                </script>
-            </body>
-            </html>
-        `;
+        const p = document.createElement('p');
+        p.className = 'md-confirm-body';
+        p.textContent = message;
+        dialog.appendChild(p);
 
-        popOutWindow.document.write(newWindowHTML);
-        popOutWindow.document.close();
+        const actions = document.createElement('div');
+        actions.className = 'md-confirm-actions';
 
-        // Optional cleanup handlers
-        dialogContentContainer.style.display = 'none';
-        popOutWindow.onbeforeunload = function () {
-            dialogContentContainer.style.display = 'block';
-            popOutWindow = null;
-        };
+        const cancelBtn = document.createElement('button');
+        cancelBtn.className = 'md-confirm-btn md-confirm-btn--cancel';
+        cancelBtn.textContent = 'Cancel';
+        cancelBtn.onclick = () => { cleanup(); resolve(false); };
+        actions.appendChild(cancelBtn);
 
-    } else {
-        alert("Pop-up blocked! Please allow pop-ups for this feature.");
-    }
+        const confirmBtn = document.createElement('button');
+        confirmBtn.className = 'md-confirm-btn md-confirm-btn--confirm';
+        confirmBtn.textContent = 'Confirm';
+        confirmBtn.onclick = () => { cleanup(); resolve(true); };
+        actions.appendChild(confirmBtn);
+
+        dialog.appendChild(actions);
+        overlay.appendChild(dialog);
+
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) { cleanup(); resolve(false); }
+        });
+
+        document.body.appendChild(overlay);
+        requestAnimationFrame(() => overlay.classList.add('md-confirm--show'));
+        confirmBtn.focus();
+
+        function cleanup() {
+            overlay.classList.remove('md-confirm--show');
+            overlay.addEventListener('transitionend', () => overlay.remove(), { once: true });
+        }
+    });
+}
+window.showConfirm = showConfirm;
+
+// ── MD3 Three-way Confirmation (Save / Discard / Cancel) ──
+function showConfirmThreeWay(title, message) {
+    return new Promise(resolve => {
+        const existing = document.getElementById('md-confirm-overlay');
+        if (existing) existing.remove();
+
+        const overlay = document.createElement('div');
+        overlay.id = 'md-confirm-overlay';
+        overlay.className = 'md-confirm-overlay';
+
+        const dialog = document.createElement('div');
+        dialog.className = 'md-confirm-dialog';
+
+        const h = document.createElement('h3');
+        h.className = 'md-confirm-title';
+        h.textContent = title;
+        dialog.appendChild(h);
+
+        const p = document.createElement('p');
+        p.className = 'md-confirm-body';
+        p.textContent = message;
+        dialog.appendChild(p);
+
+        const actions = document.createElement('div');
+        actions.className = 'md-confirm-actions';
+
+        const discardBtn = document.createElement('button');
+        discardBtn.className = 'md-confirm-btn md-confirm-btn--confirm';
+        discardBtn.textContent = 'Discard';
+        discardBtn.onclick = () => { cleanup(); resolve('discard'); };
+        actions.appendChild(discardBtn);
+
+        const cancelBtn = document.createElement('button');
+        cancelBtn.className = 'md-confirm-btn md-confirm-btn--cancel';
+        cancelBtn.textContent = 'Cancel';
+        cancelBtn.onclick = () => { cleanup(); resolve('cancel'); };
+        actions.appendChild(cancelBtn);
+
+        const saveBtn = document.createElement('button');
+        saveBtn.className = 'md-confirm-btn md-confirm-btn--save';
+        saveBtn.textContent = 'Save';
+        saveBtn.onclick = () => { cleanup(); resolve('save'); };
+        actions.appendChild(saveBtn);
+
+        dialog.appendChild(actions);
+        overlay.appendChild(dialog);
+
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) { cleanup(); resolve('cancel'); }
+        });
+
+        document.body.appendChild(overlay);
+        requestAnimationFrame(() => overlay.classList.add('md-confirm--show'));
+        saveBtn.focus();
+
+        function cleanup() {
+            overlay.classList.remove('md-confirm--show');
+            overlay.addEventListener('transitionend', () => overlay.remove(), { once: true });
+        }
+    });
 }
 
     // ── Internal state ─────────────────────────────
