@@ -44,20 +44,7 @@ const AffordanceRegistry = (() => {
 //  Register Handlers — one per affordance
 // ============================================================
 
-// AffordanceRegistry.register('movable', (source, target) => {
-//     moveTowards('#' + source, '#' + target);
-// });
-// AffordanceRegistry.register('orderable', (item) => {
-//     flash('#' + item);
-//     showDial(item);
-// });
 
-// AffordanceRegistry.register('hatable', (source, target) => {
-//     wearHat(source, target);
-// });
-// AffordanceRegistry.register('settable', (item, value) => {
-//     setDial(value);
-// });
 AffordanceRegistry.register('movable',
     (source, target) => moveTowards('#' + source, '#' + target),
     ['source', 'target']
@@ -70,6 +57,12 @@ AffordanceRegistry.register('orderable',
 
 AffordanceRegistry.register('hatable',
     (source, target) => wearHat('#' + source, '#' + target),
+    ['source', 'target']
+);
+
+
+AffordanceRegistry.register('barkable',
+    (source, target) => createTalkBubble('#' + source, '#' + target),
     ['source', 'target']
 );
 
