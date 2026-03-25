@@ -761,47 +761,6 @@ async function playAudio(audioStream) {
 }
 
 
-async function directChat(startPrompt = '', fileString='') {
-
-     //const compareTo = "Make an answr using this file"
-    console.log('fileToUse',fileString)
-
-    //let fileToUse = getFile('/examples/chat/patient.txt')
-    //async function getRandomKeysFromCSV(filename, amount = 2) {
-
-    let prompt;
-    if (fileString.length >1) {
-        prompt = document.getElementById('user-prompt').value;
-        prompt = "Use this for answer:" + prompt + "  //" + fileString;
-    }
-    else if (startPrompt) {
-        prompt = "generate a 50 word or less response about: " + startPrompt;
-    } else {
-        //gather input for tools
-        prompt = document.getElementById('user-prompt').value;
-    }
-    const model = getModelFromSettings();
-     console.log('prompt',prompt)
-    // Create context for AI model
-    try {
-        const response = await fetch('/runConversation', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/json'},
-            body: JSON.stringify({prompt, model}),
-        })
-        const llmResponseString = await response.text();
-        const parsedString = JSON.parse(llmResponseString);
-        const cleanedResponse = parsedString.replace(/\r?\n|\r/g, '<br>');
-        document.getElementById('content').innerHTML = transformText(cleanedResponse);
-        console.log(' ℹ️ AI response:', llmResponseString);
-    } catch {
-        console.log(' ❌ server issue')
-    }
-}
-
-function isDirectChatActive() {
-    return document.getElementById('directChat').classList.contains('active');
-}
 
 
 
@@ -994,13 +953,53 @@ function updateAttribute(elId, atName, atValue) {
     el.setAttribute(atName, atValue);
 }
 
+function isDirectChatActive() {
+    return document.getElementById('directChat').classList.contains('active');
+}
+
+async function directChat(startPrompt = '', fileString = '') {
+    const promptInput = document.getElementById('user-prompt');
+    const contentDisplay = document.getElementById('content');
+
+    // 1. Determine the prompt logic efficiently
+    let prompt = promptInput.value;
+
+    if (fileString.length > 1) {
+        prompt = `Use this for answer: ${prompt} // ${fileString}`;
+    } else if (startPrompt) {
+        prompt = `generate a 50 word or less response about: ${startPrompt}`;
+    }
+
+    const model = getModelFromSettings();
+    console.log('🚀 Sending Prompt:', prompt);
+
+    try {
+        const response = await fetch('/runConversation', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ prompt, model }),
+        });
+
+        if (!response.ok) throw new Error('Network response was not ok');
+
+        const rawData = await response.json();
+        // Replace newlines with breaks and transform markdown-style syntax
+        const formattedHtml = transformText(rawData.replace(/\r?\n|\r/g, '<br>'));
+
+        contentDisplay.innerHTML = formattedHtml;
+        console.log('ℹ️ AI response success');
+
+    } catch (error) {
+        console.error('❌ Server/Fetch issue:', error);
+        contentDisplay.innerHTML = '<span style="color:red;">Error connecting to server.</span>';
+    }
+}
+
 const transformText = (input) => {
     return input
-        // 1. Convert **text** to <b>text</b>
-        .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>')
-
-        // 2. Convert * item to <li>item</li>
-        .replace(/^\*\s+(.*)$/gm, '<li>$1</li>');
+        .replace(/\*\*(.*?)\*\*/g, '<b>$1</b>') // Bold
+        .replace(/^\*\s+(.*)$/gm, '<li>$1</li>') // Bullets
+        .replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>'); // Wrap list items in a UL
 };
 async function handleSend() {
 
