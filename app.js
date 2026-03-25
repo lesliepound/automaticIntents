@@ -1,5 +1,6 @@
 // app.js
 import express from 'express';
+
 import fs from 'fs';
 import path from 'path';
 import 'dotenv/config';
@@ -48,25 +49,6 @@ app.post('/create-file', (req, res) => {
     });
 });
 
-
-//Returns content of file
-// app.get('/file', (req, res) => {
-//     const fileName = req.query.fileName;
-//     const filePath = path.join('/chat/examples/', fileName);
-//     fs.readFile(filePath, 'utf8', (err, data) => {
-//         if (err) {
-//             if (err.code === 'ENOENT') { // Check for "File not found" error
-//                 res.send('missing');
-//             } else {
-//                 console.error(`Error reading file: ${err}`);
-//                 res.status(500).send('Internal Server Error');
-//             }
-//
-//         } else {
-//             res.send(data);
-//         }
-//     })
-// });
 
 
 //Returns content of file
@@ -205,12 +187,16 @@ app.post('/middleware', async (req, res) => {
     }
 });
 
-export function logThis(message) {
-    console.log('message', message)
+export async function logThis(message) {
+    console.log('message', message);
     const logEntry = `[${new Date().toISOString()}] ${message}\n`;
-    fs.appendFile('usage.log', logEntry, (err) => {
-        if (err) console.error('Error appending to log file:', err);
-    });
+
+    try {
+        // 'await' ensures the file is finished writing before the next log starts
+        await fs.appendFile('usage.log', logEntry);
+    } catch (err) {
+        console.error('Error appending to log file:', err);
+    }
 }
 
 function logAnalytics(entry) {
