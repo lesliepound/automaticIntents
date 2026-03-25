@@ -3,15 +3,26 @@
     {
       "id": "dogPage",
       "type": "simulation",
-      "foreground": ["dog"],
+      "foreground": [
+        "dog"
+      ],
+      "affordances": {
+        "dog": [
+          "barkable",
+          "chasable"
+        ]
+      },
       "text": "You see a dog in front of you.",
       "options": [
         {
-          "option": "get me the dog",
-          "nextSlideId": "bark"
+          "option": "get me the dog or nickname for a dog",
+          "nextSlideId": "barkable",
+          "slot": {
+            "name": "animal speaking",
+            "description": " this _FOREGROUND_ will say bark, hello  "
+          }
         }
       ]
     }
-  ],
-  "startPageId": "dogPage"
+  ]
 }

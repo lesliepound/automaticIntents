@@ -1,7 +1,7 @@
 {
-  "timestamp": "2026-03-25T04:35:44.028Z",
+  "timestamp": "2026-03-25T06:12:00.079Z",
   "model": "llama-3.1-8b-instant",
-  "totalPassed": 18,
+  "totalPassed": 20,
   "totalTests": 26,
   "suites": [
     {
@@ -22,17 +22,17 @@
         {
           "prompt": "let me play",
           "expect": "clarifying_question",
-          "actual": "bounce"
+          "actual": "fallback"
         },
         {
           "prompt": "I want to play with the ball",
           "expect": "bounce",
-          "actual": "fallback"
+          "actual": "bounce"
         },
         {
           "prompt": "make some chocolate cake",
           "expect": "fallback",
-          "actual": "fallback"
+          "actual": "color"
         }
       ]
     },
@@ -43,28 +43,28 @@
       "rows": [
         {
           "prompt": "get me man's best friend",
-          "expect": "bark",
-          "actual": "fallback"
+          "expect": "barkable",
+          "actual": "barkable"
         },
         {
           "prompt": "I want the four-legged companion",
-          "expect": "bark",
-          "actual": "bark"
+          "expect": "barkable",
+          "actual": "barkable"
         },
         {
           "prompt": "bring me the loyal pet",
-          "expect": "bark",
-          "actual": "bark"
+          "expect": "barkable",
+          "actual": "fallback"
         },
         {
           "prompt": "fetch the animal that barks",
           "expect": "bark",
-          "actual": "bark"
+          "actual": "barkable"
         },
         {
           "prompt": "get me the swimming creature",
           "expect": "fallback",
-          "actual": "bark"
+          "actual": "fallback"
         },
         {
           "prompt": "ill be bach",
@@ -75,7 +75,7 @@
     },
     {
       "name": "conceptual-with-examples",
-      "passed": 4,
+      "passed": 3,
       "total": 5,
       "rows": [
         {
@@ -86,12 +86,12 @@
         {
           "prompt": "I want the four-legged companion",
           "expect": "bark",
-          "actual": "fallback"
+          "actual": "bark"
         },
         {
           "prompt": "bring me the loyal pet",
           "expect": "bark",
-          "actual": "bark"
+          "actual": "fallback"
         },
         {
           "prompt": "fetch the animal that barks",
@@ -101,19 +101,19 @@
         {
           "prompt": "get me the swimming creature",
           "expect": "fallback",
-          "actual": "fallback"
+          "actual": "bark"
         }
       ]
     },
     {
       "name": "literal",
-      "passed": 3,
+      "passed": 5,
       "total": 5,
       "rows": [
         {
           "prompt": "get me the dog",
           "expect": "bark",
-          "actual": "fallback"
+          "actual": "bark"
         },
         {
           "prompt": "Get me the dog",
@@ -128,7 +128,7 @@
         {
           "prompt": "I want to get the dog",
           "expect": "bark",
-          "actual": "fallback"
+          "actual": "bark"
         },
         {
           "prompt": "get me the cat",
@@ -139,7 +139,7 @@
     },
     {
       "name": "synonyms",
-      "passed": 4,
+      "passed": 5,
       "total": 5,
       "rows": [
         {
@@ -150,7 +150,7 @@
         {
           "prompt": "fetch the hound",
           "expect": "bark",
-          "actual": "fallback"
+          "actual": "bark"
         },
         {
           "prompt": "bring me the puppy",

@@ -8,7 +8,7 @@
       "options": [
         {
           "option": "get me the dog",
-          "nextSlideId": "bark"
+          "nextSlideId": "barkable"
         }
       ]
     }
