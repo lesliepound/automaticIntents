@@ -23,3 +23,5 @@ pins.txt
 /dev-docs
 
 /public/images
+
+/test-new/result-logs/*

@@ -1,28 +1,28 @@
 {
-  "timestamp": "2026-03-24T15:39:59.964Z",
+  "timestamp": "2026-03-25T04:35:44.028Z",
   "model": "llama-3.1-8b-instant",
-  "totalPassed": 15,
+  "totalPassed": 18,
   "totalTests": 26,
   "suites": [
     {
       "name": "clarifying-question",
-      "passed": 0,
+      "passed": 3,
       "total": 5,
       "rows": [
         {
           "prompt": "I want to play with that thing",
           "expect": "clarifying_question",
-          "actual": "fallback"
+          "actual": "clarifying_question"
         },
         {
           "prompt": "give me one of those",
           "expect": "clarifying_question",
-          "actual": "fallback"
+          "actual": "clarifying_question"
         },
         {
           "prompt": "let me play",
           "expect": "clarifying_question",
-          "actual": "fallback"
+          "actual": "bounce"
         },
         {
           "prompt": "I want to play with the ball",
@@ -32,7 +32,7 @@
         {
           "prompt": "make some chocolate cake",
           "expect": "fallback",
-          "actual": "clarifying_question"
+          "actual": "fallback"
         }
       ]
     },
@@ -44,7 +44,7 @@
         {
           "prompt": "get me man's best friend",
           "expect": "bark",
-          "actual": "bark"
+          "actual": "fallback"
         },
         {
           "prompt": "I want the four-legged companion",
@@ -59,7 +59,7 @@
         {
           "prompt": "fetch the animal that barks",
           "expect": "bark",
-          "actual": "fallback"
+          "actual": "bark"
         },
         {
           "prompt": "get me the swimming creature",
@@ -75,7 +75,7 @@
     },
     {
       "name": "conceptual-with-examples",
-      "passed": 3,
+      "passed": 4,
       "total": 5,
       "rows": [
         {
@@ -101,24 +101,24 @@
         {
           "prompt": "get me the swimming creature",
           "expect": "fallback",
-          "actual": "bark"
+          "actual": "fallback"
         }
       ]
     },
     {
       "name": "literal",
-      "passed": 4,
+      "passed": 3,
       "total": 5,
       "rows": [
         {
           "prompt": "get me the dog",
           "expect": "bark",
-          "actual": "bark"
+          "actual": "fallback"
         },
         {
           "prompt": "Get me the dog",
           "expect": "bark",
-          "actual": "fallback"
+          "actual": "bark"
         },
         {
           "prompt": "get me the dog please",
@@ -128,7 +128,7 @@
         {
           "prompt": "I want to get the dog",
           "expect": "bark",
-          "actual": "bark"
+          "actual": "fallback"
         },
         {
           "prompt": "get me the cat",
@@ -150,7 +150,7 @@
         {
           "prompt": "fetch the hound",
           "expect": "bark",
-          "actual": "bark"
+          "actual": "fallback"
         },
         {
           "prompt": "bring me the puppy",
@@ -165,7 +165,7 @@
         {
           "prompt": "get me the feline",
           "expect": "fallback",
-          "actual": "bark"
+          "actual": "fallback"
         }
       ]
     }

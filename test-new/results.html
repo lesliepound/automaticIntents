@@ -127,6 +127,42 @@
     outline-offset: 2px;
   }
 
+  /* Run button */
+  .run-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--md-sys-color-primary);
+    color: var(--md-sys-color-on-primary);
+    border: none;
+    border-radius: 20px;
+    padding: 8px 20px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .run-btn:hover { box-shadow: 0 1px 3px rgba(0,0,0,0.3); filter: brightness(1.08); }
+  .run-btn:active { filter: brightness(0.95); }
+  .run-btn:disabled {
+    background: var(--md-sys-color-primary-container);
+    color: var(--md-sys-color-on-primary-container);
+    cursor: default;
+    box-shadow: none;
+  }
+  .run-btn .material-icons { font-size: 18px; }
+  .run-btn .spinner {
+    width: 16px; height: 16px;
+    border: 2px solid currentColor;
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    flex-shrink: 0;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
   /* Summary cards */
   .summary { display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
   .card {
@@ -241,7 +277,13 @@
 <body>
 
 <div class="top-bar">
-  <h1>Intent Classifier — Test Results</h1>
+  <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;">
+    <h1>Intent Classifier — Test Results</h1>
+    <button class="run-btn" id="run-btn">
+      <span class="material-icons">play_arrow</span>
+      <span id="run-label">Run Tests</span>
+    </button>
+  </div>
   <div class="meta" id="meta">
     <div class="history-select" id="history-container" style="display:none;">
       <span class="material-icons" style="font-size:18px;color:var(--md-sys-color-on-surface-variant);">history</span>
@@ -270,6 +312,97 @@
 </div>
 
 <script>
+// ── Run tests via SSE ──────────────────────────────────────
+document.getElementById('run-btn').addEventListener('click', () => {
+  const btn = document.getElementById('run-btn');
+  const label = document.getElementById('run-label');
+  if (btn.disabled) return;
+
+  btn.disabled = true;
+  btn.querySelector('.material-icons')?.remove();
+  const spinner = document.createElement('div');
+  spinner.className = 'spinner';
+  btn.prepend(spinner);
+  label.textContent = 'Starting…';
+
+  const es = new EventSource('/run');
+
+  es.addEventListener('suite', e => {
+    label.textContent = `Running (${e.data})`;
+  });
+
+  es.addEventListener('result', e => {
+    // optional: could track per-suite results here
+  });
+
+  es.addEventListener('done', async e => {
+    es.close();
+    label.textContent = 'Refreshing…';
+
+    // Reload results
+    try {
+      const r = await fetch('results.json?t=' + Date.now());
+      if (r.ok) {
+        const newData = await r.json();
+        renderData(newData);
+
+        // Refresh history dropdown
+        try {
+          const hResp = await fetch('result-logs/index.json?t=' + Date.now());
+          if (hResp.ok) {
+            const manifest = await hResp.json();
+            rebuildHistoryDropdown(manifest, newData);
+          }
+        } catch (_) {}
+      }
+    } catch (err) {
+      console.error('Failed to reload results:', err);
+    }
+
+    // Reset button
+    spinner.remove();
+    const icon = document.createElement('span');
+    icon.className = 'material-icons';
+    icon.textContent = 'play_arrow';
+    btn.prepend(icon);
+    label.textContent = 'Run Tests';
+    btn.disabled = false;
+  });
+
+  es.onerror = () => {
+    es.close();
+    spinner.remove();
+    const icon = document.createElement('span');
+    icon.className = 'material-icons';
+    icon.textContent = 'play_arrow';
+    btn.prepend(icon);
+    label.textContent = 'Run Tests';
+    btn.disabled = false;
+  };
+});
+
+function rebuildHistoryDropdown(manifest, latestData) {
+  const select = document.getElementById('history-select');
+  const container = document.getElementById('history-container');
+  if (!select || !container) return;
+  select.innerHTML = '';
+
+  const latestOption = document.createElement('option');
+  latestOption.value = '';
+  latestOption.textContent = `Latest run (${new Date(latestData.timestamp).toLocaleTimeString()})`;
+  select.appendChild(latestOption);
+
+  const sorted = [...manifest].sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+  sorted.forEach(run => {
+    const ts = new Date(run.timestamp);
+    const option = document.createElement('option');
+    option.value = run.file;
+    option.textContent = `${ts.toLocaleDateString()} ${ts.toLocaleTimeString()} — ${run.model} (${run.totalPassed}/${run.totalTests})`;
+    select.appendChild(option);
+  });
+  container.style.display = manifest.length > 0 ? 'flex' : 'none';
+}
+
 // CSV parser for historical data
 function parseCSV(text) {
   const lines = text.split('\n').filter(line => line.trim());
