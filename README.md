@@ -7,8 +7,8 @@ Currently this uses  various AI models via Groq (which speeds up porcessing).
 
 The goal here is 
 1. Separate chat mechanics (what happens when user does XYZ) into an easy-to-understand file (JSON)
-2. Allow for the AI model to understand and execute those mechanicns with no extra coding beyond this repo.
-3. Modifying the JSON file changes the workflow and always more topics to be handled.
+2. Allow the AI model to understand and execute those mechanicns with no extra coding beyond this repo.
+3. Modifying the JSON file changes the workflow and allows more topics to be handled.
 4. There is one call to the model with no to few shot prompting.
 
 This was based off of auto Intents
