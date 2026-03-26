@@ -175,13 +175,13 @@ app.post('/middleware', async (req, res) => {
     }
 });
 
-export async function logThis(message) {
+export function logThis(message) {
     console.log('message', message);
     const logEntry = `[${new Date().toISOString()}] ${message}\n`;
 
     try {
         // 'await' ensures the file is finished writing before the next log starts
-        await fs.appendFile('usage.log', logEntry);
+        fs.appendFileSync('usage.log', logEntry);
     } catch (err) {
         console.error('Error appending to log file:', err);
     }
