@@ -2,7 +2,7 @@
 import express from 'express';
 
 //import fs from 'fs';
-import fs from 'node:fs/promises';
+import fs from 'node:fs';
 import path from 'path';
 import 'dotenv/config';
 import {runConversation, runClassifier} from "./src/modules/functions.js";
