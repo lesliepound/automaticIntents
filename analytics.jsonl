@@ -191,3 +191,4 @@
 {"ts":"2026-03-25T18:29:18.377Z","source":"live","story":"ER","model":"llama-3.1-8b-instant","prompt":"attach the EKG","intent":"connectable","slots":{"_label":"attach ekg or blood pressure (bp) or iv poll to the","item-to-attach_to_patient":"EKG"},"fallback":false,"latency_ms":476}
 {"ts":"2026-03-25T18:30:23.256Z","source":"live","story":"toy","model":"llama-3.1-8b-instant","prompt":"nurse how are you","intent":"fallback","slots":{},"fallback":true,"latency_ms":599}
 {"ts":"2026-03-25T18:30:33.782Z","source":"live","story":"toy","model":"llama-3.1-8b-instant","prompt":"what are the symptoms","intent":"fallback","slots":{},"fallback":true,"latency_ms":497}
+{"ts":"2026-03-25T21:03:50.062Z","source":"live","story":"toy","model":"llama-3.1-8b-instant","prompt":"the child jumps rope","intent":"fallback","slots":{},"fallback":true,"latency_ms":541}

@@ -1,7 +1,8 @@
 // app.js
 import express from 'express';
 
-import fs from 'fs';
+//import fs from 'fs';
+import fs from 'node:fs/promises';
 import path from 'path';
 import 'dotenv/config';
 import {runConversation, runClassifier} from "./src/modules/functions.js";
@@ -118,20 +119,7 @@ app.post('/getSpeech', async (req, res) => {
         res.status(500).json({error: "Internal Server Error"});
     }
 });
-// function replacePlaceholderInArray(stringArray, newContent) {
-//     // Define the placeholder we are looking for.
-//     const placeholder = "${foreground}";
-//
-//     // Use .map() to create a new array, applying the replacement logic to each element.
-//     // .replaceAll() is used to ensure all instances within a single string are replaced.
-//     return stringArray.map(str => {
-//         // Ensure the element is a string before calling replaceAll
-//         if (typeof str === 'string') {
-//             return str.replaceAll(placeholder, foreground);
-//         }
-//         return str; // Return non-string elements as is
-//     });
-// }
+
 
 app.post('/middleware', async (req, res) => {
     const start = Date.now();
@@ -147,12 +135,12 @@ app.post('/middleware', async (req, res) => {
         const latency_ms = Date.now() - start;
         const args = JSON.parse(result.arguments || '{}');
 
-        // logThis(`${new Date().toLocaleTimeString()}
-        // model: ${model}
-        // prompt: ${prompt}
-        // option: ${args._label}
-        // response: ${result.name}
-        // slots: ${JSON.stringify(args)}`);
+        logThis(`--${new Date().toLocaleTimeString()}
+        model: ${model}
+        prompt: ${prompt}
+        option: ${args._label}
+        response: ${result.name}
+        slots: ${JSON.stringify(args)}`);
 
         //const result = await runClassifier(prompt, options, model);
        // const latency_ms = Date.now() - start;
@@ -200,7 +188,7 @@ export async function logThis(message) {
 }
 
 function logAnalytics(entry) {
-    fs.appendFileSync('analytics.jsonl', JSON.stringify(entry) + '\n');
+  fs.appendFileSync('analytics.jsonl', JSON.stringify(entry) + '\n');
 }
 
 function applyVariant(options, variant) {
@@ -226,7 +214,7 @@ app.post('/run-tests', async (req, res) => {
         const baseOptions = storyData.pages[0].options;
 
         if (suite === 'baseline') {
-            const model = testFile.model || 'llama-3.1-8b-instant';
+            const model = testFile.model || 'llama-3.3-70b-versatile';
             for (const test of testFile.tests) {
                 const start = Date.now();
                 const result = await runClassifier(test.prompt, baseOptions, model);

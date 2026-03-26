@@ -134,15 +134,15 @@
       },
       "options": [
         {
-          "option": "move one of these items like: _FOREGROUND_  move to another one of those items",
-          "extra": "animate closer to each other onscreen; give meds; administer medication; give pills to patient; hand over; bring to patient; apply to patient",
+          "option": "give one of these items like: _FOREGROUND_  move to another one of those items",
+          "extra": "get or give or administer or hand over; bring to patient; apply to patient",
           "slot": {
             "name": "item-to-move",
             "description": "An object to move"
           },
           "slot1": {
             "name": "the-target-item",
-            "description": "object to receive the moving object.this item is the is one of these:_FOREGROUND_ , "
+            "description": "object or person to receive the moving object.this item is the is one of these:_FOREGROUND_ , "
           },
           "nextSlideId": "movable"
         },
@@ -152,6 +152,10 @@
           "slot": {
             "name": "item-to-attach_to_patient",
             "description": "item to connect"
+          },
+          "slot1": {
+            "name": "patient",
+            "description": "person to connect to"
           },
           "nextSlideId": "connectable"
         },

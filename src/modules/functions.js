@@ -78,6 +78,7 @@ async function runClassifier(userInput, options, model) {
                     tool_choice: "auto",
                 });
             } else {
+                logThis('-',response)
                 return { name: "fallback", arguments: "" };
             }
         } else {
@@ -107,8 +108,8 @@ async function runClassifier(userInput, options, model) {
         return { name: "fallback", arguments: "" };
     }
 }
-
-async function runConversation(userInput, sysprompt, model = "llama-3.1-8b-instant") {
+// llama-3.1-8b-instant to
+async function runConversation(userInput, sysprompt, model = "llama-3.3-70b-versatile") {
     const chatCompletion = await getGroqChatCompletion(userInput, sysprompt, model);
     const res = chatCompletion.choices[0].message.content;
     console.log(res);

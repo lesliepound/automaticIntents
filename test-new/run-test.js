@@ -8,7 +8,7 @@ import { BotName, getGroqBot, getOpenAIBot, getUninstantiatedBotError } from '..
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 // ── Config ──────────────────────────────────────────────────
-const DEFAULT_MODEL = 'llama-3.1-8b-instant';
+const DEFAULT_MODEL = 'llama-3.3-70b-versatile';
 
 // ── Classifier (standalone, no app.js dependency) ───────────
 const CLASSIFIER_PROMPT = `You are an intent classifier for an interactive application.
