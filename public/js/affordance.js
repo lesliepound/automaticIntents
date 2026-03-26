@@ -51,7 +51,7 @@ AffordanceRegistry.register('movable',
 );
 
 AffordanceRegistry.register('orderable',
-    (item) => { flash('#' + item); showDial(item); },
+    (item) => { flash('#' + item); showDial('#'+item); },
     ['item']
 );
 

@@ -162,14 +162,18 @@
         {
           "option": "the patient had a heart attack",
           "extra": " any thing about a heart attack or conditions that lead to hear attack",
-          "nextSlideId": "test"
+          "nextSlideId": "test",
+          "slot": {
+            "name": "",
+            "description": ""
+          }
         },
         {
-          "option": "get _DIALS_",
-          "extra": " get the test or numbers for  _DIALS_; whats the patients _DIALS_",
+          "option": "et a reading or order a test for any of these: _DIALS_ ",
+          "extra": " order or get the test or vitals; what is the temperature, get the glucose; order the troponin; check the d-dimer; what are the vitals; show the CO2; what's the o2 saturation",
           "slot": {
-            "name": "dial_name",
-            "description": "the name of the medical test/dial. Match to _DIALS_"
+            "name": "the_medical_test_or_vital",
+            "description": "one of these : _DIALS_"
           },
           "nextSlideId": "orderable"
         },
@@ -177,7 +181,11 @@
           "option": "what are her symptoms",
           "extra": " what are your symptoms; how are you feeling",
           "resource": "patient.txt",
-          "nextSlideId": "@prompt"
+          "nextSlideId": "@prompt",
+          "slot": {
+            "name": "",
+            "description": ""
+          }
         },
         {
           "option": "the diagnosis is any ER diagnosis,",

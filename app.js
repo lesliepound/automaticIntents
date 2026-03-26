@@ -132,7 +132,9 @@ app.post('/middleware', async (req, res) => {
         }
 
         const result = await runClassifier(prompt, options, model);
+        console.log('resultresultresult'+ result);
         const latency_ms = Date.now() - start;
+
         const args = JSON.parse(result.arguments || '{}');
 
         logThis(`--${new Date().toLocaleTimeString()}

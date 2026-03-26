@@ -27,15 +27,24 @@ window.getJsonValue = function (jsonStr, targetKey) {
 
 // === DOM HELPERS =============================================================
 
+function showDial(selector) {
+  show(selector)
+}
+
 function show(selector) {
-    $(selector).fadeIn();
-    $(selector).css('transform', '');
+    const elements = document.querySelectorAll(selector);
+    elements.forEach(el => {
+        el.classList.remove('hidden'); // Removing the "hide" class makes it appear
+        el.style.transform = '';
+    });
 }
 
 function hide(selector) {
-    $(selector).fadeOut();
+    const elements = document.querySelectorAll(selector);
+    elements.forEach(el => {
+        el.classList.add('hidden');
+    });
 }
-
 function remove(selector) {
     const el = document.querySelector(selector);
     if (el) el.style.display = 'none';

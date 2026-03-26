@@ -36,7 +36,8 @@ function createFunction(name, text, these_properties,optionLabel='none') {
             parameters: {
                 type: "object",
                 properties,
-                required: optionLabel ? ['_label'] : []
+                required: []
+                //required: optionLabel ? ['_label'] : []
             }
         }
     };
@@ -58,7 +59,7 @@ async function runClassifier(userInput, options, model) {
         createFunction('fallback', 'No match found for the user input', [])
     ];
 
-    logThis('tools', JSON.stringify(tools, null, 2));
+    logThis('tools:' + JSON.stringify(tools, null, 2));
 
     const messages = [
         { role: "system", content: CLASSIFIER_PROMPT },
@@ -112,8 +113,7 @@ async function runClassifier(userInput, options, model) {
 async function runConversation(userInput, sysprompt, model = "llama-3.3-70b-versatile") {
     const chatCompletion = await getGroqChatCompletion(userInput, sysprompt, model);
     const res = chatCompletion.choices[0].message.content;
-    console.log(res);
-    logThis(res);
+     logThis('res' +res);
     return res;
 }
 

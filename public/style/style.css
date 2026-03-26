@@ -208,7 +208,15 @@ section {
         width: 100%; /* Make columns full width on smaller screens */
     }
 }
-
+.is-visible {
+    opacity: 1 !important;
+    pointer-events: auto !important;
+}
+.hidden {
+    opacity: 0 !important;
+    pointer-events: none !important;
+    transition: opacity 0.4s ease;
+}
 
 .option {
     padding: 20px 2px 1px 55px;
@@ -216,6 +224,11 @@ section {
     animation: fadeIn .4s forwards;
 }
 
+.show {
+    padding: 20px 2px 1px 55px;
+    opacity: 0; /* Start hidden */
+    animation: fadeIn .4s forwards;
+}
 .option.noshow {
     display: none;
 }
