@@ -77,7 +77,7 @@ function setListeners() {
     document.querySelector('#user-prompt').addEventListener('keypress', function (e) {
         if (e.key === 'Enter') {
             e.preventDefault();
-            handleSend();
+            handleUserInput();
         }
     });
 
@@ -546,43 +546,7 @@ function loadSlide(page) {
     // Return slide unchanged - it stays editable
     return page;
 }
-// function checkAngaistGoals(mached,value) {
-//     if (matched= focal.goals)
-// }LDP
 
-
-// getRandomFocal LDP
-// async function  handleFirstPage(){
-//
-//     const page = deckData.pages[0];
-//     const setup = page.setup;
-//     const goals = page.goal;
-//
-//     if (page.setup) {
-//         if (page.setup.data) {
-//             const fileContents = await getData(page.setup.data);
-//             const randomRow = Math.floor(Math.random() * 3) + 1;
-//             focal = await getCsvRow(fileContents, randomRow);
-//             console.log('setup', focal);
-//         }
-//         if (page.dials) {
-//             Object.entries(monitors).forEach(([id, monitor]) => {
-//                 console.log('id',id, 'focal',focal[id]);
-//                 const value = focal[id];
-//                 if (value !== undefined) {
-//                     monitor.el.querySelector('.value').textContent = value;
-//                     monitor.current = value;
-//                 }
-//             });
-//         }
-//         // Todo: page.dials is an array of dials.
-//
-//
-//
-//
-//     }
-//
-// }
 
 async function handleFirstPage() {
     const page = deckData.pages[0];
@@ -609,30 +573,7 @@ async function handleFirstPage() {
         }
     }
 }
-// async function handleFirstPage() {
-//     const page = deckData.pages[0];
-//
-//     if (page.setup) {
-//         if (page.setup.data) {
-//             const fileContents = await getData(page.setup.data);
-//             const randomRow = Math.floor(Math.random() * 3) + 1;
-//             focal = await getCsvRow(fileContents, randomRow);
-//             console.log('setup', focal);
-//         }
-//
-//         if (page.dials) {
-//             loadDials(page.dials);
-//
-//             Object.entries(monitors).forEach(([id, monitor]) => {
-//                 const value = focal?.[id];
-//                 if (value !== undefined) {
-//                     monitor.el.querySelector('.value').textContent = value;
-//                     monitor.current = value;
-//                 }
-//             });
-//         }
-//     }
-// }
+
 function displayPage(index, content) {
 
     const page = deckData.pages[index];
@@ -1001,46 +942,267 @@ const transformText = (input) => {
         .replace(/^\*\s+(.*)$/gm, '<li>$1</li>') // Bullets
         .replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>'); // Wrap list items in a UL
 };
-async function handleSend() {
 
-    // ─────────────────────────────────────────────
-    // 1. SETUP — Grab prompt, model, and check for
-    //    direct chat mode before doing anything else
-    // ─────────────────────────────────────────────
-     //record guess and check in session object is 'full'.
-    const prompt = document.getElementById('user-prompt').value;
-    const model = getModelFromSettings();
 
+// ═══════════════════════════════════════════════════════════
+// INPUT HANDLER - Validates and extracts UI values
+// ═══════════════════════════════════════════════════════════
+
+// function handleUserInput() {
+//     const promptInput = document.getElementById('user-prompt');
+//     const prompt = promptInput.value.trim();
+//
+//     // Validate - don't process empty prompts
+//     if (!prompt) {
+//         return;
+//     }
+//     const model = getModelFromSettings();
+//     // Call main handler with extracted values
+//     handleSend(prompt, model);
+// }
+//
+// async function handleSend(prompt, model) {
+//
+//     // ─────────────────────────────────────────────
+//     // 1. SETUP — Check for direct chat mode
+//     // ─────────────────────────────────────────────
+//
+//     if (isDirectChatActive()) {
+//         directChat(prompt);
+//         return;
+//     }
+//     // ─────────────────────────────────────────────
+//     // 2. BUILD VISUAL CONTEXT
+//     //    Inject the current page's foreground and widgets
+//     //    into the option data before sending to AI
+//     // ─────────────────────────────────────────────
+//
+//     console.log('🔎 Creating visual context for AI');
+//
+//     const PLACEHOLDER = "_FOREGROUND_";
+//     const PLACEHOLDER2 = "_VITALS_";
+//     const currentPage = deckData.pages[currentPageIndex];
+//     const allForeground = currentPage?.foreground?.join(", ") ?? "";
+//     const allWidgets = currentPage?.dials ? Object.keys(currentPage.dials) : [];
+//
+//     const optionsFilled = deepReplace(optionData, PLACEHOLDER, allForeground);
+//     const processedOptionData = deepReplace(optionsFilled, PLACEHOLDER2, allWidgets);
+//
+//     console.log('🔎 processedOptionData', processedOptionData);
+//
+//     // ─────────────────────────────────────────────
+//     // 3. CALL MIDDLEWARE
+//     //    Send prompt + context to the server and
+//     //    receive a classified responseObject back
+//     //    (includes option name + any slot arguments)
+//     // ─────────────────────────────────────────────
+//
+//     let responseObject;
+//     try {
+//         const response = await fetch('/middleware', {
+//             method: 'POST',
+//             headers: { 'Content-Type': 'application/json' },
+//             body: JSON.stringify({
+//                 prompt,
+//                 model,
+//                 options: processedOptionData,
+//                 foreground: allForeground,
+//                 story: getActiveChatId()
+//             }),
+//         });
+//         responseObject = await response.json();
+//         console.log('responseObject', responseObject);
+//     } catch (error) {
+//         console.error('Middleware fetch failed:', error);
+//         return null;
+//     }
+//
+//
+//     // ─────────────────────────────────────────────
+//     // 4. GUIDED CLARIFICATION
+//     //    If the AI wants to ask the user a follow-up
+//     //    question before proceeding, show it and wait
+//     // ─────────────────────────────────────────────
+//
+//     const question = optionalQuestion(responseObject);
+//     if (question) {
+//         console.log('AI requesting clarification', responseObject);
+//         displayPage(0, question);
+//         return;
+//     }
+//
+//
+//     // ─────────────────────────────────────────────
+//     // 5. DIRECT PROMPT PASSTHROUGH (@prompt)
+//     //    Some responses route directly to a file-
+//     //    aware chat instead of a deck page
+//     // ─────────────────────────────────────────────
+//
+//     if (responseObject.name.includes('@prompt')) {
+//         const matchedOption = processedOptionData.find(o => responseObject.name.includes(o.nextSlideId));
+//         const resourceFile = matchedOption?.resource ?? 'patient.txt';
+//         const fileToSkim = await getData(resourceFile);
+//         console.log('prompt', prompt);
+//         console.log('fileToSkim', fileToSkim);
+//         directChat(prompt, fileToSkim);
+//         return;
+//     }
+//
+//
+//     // ─────────────────────────────────────────────
+//     // 5.5 FALLBACK RESOURCE LOOKUP
+//     //     No intent matched — if page defines a
+//     //     fallbackResource, answer from that file.
+//     //     Otherwise stop here (nothing to show).
+//     // ─────────────────────────────────────────────
+//
+//     if (responseObject.name === 'fallback') {
+//         const fallbackResource = currentPage.fallbackResource;
+//         if (fallbackResource) {
+//             const fileData = await getData(fallbackResource);
+//             directChat(prompt, fileData);
+//         }
+//         return;
+//     }
+//
+//
+//     // ─────────────────────────────────────────────
+//     // 6. RESOLVE TARGET PAGE
+//     //    Map the response name to a page index.
+//     //    Fall back to the current page if no match.
+//     // ─────────────────────────────────────────────
+//
+//     const nextPageOrCat = findPageIndex(responseObject.name);
+//     const pageIndex = (nextPageOrCat >= 0) ? nextPageOrCat : currentPageIndex;
+//     const targetPage = deckData.pages[pageIndex];
+//
+//     const isSim = targetPage.type === 'simulation';
+//
+//
+//     // ─────────────────────────────────────────────
+//     // 7A. SIMULATION PAGE HANDLER
+//     //     Simulations use classification + slot args
+//     //     to drive stateful interactions
+//     // ─────────────────────────────────────────────
+//
+//     if (isSim) {
+//         console.log('............ Starting simulation ............', responseObject);
+//
+//         const category = responseObject.name.toLowerCase();
+//
+//         // If this is a 'start' command and directed chat is open, just display the page
+//         if (category === 'start' && document.getElementById('directedChat').classList.contains('active')) {
+//             displayPage(pageIndex);
+//             console.log('Start page only (directedChat active)', currentPageIndex, category);
+//             return;
+//         }
+//
+//         // Parse slot arguments from the response (if any)
+//         let slots = [];
+//         const hasArgs = responseObject.arguments !== "null" && responseObject.arguments !== '{}';
+//
+//         if (hasArgs) {
+//             const args = JSON.parse(responseObject.arguments);
+//             console.log('✅ Has arguments:', args);
+//             slots = Object.entries(args).map(([key, value]) => ({
+//                 key,
+//                 value: value?.toLowerCase().replace(/\s+/g, '_') ?? ''
+//             }));
+//             console.log('✅ Slots:', slots);
+//         }
+//
+//         // Filter out the element where key is '_label'
+//         const cleanSlots = slots.filter(slot => slot.key !== '_label');
+//         processAction(targetPage, category, cleanSlots);
+//
+//         // ─────────────────────────────────────────────
+//         // 7B. STANDARD PAGE HANDLER
+//         //     Non-simulation pages just display and
+//         //     run any associated page-level actions
+//         // ─────────────────────────────────────────────
+//
+//     } else {
+//         displayPage(pageIndex, "");
+//         processPageActions(pageIndex);
+//     }
+// }
+
+function getActiveChatId() {
+    const activeElement = document.getElementsByClassName('active')[0];
+    return activeElement ? activeElement.id : null;
+}
+
+
+// ═══════════════════════════════════════════════════════════
+// INPUT HANDLER - Validates, extracts UI values, and prepares context
+// ═══════════════════════════════════════════════════════════
+
+function handleUserInput() {
+    const promptInput = document.getElementById('user-prompt');
+    const prompt = promptInput.value.trim();
+
+    // Validate - don't process empty prompts
+    if (!prompt) {
+        return;
+    }
+
+    // Check for direct chat mode
     if (isDirectChatActive()) {
         directChat(prompt);
         return;
     }
 
+    // Gather all UI/DOM state
+    const model = getModelFromSettings();
+    const currentPage = deckData.pages[currentPageIndex];
+    const isDirectedChatActive = document.getElementById('directChat').classList.contains('active');
 
-    // ─────────────────────────────────────────────
-    // 2. BUILD VISUAL CONTEXT
-    //    Inject the current page's foreground and widgets
-    //    into the option data before sending to AI
-    // ─────────────────────────────────────────────
+    // Build visual context
+    const context = buildVisualContext(currentPage);
 
+    // Call main handler with all prepared data
+    handleSend(prompt, model, context, isDirectedChatActive);
+}
+
+
+// ═══════════════════════════════════════════════════════════
+// VISUAL CONTEXT BUILDER - Prepares option data with placeholders filled
+// ═══════════════════════════════════════════════════════════
+
+function buildVisualContext(currentPage) {
     console.log('🔎 Creating visual context for AI');
 
     const PLACEHOLDER = "_FOREGROUND_";
-    const PLACEHOLDER2 = "_VITALS_"; //LDP Tests?
-    const currentPage = deckData.pages[currentPageIndex];
+    const PLACEHOLDER2 = "_VITALS_";
+
     const allForeground = currentPage?.foreground?.join(", ") ?? "";
     const allWidgets = currentPage?.dials ? Object.keys(currentPage.dials) : [];
 
+    // Replace placeholders in option data
     const optionsFilled = deepReplace(optionData, PLACEHOLDER, allForeground);
     const processedOptionData = deepReplace(optionsFilled, PLACEHOLDER2, allWidgets);
 
     console.log('🔎 processedOptionData', processedOptionData);
 
+    return {
+        processedOptionData,
+        allForeground,
+        allWidgets
+    };
+}
+
+
+// ═══════════════════════════════════════════════════════════
+// MAIN HANDLER - Pure business logic, no DOM dependencies
+// ═══════════════════════════════════════════════════════════
+
+async function handleSend(prompt, model, context, isDirectedChatActive) {
+    const { processedOptionData, allForeground } = context;
+
     // ─────────────────────────────────────────────
-    // 3. CALL MIDDLEWARE
+    // 1. CALL MIDDLEWARE
     //    Send prompt + context to the server and
     //    receive a classified responseObject back
-    //    (includes option name + any slot arguments)
     // ─────────────────────────────────────────────
 
     let responseObject;
@@ -1065,7 +1227,7 @@ async function handleSend() {
 
 
     // ─────────────────────────────────────────────
-    // 4. GUIDED CLARIFICATION
+    // 2. GUIDED CLARIFICATION
     //    If the AI wants to ask the user a follow-up
     //    question before proceeding, show it and wait
     // ─────────────────────────────────────────────
@@ -1079,35 +1241,30 @@ async function handleSend() {
 
 
     // ─────────────────────────────────────────────
-    // 5. DIRECT PROMPT PASSTHROUGH (@prompt)
+    // 3. DIRECT PROMPT PASSTHROUGH (@prompt)
     //    Some responses route directly to a file-
     //    aware chat instead of a deck page
     // ─────────────────────────────────────────────
 
     if (responseObject.name.includes('@prompt')) {
         const matchedOption = processedOptionData.find(o => responseObject.name.includes(o.nextSlideId));
-        const resourceFile = matchedOption?.resource ?? 'patient.txt';   // was hardcoded 'patient.txt'
+        const resourceFile = matchedOption?.resource ?? 'patient.txt';
         const fileToSkim = await getData(resourceFile);
         console.log('prompt', prompt);
         console.log('fileToSkim', fileToSkim);
         directChat(prompt, fileToSkim);
-        //updateManifest(prompt, fileToSkim);
-
-        // matched option:----, “clarifying-question”, “fallback”, “question”  in story.json
-        // response: {"name":"movable",
-
         return;
     }
 
 
     // ─────────────────────────────────────────────
-    // 5.5 FALLBACK RESOURCE LOOKUP
+    // 4. FALLBACK RESOURCE LOOKUP
     //     No intent matched — if page defines a
     //     fallbackResource, answer from that file.
-    //     Otherwise stop here (nothing to show).
     // ─────────────────────────────────────────────
 
     if (responseObject.name === 'fallback') {
+        const currentPage = deckData.pages[currentPageIndex];
         const fallbackResource = currentPage.fallbackResource;
         if (fallbackResource) {
             const fileData = await getData(fallbackResource);
@@ -1118,7 +1275,7 @@ async function handleSend() {
 
 
     // ─────────────────────────────────────────────
-    // 6. RESOLVE TARGET PAGE
+    // 5. RESOLVE TARGET PAGE
     //    Map the response name to a page index.
     //    Fall back to the current page if no match.
     // ─────────────────────────────────────────────
@@ -1131,20 +1288,18 @@ async function handleSend() {
 
 
     // ─────────────────────────────────────────────
-    // 7A. SIMULATION PAGE HANDLER
+    // 6A. SIMULATION PAGE HANDLER
     //     Simulations use classification + slot args
     //     to drive stateful interactions
     // ─────────────────────────────────────────────
 
     if (isSim) {
         console.log('............ Starting simulation ............', responseObject);
-        console.log('............ Starting simulation ............', responseObject);
 
-        //category is the affordance  mostly
         const category = responseObject.name.toLowerCase();
 
         // If this is a 'start' command and directed chat is open, just display the page
-        if (category === 'start' && document.getElementById('directedChat').classList.contains('active')) {
+        if (category === 'start' && isDirectedChatActive) {
             displayPage(pageIndex);
             console.log('Start page only (directedChat active)', currentPageIndex, category);
             return;
@@ -1152,7 +1307,6 @@ async function handleSend() {
 
         // Parse slot arguments from the response (if any)
         let slots = [];
-
         const hasArgs = responseObject.arguments !== "null" && responseObject.arguments !== '{}';
 
         if (hasArgs) {
@@ -1165,31 +1319,12 @@ async function handleSend() {
             console.log('✅ Slots:', slots);
         }
 
-        // 1. Filter out the element where key is '_label'
+        // Filter out the element where key is '_label'
         const cleanSlots = slots.filter(slot => slot.key !== '_label');
-
-       // 2. Now perform your logic on the cleaned array
-       //  if (cleanSlots.length > 1 && !targetPage.affordances?.[cleanSlots.value]) {
-       //      console.log(`🔄 Swapping slots: ${cleanSlots.value} not found, trying ${cleanSlots.value}`);
-       //      [cleanSlots[0], cleanSlots[1]] = [cleanSlots[0], cleanSlots[1]];
-       //  }
-
-        // If the primary slot isn't on the page, swap slot order
-        // if (slots.length > 1 && !targetPage.affordances?.[slots[0].value]) {
-        //     console.log(`🔄 Swapping slots: ${slots[0].value} not found, trying ${slots[1].value}`);
-        //     [slots[0], slots[1]] = [slots[1], slots[0]];
-        // }
-        // function processAction(page, affordance, slots) {
-        //     const primary   = slots[0]?.value ?? '';
-        //     const secondary = slots[1]?.value ?? '';
-        //responseObject.name = affordance needed
-        //processAction(<page-name>, <responseObject.name>, cleanSlots);
-
         processAction(targetPage, category, cleanSlots);
 
-
         // ─────────────────────────────────────────────
-        // 7B. STANDARD PAGE HANDLER
+        // 6B. STANDARD PAGE HANDLER
         //     Non-simulation pages just display and
         //     run any associated page-level actions
         // ─────────────────────────────────────────────
@@ -1199,13 +1334,6 @@ async function handleSend() {
         processPageActions(pageIndex);
     }
 }
-
-
-function getActiveChatId() {
-    const activeElement = document.getElementsByClassName('active')[0];
-    return activeElement ? activeElement.id : null;
-}
-
 
 function optionalQuestion(responseObject, hint) {
     console.log("Checking for optionalQuestion")
