@@ -47,5 +47,26 @@
     "model": "llama-3.1-8b-instant",
     "totalPassed": 20,
     "totalTests": 26
+  },
+  {
+    "file": "2026-03-27_19-07-50-258_llama-3.3-70b-versatile.csv",
+    "timestamp": "2026-03-27T19:07:50.258Z",
+    "model": "llama-3.3-70b-versatile",
+    "totalPassed": 15,
+    "totalTests": 26
+  },
+  {
+    "file": "2026-03-27_19-15-16-632_llama-3.3-70b-versatile.csv",
+    "timestamp": "2026-03-27T19:15:16.632Z",
+    "model": "llama-3.3-70b-versatile",
+    "totalPassed": 24,
+    "totalTests": 26
+  },
+  {
+    "file": "2026-03-27_20-22-32-974_llama-3.3-70b-versatile.csv",
+    "timestamp": "2026-03-27T20:22:32.974Z",
+    "model": "llama-3.3-70b-versatile",
+    "totalPassed": 23,
+    "totalTests": 26
   }
 ]

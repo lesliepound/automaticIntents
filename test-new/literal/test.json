@@ -1,10 +1,10 @@
 {
   "page": "dogPage",
   "tests": [
-    { "prompt": "get me the dog", "expect": "bark", "category": "exact" },
-    { "prompt": "Get me the dog", "expect": "bark", "category": "case-variation" },
-    { "prompt": "get me the dog please", "expect": "bark", "category": "minor-addition" },
-    { "prompt": "I want to get the dog", "expect": "bark", "category": "rephrased-literal" },
+    { "prompt": "get me the dog", "expect": "barkable", "category": "exact" },
+    { "prompt": "Get me the dog", "expect": "barkable", "category": "case-variation" },
+    { "prompt": "get me the dog please", "expect": "barkable", "category": "minor-addition" },
+    { "prompt": "I want to get the dog", "expect": "barkable", "category": "rephrased-literal" },
     { "prompt": "get me the cat", "expect": "fallback", "category": "wrong-item" }
   ]
 }
