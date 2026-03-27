@@ -181,13 +181,9 @@
         {
           "option": "the diagnosis is any ER diagnosis,",
           "extra": " the patient has this condition; my conclusion the patient has",
-          "resource": "patient.txt",
+          "resource": "focal",
+          "end" : "Well done.",
           "nextSlideId": "@prompt"
-
-            "name": "condition_name",
-            "description": "Matches one of these : Acute MI, SVT, Heart Failure, Pulmonary Embolism, Diabetic Ketoacidosis, Overdose, Aortic, Dissection, Guillain-Barré "
-          },
-          "nextSlideId": "diagnosable"
         }
       ]
     },
