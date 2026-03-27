@@ -202,7 +202,7 @@ function showForegroundImages(page) {
         currentX += container.offsetWidth + spacing;
    });
 }
-
+// Change dials tp labsVitals
 window.initializeAllDials = function( temperatureSpec, bloodSpec) {
     if (!temperatureSpec || !temperatureSpec.toScale || !painSpec || !painSpec.toScale || !bloodSpec || !bloodSpec.toScale) {
         console.error("Invalid spec provided. Make sure 'toScale' property exists for all specs.");
@@ -1026,7 +1026,7 @@ async function handleSend() {
     console.log('🔎 Creating visual context for AI');
 
     const PLACEHOLDER = "_FOREGROUND_";
-    const PLACEHOLDER2 = "_DIALS_";
+    const PLACEHOLDER2 = "_VITALS_"; //LDP Tests?
     const currentPage = deckData.pages[currentPageIndex];
     const allForeground = currentPage?.foreground?.join(", ") ?? "";
     const allWidgets = currentPage?.dials ? Object.keys(currentPage.dials) : [];

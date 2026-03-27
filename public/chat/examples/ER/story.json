@@ -159,22 +159,13 @@
           },
           "nextSlideId": "connectable"
         },
+
         {
-          "option": "the patient had a heart attack",
-          "extra": " any thing about a heart attack or conditions that lead to hear attack",
-          "nextSlideId": "test",
+          "option": "Get a reading or order a test for any of these vital signs and laboratory values: _DIALS_ ",
+          "extra": " order or get the test for _VITALSnLABS_; what is the temperature, get the glucose; order the troponin; check the d-dimer; what are the vitals; show the CO2; what's the o2 saturation",
           "slot": {
-            "name": "",
-            "description": ""
-          }
-        },
-        {
-          "option": "et a reading or order a test for any of these: _DIALS_ ",
-          "extra": " order or get the test or vitals; what is the temperature, get the glucose; order the troponin; check the d-dimer; what are the vitals; show the CO2; what's the o2 saturation",
-          "slot": {
-            "name": "the_medical_test_or_vital",
-            "description": "one of these : _DIALS_"
-          },
+            "name": "patient ",
+            "description": "one of these Vitals and Labs : _VITALSnLABS_"},
           "nextSlideId": "orderable"
         },
         {
@@ -190,7 +181,9 @@
         {
           "option": "the diagnosis is any ER diagnosis,",
           "extra": " the patient has this condition; my conclusion the patient has",
-          "slot": {
+          "resource": "patient.txt",
+          "nextSlideId": "@prompt"
+
             "name": "condition_name",
             "description": "Matches one of these : Acute MI, SVT, Heart Failure, Pulmonary Embolism, Diabetic Ketoacidosis, Overdose, Aortic, Dissection, Guillain-Barré "
           },
