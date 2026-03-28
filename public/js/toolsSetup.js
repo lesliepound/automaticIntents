@@ -81,6 +81,7 @@ function setListeners() {
         }
     });
 
+
 }
 /****/
 class SessionManager {
@@ -1136,41 +1137,36 @@ function getActiveChatId() {
 // ═══════════════════════════════════════════════════════════
 // INPUT HANDLER - Validates, extracts UI values, and prepares context
 // ═══════════════════════════════════════════════════════════
-
-function handleUserInput() {
-    const promptInput = document.getElementById('user-prompt');
-    const prompt = promptInput.value.trim();
-
-    // Validate - don't process empty prompts
-    if (!prompt) {
-        return;
-    }
-
-    // Check for direct chat mode
-    if (isDirectChatActive()) {
-        directChat(prompt);
-        return;
-    }
-
-    // Gather all UI/DOM state
-    const model = getModelFromSettings();
-    const currentPage = deckData.pages[currentPageIndex];
-    const isDirectedChatActive = document.getElementById('directChat').classList.contains('active');
-
-    // Build visual context
-    const context = buildVisualContext(currentPage);
-
-    // Call main handler with all prepared data
-    handleSend(prompt, model, context, isDirectedChatActive);
-}
-
-
-// ═══════════════════════════════════════════════════════════
-// VISUAL CONTEXT BUILDER - Prepares option data with placeholders filled
-// ═══════════════════════════════════════════════════════════
-
-function buildVisualContext(currentPage) {
-    console.log('🔎 Creating visual context for AI');
+//
+// function handleUserInput() {
+//     const promptInput = document.getElementById('user-prompt');
+//     const prompt = promptInput.value.trim();
+//
+//     // Validate - don't process empty prompts
+//     if (!prompt) {
+//         return;
+//     }
+//
+//     // Check for direct chat mode
+//     if (isDirectChatActive()) {
+//         directChat(prompt);
+//         return;
+//     }
+//
+//     // Gather all UI/DOM state ---foo
+//     const model = getModelFromSettings();
+//     const currentPage = deckData.pages[currentPageIndex];
+//    // const isDirectedChatActive = document.getElementById('directChat').classList.contains('active');
+//
+//     // Build visual context
+//     const context = buildVisualContext(currentPage);
+//
+//     // Call main handler with all prepared data
+//     handleSend(prompt, model, context, isDirectedChatActive);
+// }
+// CONTROLLER
+function expandDetails(currentPage) {
+    console.log('🔎 Expanding scene details');
 
     const PLACEHOLDER = "_FOREGROUND_";
     const PLACEHOLDER2 = "_VITALS_";
@@ -1178,32 +1174,71 @@ function buildVisualContext(currentPage) {
     const allForeground = currentPage?.foreground?.join(", ") ?? "";
     const allWidgets = currentPage?.dials ? Object.keys(currentPage.dials) : [];
 
-    // Replace placeholders in option data
     const optionsFilled = deepReplace(optionData, PLACEHOLDER, allForeground);
     const processedOptionData = deepReplace(optionsFilled, PLACEHOLDER2, allWidgets);
 
     console.log('🔎 processedOptionData', processedOptionData);
 
-    return {
-        processedOptionData,
-        allForeground,
-        allWidgets
-    };
+    return processedOptionData;  // ✅ Just the array, not {processedOptionData}
 }
+async function handleUserInput() {
+    const prompt = document.getElementById('user-prompt').value.trim();
+    if (!prompt) return;
+
+    // Direct Chat TAB active - skip everything
+    if (isDirectChatActive()) {
+        const model = getModelFromSettings();
+        directChat(prompt, model);
+        return;
+    }
+
+    // Normal flow: expand options and classify
+    const model = getModelFromSettings();
+    const currentPage = deckData.pages[currentPageIndex];
+//    const expandedOptions = expandDetails(currentPage, optionData);
+    const expandedOptions = expandDetails(currentPage);  // Remove optionData parameter
+    handleSend(prompt, model, expandedOptions);
+}
+
+// ═══════════════════════════════════════════════════════════
+// VISUAL CONTEXT BUILDER - Prepares option data with placeholders filled
+// ═══════════════════════════════════════════════════════════
+
+// function buildVisualContext(currentPage) {
+//     console.log('🔎 Creating visual context for AI');
+//
+//     const PLACEHOLDER = "_FOREGROUND_";
+//     const PLACEHOLDER2 = "_VITALS_";
+//
+//     const allForeground = currentPage?.foreground?.join(", ") ?? "";
+//     const allWidgets = currentPage?.dials ? Object.keys(currentPage.dials) : [];
+//
+//     // Replace placeholders in option data
+//     const optionsFilled = deepReplace(optionData, PLACEHOLDER, allForeground);
+//     const processedOptionData = deepReplace(optionsFilled, PLACEHOLDER2, allWidgets);
+//
+//     console.log('🔎 processedOptionData', processedOptionData);
+//
+//     return {
+//         processedOptionData,
+//         allForeground,
+//         allWidgets
+//     };
+// }
 
 
 // ═══════════════════════════════════════════════════════════
 // MAIN HANDLER - Pure business logic, no DOM dependencies
 // ═══════════════════════════════════════════════════════════
 
-async function handleSend(prompt, model, context, isDirectedChatActive) {
-    const { processedOptionData, allForeground } = context;
+// CLASSIFIER
+async function handleSend(prompt, model, options) {
+    // Call model to classify which option matches
 
-    // ─────────────────────────────────────────────
-    // 1. CALL MIDDLEWARE
-    //    Send prompt + context to the server and
-    //    receive a classified responseObject back
-    // ─────────────────────────────────────────────
+    let allForeground = "";
+    if (deckData.pages[currentPageIndex].hasOwnProperty('foreground')) {
+        allForeground = deckData.pages[currentPageIndex].foreground.join(", ");
+    }
 
     let responseObject;
     try {
@@ -1213,7 +1248,7 @@ async function handleSend(prompt, model, context, isDirectedChatActive) {
             body: JSON.stringify({
                 prompt,
                 model,
-                options: processedOptionData,
+                options: options,
                 foreground: allForeground,
                 story: getActiveChatId()
             }),
@@ -1247,14 +1282,12 @@ async function handleSend(prompt, model, context, isDirectedChatActive) {
     // ─────────────────────────────────────────────
 
     if (responseObject.name.includes('@prompt')) {
-        const matchedOption = processedOptionData.find(o => responseObject.name.includes(o.nextSlideId));
-        const resourceFile = matchedOption?.resource ?? 'patient.txt';
-        const fileToSkim = await getData(resourceFile);
-        console.log('prompt', prompt);
-        console.log('fileToSkim', fileToSkim);
-        directChat(prompt, fileToSkim);
+        const matchedOption = options.find(o => responseObject.name.includes(o.nextSlideId));
+         const resource = matchedOption?.resource ? await getData(matchedOption.resource) : '';
+        directChat(prompt, model, resource);
         return;
     }
+
 
 
     // ─────────────────────────────────────────────
