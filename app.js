@@ -1,7 +1,6 @@
 // app.js
 import express from 'express';
 
-//import fs from 'fs';
 import fs from 'node:fs';
 import path from 'path';
 import 'dotenv/config';
@@ -105,7 +104,6 @@ app.post('/getSpeech', async (req, res) => {
     try {
 
         const {text} = req.body;
-        console.log('Received text:', text);
         //logThis(`model called:${model}, prompt: ${prompt}`);
 
         let audioStream = await generateSpeech(text);
@@ -125,14 +123,13 @@ app.post('/middleware', async (req, res) => {
     const start = Date.now();
     try {
         const {prompt, model, options, foreground, story = 'unknown'} = req.body;
-        console.log('--->>', prompt, '--m', model, 'f->', foreground, ' options', options)
         if (!Array.isArray(options)) {
             console.log("Options is not an array:", options);
             return;
         }
 
         const result = await runClassifier(prompt, options, model);
-        console.log('resultresultresult'+ result);
+        console.log('result'+ result);
         const latency_ms = Date.now() - start;
 
         const args = JSON.parse(result.arguments || '{}');
@@ -178,7 +175,7 @@ app.post('/middleware', async (req, res) => {
 });
 
 export function logThis(message) {
-    console.log('message', message);
+    //console.log('message', message);
     const logEntry = `[${new Date().toISOString()}] ${message}\n`;
 
     try {
