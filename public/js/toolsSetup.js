@@ -1051,15 +1051,7 @@ const transformText = (input) => {
 //     //    aware chat instead of a deck page
 //     // ─────────────────────────────────────────────
 //
-//     if (responseObject.name.includes('@prompt')) {
-//         const matchedOption = processedOptionData.find(o => responseObject.name.includes(o.nextSlideId));
-//         const resourceFile = matchedOption?.resource ?? 'patient.txt';
-//         const fileToSkim = await getData(resourceFile);
-//         console.log('prompt', prompt);
-//         console.log('fileToSkim', fileToSkim);
-//         directChat(prompt, fileToSkim);
-//         return;
-//     }
+//
 //
 //
 //     // ─────────────────────────────────────────────
@@ -1069,14 +1061,7 @@ const transformText = (input) => {
 //     //     Otherwise stop here (nothing to show).
 //     // ─────────────────────────────────────────────
 //
-//     if (responseObject.name === 'fallback') {
-//         const fallbackResource = currentPage.fallbackResource;
-//         if (fallbackResource) {
-//             const fileData = await getData(fallbackResource);
-//             directChat(prompt, fileData);
-//         }
-//         return;
-//     }
+//
 //
 //
 //     // ─────────────────────────────────────────────
@@ -1282,15 +1267,39 @@ async function handleSend(prompt, model, options) {
         return;
     }
 
+
+
+    if (responseObject.name.includes('@test')) {
+        console.log(args)
+    }
     if (responseObject.name.includes('@prompt')) {
-        const matchedOption = options.find(o => responseObject.name.includes(o.nextSlideId));
+        const args = JSON.parse(responseObject.arguments);
+        const selectedLabel = args._label;
+        const matchedOption = deckData.pages[currentPageIndex].options.find(opt => opt.option === selectedLabel);
+       // const resource = matchedOption ? matchedOption.resource : null;
+
+        //Which option is this
+        //const matchedOption = options.find(o => responseObject.name.includes(o.nextSlideId));
         console.log('matchedOption',matchedOption)
-       // const fileContents = await getData(focal);
-        //currentPageIndex
-        const resource = matchedOption?.resource ? await getData(focal) : '';
-        console.log('resource',resource)
-        const finalPrompt = preparePrompt(userPrompt, resource)
-        directChat(finalPrompt, model);
+        let resourceString = '';
+        if (matchedOption?.resource === 'focal') {
+            // 1. Process the local Object
+            console.log('📦 Using local focal object');
+            resourceString = JSON.stringify(focal);
+        } else if (matchedOption?.resource) {
+            // 2. Process as a Filename (e.g., 'patient.txt')
+            console.log('🌐 Fetching remote file:', matchedOption.resource);
+            resourceString = await getData(matchedOption.resource);
+        }
+
+
+        const finalPrompt = prompt +'. answer this question with  in sentence form from this data'+resourceString ; //preparePrompt(prompt, resource)
+       // directChat(finalPrompt, model);
+        const aiResponse = await directChat(finalPrompt, model);
+        console.log('aiResponse',aiResponse)
+        const contentDiv = document.getElementById('content');
+        //handle *'s in model output
+        contentDiv.innerHTML = aiResponse;
         return;
     }
 
@@ -1304,10 +1313,10 @@ async function handleSend(prompt, model, options) {
     if (responseObject.name === 'fallback') {
         const currentPage = deckData.pages[currentPageIndex];
         const fallbackResource = currentPage.fallbackResource;
-        if (fallbackResource) {
-            const finalPrompt = preparePrompt(userPrompt, fallbackResource)
-            directChat(finalPrompt, model);
-        }
+        // if (fallbackResource) {
+        //     const finalPrompt = preparePrompt(userPrompt, fallbackResource)
+        //     directChat(finalPrompt, model);
+        // }
         return;
     }
 
@@ -1373,23 +1382,34 @@ async function handleSend(prompt, model, options) {
     }
 }
 
-async function preparePrompt(userPrompt, resourceData) {
-    // 1. Basic validation
-    if (!userPrompt || userPrompt.trim() === "") {
-        console.warn("User prompt is empty.");
+// async function preparePrompt(userPrompt, resourceData) {
+//
+//     if (context && context.length > 0) {
+//         return `DATA/CONTEXT:\n${context}\n\nUSER QUESTION: ${userPrompt}`;
+//     }
+//     return userPrompt;
+// }
+
+async function preparePrompt(userQuestion, resource) {
+    // 1. Validation: If there's no question, don't proceed
+    if (!userQuestion || userQuestion.trim() === "") {
+        console.warn("No user question provided.");
         return null;
     }
+    // 2. Resolve the Resource: Turn file OR object into a String
+    // (This calls your resolveResource or object2input function)
+    //
+    //getData()
+    const contextString = await resolveResource(resource);
 
-    // 2. Use your existing logic to stringify objects or fetch files
-    // This ensures 'context' is ALWAYS a string
-    const context = await getData(resourceData);
-
-    // 3. Combine them into the final "Package" for the AI
-    if (context && context.length > 0) {
-        return `DATA/CONTEXT:\n${context}\n\nUSER QUESTION: ${userPrompt}`;
+    // 3. The "Packaging" Logic
+    if (contextString && contextString.length > 0) {
+        // We use clear headers so the LLM knows what is 'Data' and what is 'Instruction'
+        return `CONTEXT_DATA:\n${contextString}\n\nUSER_QUESTION: ${userQuestion}`;
     }
 
-    return userPrompt;
+    // If there was no resource (e.g. resource was null), just return the question
+    return userQuestion;
 }
 
 
@@ -1511,16 +1531,20 @@ async function getFile(event) {
         showToast('Error loading file', 'error');
     }
 }
-//consilidate with getFile LDP
 
     async function getData(input) {
         // 1. Check if the input is already an object
         console.log('input input input',input)
         if (typeof input === 'object' && input !== null) {
-            console.log('Input is an object, stringifying...');
             return JSON.stringify(input);
         }
 
+        // 2. NEW: If it's a string, check if it's actually JSON data
+        // If it starts with '{', it's DATA, not a FILENAME.
+        if (typeof input === 'string' && input.trim().startsWith('{')) {
+            console.log('Detected JSON string, returning as-is');
+            return input;
+        }
 
         // 2. Otherwise, treat it as a filename and fetch
         const activeChat = getActiveChatId();

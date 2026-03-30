@@ -3,7 +3,6 @@
     {
       "id": "toyPage",
       "type": "simulation",
-
       "setup": {
         "focus": "child"
       },
@@ -16,7 +15,7 @@
         "playdoh",
         "coloring_book"
       ],
-      "text": "The children are playing. What would you like them to do?",
+      "text": "The child is playing. What should she play with?",
       "affordances": {
         "ball": [
           "movable"
@@ -51,7 +50,8 @@
           },
           "nextSlideId": "movable"
         }
-      ]
+      ],
+      "goals": []
     }
   ]
 }

@@ -159,18 +159,18 @@
           },
           "nextSlideId": "connectable"
         },
-
         {
-          "option": "Get a reading or order a test for any of these vital signs and laboratory values: _DIALS_ ",
-          "extra": " order or get the test for _VITALSnLABS_; what is the temperature, get the glucose; order the troponin; check the d-dimer; what are the vitals; show the CO2; what's the o2 saturation",
+          "option": "what is the patients temperature",
+          "extra": "what is, get vitals  or order tests, like temperature, glucose; troponin;  d-dimer; what are the vitals; show the CO2; what's the o2 saturation",
           "slot": {
             "name": "patient ",
-            "description": "one of these Vitals and Labs : _VITALSnLABS_"},
+            "description": "one of these Vitals and Labs : _VITALSnLABS_"
+          },
           "nextSlideId": "orderable"
         },
         {
-          "option": "what are her symptoms",
-          "extra": " what are your symptoms; how are you feeling",
+          "option": "What are the vitals or labs. Get a reading or order a test for any of these vital signs and laboratory values for the patient",
+          "extra": " what are the patients symptoms; how are you feeling",
           "resource": "focal",
           "nextSlideId": "@prompt",
           "slot": {
@@ -182,8 +182,12 @@
           "option": "the diagnosis is any ER diagnosis,",
           "extra": " the patient has this condition; my conclusion the patient has",
           "resource": "focal",
-          "end" : "Well done.",
-          "nextSlideId": "@test"
+          "end": "Well done.",
+          "nextSlideId": "@test",
+          "slot": {
+            "name": "diagnosis",
+            "description": ""
+          }
         }
       ]
     },

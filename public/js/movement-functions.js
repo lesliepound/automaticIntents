@@ -51,9 +51,9 @@ function remove(selector) {
 }
 
 function flash(selector) {
-    // console.log('about to', selector);
+    console.log('selector', selector);
     animateCSS(selector, 'flash');
-    const element = document.querySelector(selector);
+    const element = document.querySelector('#'+selector);
     element.style.visibility = 'visible';
     showDial(selector);
     animateCSS(selector, 'flash');
