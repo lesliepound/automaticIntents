@@ -1,0 +1,25 @@
+{
+  "pages": [
+    {
+      "id": "slotPage",
+      "type": "simulation",
+      "foreground": ["boat", "sea", "female"],
+      "text": "Go in any direction",
+      "options": [
+        {
+          "option": "take the boat left",
+          "nextSlideId": "bounce"
+        },
+        {
+          "option": "play with the jump rope",
+          "nextSlideId": "skip"
+        },
+        {
+          "option": "play with the coloring book",
+          "nextSlideId": "color"
+        }
+      ]
+    }
+  ],
+  "startPageId": "toyPage"
+}
