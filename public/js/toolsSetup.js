@@ -899,43 +899,64 @@ function isDirectChatActive() {
     return document.getElementById('directChat').classList.contains('active');
 }
 
-async function directChat(startPrompt = '', fileString = '') {
-    const promptInput = document.getElementById('user-prompt');
-    const contentDisplay = document.getElementById('content');
-
-    // 1. Determine the prompt logic efficiently
-    let prompt = promptInput.value;
-
-    if (fileString.length > 1) {
-        prompt = `Use this for answer: ${prompt} // ${fileString}`;
-    } else if (startPrompt) {
-        prompt = `generate a 50 word or less response about: ${startPrompt}`;
-    }
-
-    const model = getModelFromSettings();
-    console.log('🚀 Sending Prompt:', prompt);
+// Add 'model' as the second parameter to match your call order
+async function directChat(finalPrompt, model = 'llama-3.3-70b-versatile') {
+    console.log('🚀 Sending Final Prompt:', finalPrompt);
 
     try {
         const response = await fetch('/runConversation', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ prompt, model }),
+            body: JSON.stringify({ prompt: finalPrompt, model: model }),
         });
 
-        if (!response.ok) throw new Error('Network response was not ok');
-
         const rawData = await response.json();
-        // Replace newlines with breaks and transform markdown-style syntax
-        const formattedHtml = transformText(rawData.replace(/\r?\n|\r/g, '<br>'));
 
-        contentDisplay.innerHTML = formattedHtml;
-        console.log('ℹ️ AI response success');
+        // Return the text so the calling function can display it
+        return rawData;
 
     } catch (error) {
-        console.error('❌ Server/Fetch issue:', error);
-        contentDisplay.innerHTML = '<span style="color:red;">Error connecting to server.</span>';
+        console.error('❌ Fetch issue:', error);
+        return "Error: Could not reach the AI.";
     }
 }
+// async function directChat(startPrompt = '', fileString = '') {
+//     const promptInput = document.getElementById('user-prompt');
+//     const contentDisplay = document.getElementById('content');
+//
+//     // 1. Determine the prompt logic efficiently
+//     let prompt = promptInput.value;
+//
+//     if (fileString.length > 1) {
+//         prompt = `Use this for answer: ${prompt} // ${fileString}`;
+//     } else if (startPrompt) {
+//         prompt = `generate a 50 word or less response about: ${startPrompt}`;
+//     }
+//
+//     const model = getModelFromSettings();
+//     console.log('🚀 Sending Prompt:', prompt);
+//
+//     try {
+//         const response = await fetch('/runConversation', {
+//             method: 'POST',
+//             headers: { 'Content-Type': 'application/json' },
+//             body: JSON.stringify({ prompt, model }),
+//         });
+//
+//         if (!response.ok) throw new Error('Network response was not ok');
+//
+//         const rawData = await response.json();
+//         // Replace newlines with breaks and transform markdown-style syntax
+//         const formattedHtml = transformText(rawData.replace(/\r?\n|\r/g, '<br>'));
+//
+//         contentDisplay.innerHTML = formattedHtml;
+//         console.log('ℹ️ AI response success');
+//
+//     } catch (error) {
+//         console.error('❌ Server/Fetch issue:', error);
+//         contentDisplay.innerHTML = '<span style="color:red;">Error connecting to server.</span>';
+//     }
+// }
 
 const transformText = (input) => {
     return input
@@ -963,15 +984,6 @@ const transformText = (input) => {
 // }
 //
 // async function handleSend(prompt, model) {
-//
-//     // ─────────────────────────────────────────────
-//     // 1. SETUP — Check for direct chat mode
-//     // ─────────────────────────────────────────────
-//
-//     if (isDirectChatActive()) {
-//         directChat(prompt);
-//         return;
-//     }
 //     // ─────────────────────────────────────────────
 //     // 2. BUILD VISUAL CONTEXT
 //     //    Inject the current page's foreground and widgets
@@ -1146,11 +1158,7 @@ function getActiveChatId() {
 //     if (!prompt) {
 //         return;
 //     }
-//
-//     // Check for direct chat mode
-//     if (isDirectChatActive()) {
-//         directChat(prompt);
-//         return;
+//return;
 //     }
 //
 //     // Gather all UI/DOM state ---foo
@@ -1195,8 +1203,8 @@ async function handleUserInput() {
     // Normal flow: expand options and classify
     const model = getModelFromSettings();
     const currentPage = deckData.pages[currentPageIndex];
-//    const expandedOptions = expandDetails(currentPage, optionData);
-    const expandedOptions = expandDetails(currentPage);  // Remove optionData parameter
+    const expandedOptions = expandDetails(currentPage);
+    console.log('expandedOptions-=-=-==',expandedOptions)
     handleSend(prompt, model, expandedOptions);
 }
 
@@ -1274,20 +1282,17 @@ async function handleSend(prompt, model, options) {
         return;
     }
 
-
-    // ─────────────────────────────────────────────
-    // 3. DIRECT PROMPT PASSTHROUGH (@prompt)
-    //    Some responses route directly to a file-
-    //    aware chat instead of a deck page
-    // ─────────────────────────────────────────────
-
     if (responseObject.name.includes('@prompt')) {
         const matchedOption = options.find(o => responseObject.name.includes(o.nextSlideId));
-         const resource = matchedOption?.resource ? await getData(matchedOption.resource) : '';
-        directChat(prompt, model, resource);
+        console.log('matchedOption',matchedOption)
+       // const fileContents = await getData(focal);
+        //currentPageIndex
+        const resource = matchedOption?.resource ? await getData(focal) : '';
+        console.log('resource',resource)
+        const finalPrompt = preparePrompt(userPrompt, resource)
+        directChat(finalPrompt, model);
         return;
     }
-
 
 
     // ─────────────────────────────────────────────
@@ -1300,8 +1305,8 @@ async function handleSend(prompt, model, options) {
         const currentPage = deckData.pages[currentPageIndex];
         const fallbackResource = currentPage.fallbackResource;
         if (fallbackResource) {
-            const fileData = await getData(fallbackResource);
-            directChat(prompt, fileData);
+            const finalPrompt = preparePrompt(userPrompt, fallbackResource)
+            directChat(finalPrompt, model);
         }
         return;
     }
@@ -1367,6 +1372,26 @@ async function handleSend(prompt, model, options) {
         processPageActions(pageIndex);
     }
 }
+
+async function preparePrompt(userPrompt, resourceData) {
+    // 1. Basic validation
+    if (!userPrompt || userPrompt.trim() === "") {
+        console.warn("User prompt is empty.");
+        return null;
+    }
+
+    // 2. Use your existing logic to stringify objects or fetch files
+    // This ensures 'context' is ALWAYS a string
+    const context = await getData(resourceData);
+
+    // 3. Combine them into the final "Package" for the AI
+    if (context && context.length > 0) {
+        return `DATA/CONTEXT:\n${context}\n\nUSER QUESTION: ${userPrompt}`;
+    }
+
+    return userPrompt;
+}
+
 
 function optionalQuestion(responseObject, hint) {
     console.log("Checking for optionalQuestion")
@@ -1487,17 +1512,29 @@ async function getFile(event) {
     }
 }
 //consilidate with getFile LDP
-async function getData(filename) {
-    const activeChat = getActiveChatId();
-    console.log('activeChat',activeChat)
-    const urlName = "/chat/examples/" + activeChat + "/" +filename;
+
+    async function getData(input) {
+        // 1. Check if the input is already an object
+        console.log('input input input',input)
+        if (typeof input === 'object' && input !== null) {
+            console.log('Input is an object, stringifying...');
+            return JSON.stringify(input);
+        }
+
+
+        // 2. Otherwise, treat it as a filename and fetch
+        const activeChat = getActiveChatId();
+        const urlName = `/chat/examples/${activeChat}/${input}`;
+
+
+ //   const urlName = "/chat/examples/" + activeChat + "/" +filename;
     console.log('urlName',urlName)
     try {
         const response = await fetch(urlName);
 
-        if (!response.ok) {
-            throw new Error(`File not found! Status: ${response.status}`);
-        }
+        // if (!response.ok) {
+        //     throw new Error(`File not found! Status: ${response.status}`);
+        // }
 
         const data = await response.text();
         console.log('File data:', data);
