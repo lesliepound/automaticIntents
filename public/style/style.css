@@ -1,8 +1,10 @@
 body {
-    height: 950px;
+    min-height: 100dvh;
+    box-sizing: border-box;
+    margin: 0;
     border-top:49px solid lightskyblue;
     background: white;
-    border-radius: 16px;
+    border-radius: 0;
     border-top: 61px solid lightseagreen;
     box-shadow: rgba(10%, 40%, 30%, 0.7) 0 20px 60px;
     padding: 5px;
@@ -512,7 +514,7 @@ input[type='number'] {
     align-items: center;
     justify-content: space-between;
     padding: 6px 8px 6px 20px;
-    background: #1a73e8;
+    background: lightseagreen;
     color: #fff;
     min-height: 48px;
     flex-shrink: 0;
@@ -599,7 +601,7 @@ input[type='number'] {
     flex: 1;
 }
 .fe-save-btn {
-    background: #1a73e8;
+    background: lightseagreen;
     color: #fff;
     border: none;
     border-radius: 0;
@@ -611,7 +613,7 @@ input[type='number'] {
     transition: background .15s;
 }
 .fe-save-btn:hover {
-    background: #1765cc;
+    background: #178a80;
 }
 
 /* ─── File bar ─── */
@@ -644,7 +646,7 @@ input[type='number'] {
     transition: border-color .2s;
 }
 .fe-file-input:focus {
-    border-color: #1a73e8;
+    border-color: lightseagreen;
 }
 .fe-file-fetch-btn {
     background: #e8eaed;
@@ -741,15 +743,15 @@ input[type='number'] {
 }
 .md-confirm-btn--cancel:hover { background: #f1f3f4; }
 .md-confirm-btn--confirm {
-    background: #1a73e8;
+    background: lightseagreen;
     color: #fff;
 }
-.md-confirm-btn--confirm:hover { background: #1765cc; }
+.md-confirm-btn--confirm:hover { background: #178a80; }
 .md-confirm-btn--save {
-    background: #1a73e8;
+    background: lightseagreen;
     color: #fff;
 }
-.md-confirm-btn--save:hover { background: #1765cc; }
+.md-confirm-btn--save:hover { background: #178a80; }
 .md-confirm-btn--discard {
     background: transparent;
     color: #d93025;

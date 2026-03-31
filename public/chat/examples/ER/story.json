@@ -3,7 +3,6 @@
     {
       "id": "optionsPage",
       "type": "simulation",
-      "display": "none",
       "setup": {
         "focus": "patient",
         "data": "patient-data.csv",
@@ -189,7 +188,8 @@
             "description": ""
           }
         }
-      ]
+      ],
+      "display": "none"
     },
     {
       "id": "nopage",
