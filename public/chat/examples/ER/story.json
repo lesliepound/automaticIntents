@@ -187,6 +187,10 @@
           "slot": {
             "name": "diagnosis",
             "description": ""
+          },
+          "slot1": {
+            "name": "test",
+            "description": "\"enum\": [\"yea\"] "
           }
         }
       ]

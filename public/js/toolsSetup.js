@@ -1267,10 +1267,22 @@ async function handleSend(prompt, model, options) {
         return;
     }
 
-
+console.log('namme',responseObject.args)
 
     if (responseObject.name.includes('@test')) {
-        console.log(args)
+        // change to read the resource instead of assuming focal
+        const data = JSON.stringify(focal, null, 2);
+        const finalPrompt = prompt +'. Check this question with  in sentence form from this data:'+data + 'If there is a match make congratulatory statement or else suggest a test'  ; //preparePrompt(prompt, resource)
+        // directChat(finalPrompt, model);
+        const aiResponse1 = await directChat(finalPrompt, model);
+        console.log('aiResponse1',aiResponse1)
+        const contentDiv = document.getElementById('content');
+        contentDiv.innerHTML = aiResponse1;
+        flash('#content')
+
+        //const tree = JSON.parse(responseObject.arguments);
+
+        return;
     }
     if (responseObject.name.includes('@prompt')) {
         const args = JSON.parse(responseObject.arguments);
