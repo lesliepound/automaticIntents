@@ -1,171 +1,3261 @@
 {
-  "timestamp": "2026-03-27T20:22:32.974Z",
+  "timestamp": "2026-03-31T04:21:42.922Z",
   "model": "llama-3.3-70b-versatile",
-  "totalPassed": 23,
+  "totalPassed": 0,
   "totalTests": 26,
   "suites": [
     {
       "name": "clarifying-question",
-      "passed": 5,
+      "passed": 0,
       "total": 5,
       "rows": [
         {
           "prompt": "I want to play with that thing",
           "expect": "clarifying_question",
-          "actual": "clarifying_question"
+          "actual": "error",
+          "raw": {
+            "type": "classifier",
+            "input": {
+              "prompt": "I want to play with that thing",
+              "systemPrompt": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them",
+              "model": "llama-3.3-70b-versatile",
+              "options": [
+                {
+                  "option": "play with the ball",
+                  "nextSlideId": "bounce",
+                  "slot": null,
+                  "slot1": null,
+                  "extra": null
+                },
+                {
+                  "option": "play with the jump rope",
+                  "nextSlideId": "skip",
+                  "slot": null,
+                  "slot1": null,
+                  "extra": null
+                },
+                {
+                  "option": "play with the coloring book",
+                  "nextSlideId": "color",
+                  "slot": null,
+                  "slot1": null,
+                  "extra": null
+                }
+              ]
+            },
+            "output": {
+              "chosen": "error",
+              "matchedOption": null,
+              "toolCalls": [],
+              "content": null,
+              "finishReason": "error",
+              "error": {
+                "message": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99764, Requested 673. Please try again in 6m17.568s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}",
+                "failedGeneration": null,
+                "recovered": false
+              },
+              "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99764, Requested 673. Please try again in 6m17.568s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"clarifying_question\"."
+            },
+            "meta": {
+              "responseId": null,
+              "model": "llama-3.3-70b-versatile",
+              "usage": null
+            },
+            "fullRequest": {
+              "messages": [
+                {
+                  "role": "system",
+                  "content": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them"
+                },
+                {
+                  "role": "user",
+                  "content": "\"I want to play with that thing\""
+                }
+              ],
+              "tools": [
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "bounce",
+                    "description": "play with the ball ; more examples: ",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"play with the ball\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "skip",
+                    "description": "play with the jump rope ; more examples: ",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"play with the jump rope\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "color",
+                    "description": "play with the coloring book ; more examples: ",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"play with the coloring book\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "clarifying_question",
+                    "description": "Input is ambiguous — ask user a short clarifying question",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "clarifying_question": {
+                          "type": "string",
+                          "description": "A short question (under 12 words) to resolve ambiguity"
+                        },
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "fallback",
+                    "description": "No match found for the user input",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                }
+              ],
+              "model": "llama-3.3-70b-versatile",
+              "tool_choice": "auto"
+            },
+            "fullResponse": null
+          },
+          "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99764, Requested 673. Please try again in 6m17.568s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"clarifying_question\"."
         },
         {
           "prompt": "give me one of those",
           "expect": "clarifying_question",
-          "actual": "clarifying_question"
+          "actual": "error",
+          "raw": {
+            "type": "classifier",
+            "input": {
+              "prompt": "give me one of those",
+              "systemPrompt": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them",
+              "model": "llama-3.3-70b-versatile",
+              "options": [
+                {
+                  "option": "play with the ball",
+                  "nextSlideId": "bounce",
+                  "slot": null,
+                  "slot1": null,
+                  "extra": null
+                },
+                {
+                  "option": "play with the jump rope",
+                  "nextSlideId": "skip",
+                  "slot": null,
+                  "slot1": null,
+                  "extra": null
+                },
+                {
+                  "option": "play with the coloring book",
+                  "nextSlideId": "color",
+                  "slot": null,
+                  "slot1": null,
+                  "extra": null
+                }
+              ]
+            },
+            "output": {
+              "chosen": "error",
+              "matchedOption": null,
+              "toolCalls": [],
+              "content": null,
+              "finishReason": "error",
+              "error": {
+                "message": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99764, Requested 672. Please try again in 6m16.704s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}",
+                "failedGeneration": null,
+                "recovered": false
+              },
+              "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99764, Requested 672. Please try again in 6m16.704s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"clarifying_question\"."
+            },
+            "meta": {
+              "responseId": null,
+              "model": "llama-3.3-70b-versatile",
+              "usage": null
+            },
+            "fullRequest": {
+              "messages": [
+                {
+                  "role": "system",
+                  "content": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them"
+                },
+                {
+                  "role": "user",
+                  "content": "\"give me one of those\""
+                }
+              ],
+              "tools": [
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "bounce",
+                    "description": "play with the ball ; more examples: ",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"play with the ball\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "skip",
+                    "description": "play with the jump rope ; more examples: ",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"play with the jump rope\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "color",
+                    "description": "play with the coloring book ; more examples: ",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"play with the coloring book\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "clarifying_question",
+                    "description": "Input is ambiguous — ask user a short clarifying question",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "clarifying_question": {
+                          "type": "string",
+                          "description": "A short question (under 12 words) to resolve ambiguity"
+                        },
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "fallback",
+                    "description": "No match found for the user input",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                }
+              ],
+              "model": "llama-3.3-70b-versatile",
+              "tool_choice": "auto"
+            },
+            "fullResponse": null
+          },
+          "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99764, Requested 672. Please try again in 6m16.704s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"clarifying_question\"."
         },
         {
           "prompt": "let me play",
           "expect": "clarifying_question",
-          "actual": "clarifying_question"
+          "actual": "error",
+          "raw": {
+            "type": "classifier",
+            "input": {
+              "prompt": "let me play",
+              "systemPrompt": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them",
+              "model": "llama-3.3-70b-versatile",
+              "options": [
+                {
+                  "option": "play with the ball",
+                  "nextSlideId": "bounce",
+                  "slot": null,
+                  "slot1": null,
+                  "extra": null
+                },
+                {
+                  "option": "play with the jump rope",
+                  "nextSlideId": "skip",
+                  "slot": null,
+                  "slot1": null,
+                  "extra": null
+                },
+                {
+                  "option": "play with the coloring book",
+                  "nextSlideId": "color",
+                  "slot": null,
+                  "slot1": null,
+                  "extra": null
+                }
+              ]
+            },
+            "output": {
+              "chosen": "error",
+              "matchedOption": null,
+              "toolCalls": [],
+              "content": null,
+              "finishReason": "error",
+              "error": {
+                "message": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99764, Requested 670. Please try again in 6m14.976s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}",
+                "failedGeneration": null,
+                "recovered": false
+              },
+              "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99764, Requested 670. Please try again in 6m14.976s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"clarifying_question\"."
+            },
+            "meta": {
+              "responseId": null,
+              "model": "llama-3.3-70b-versatile",
+              "usage": null
+            },
+            "fullRequest": {
+              "messages": [
+                {
+                  "role": "system",
+                  "content": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them"
+                },
+                {
+                  "role": "user",
+                  "content": "\"let me play\""
+                }
+              ],
+              "tools": [
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "bounce",
+                    "description": "play with the ball ; more examples: ",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"play with the ball\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "skip",
+                    "description": "play with the jump rope ; more examples: ",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"play with the jump rope\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "color",
+                    "description": "play with the coloring book ; more examples: ",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"play with the coloring book\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "clarifying_question",
+                    "description": "Input is ambiguous — ask user a short clarifying question",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "clarifying_question": {
+                          "type": "string",
+                          "description": "A short question (under 12 words) to resolve ambiguity"
+                        },
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "fallback",
+                    "description": "No match found for the user input",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                }
+              ],
+              "model": "llama-3.3-70b-versatile",
+              "tool_choice": "auto"
+            },
+            "fullResponse": null
+          },
+          "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99764, Requested 670. Please try again in 6m14.976s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"clarifying_question\"."
         },
         {
           "prompt": "I want to play with the ball",
           "expect": "bounce",
-          "actual": "bounce"
+          "actual": "error",
+          "raw": {
+            "type": "classifier",
+            "input": {
+              "prompt": "I want to play with the ball",
+              "systemPrompt": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them",
+              "model": "llama-3.3-70b-versatile",
+              "options": [
+                {
+                  "option": "play with the ball",
+                  "nextSlideId": "bounce",
+                  "slot": null,
+                  "slot1": null,
+                  "extra": null
+                },
+                {
+                  "option": "play with the jump rope",
+                  "nextSlideId": "skip",
+                  "slot": null,
+                  "slot1": null,
+                  "extra": null
+                },
+                {
+                  "option": "play with the coloring book",
+                  "nextSlideId": "color",
+                  "slot": null,
+                  "slot1": null,
+                  "extra": null
+                }
+              ]
+            },
+            "output": {
+              "chosen": "error",
+              "matchedOption": null,
+              "toolCalls": [],
+              "content": null,
+              "finishReason": "error",
+              "error": {
+                "message": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99764, Requested 673. Please try again in 6m17.568s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}",
+                "failedGeneration": null,
+                "recovered": false
+              },
+              "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99764, Requested 673. Please try again in 6m17.568s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"bounce\"."
+            },
+            "meta": {
+              "responseId": null,
+              "model": "llama-3.3-70b-versatile",
+              "usage": null
+            },
+            "fullRequest": {
+              "messages": [
+                {
+                  "role": "system",
+                  "content": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them"
+                },
+                {
+                  "role": "user",
+                  "content": "\"I want to play with the ball\""
+                }
+              ],
+              "tools": [
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "bounce",
+                    "description": "play with the ball ; more examples: ",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"play with the ball\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "skip",
+                    "description": "play with the jump rope ; more examples: ",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"play with the jump rope\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "color",
+                    "description": "play with the coloring book ; more examples: ",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"play with the coloring book\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "clarifying_question",
+                    "description": "Input is ambiguous — ask user a short clarifying question",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "clarifying_question": {
+                          "type": "string",
+                          "description": "A short question (under 12 words) to resolve ambiguity"
+                        },
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "fallback",
+                    "description": "No match found for the user input",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                }
+              ],
+              "model": "llama-3.3-70b-versatile",
+              "tool_choice": "auto"
+            },
+            "fullResponse": null
+          },
+          "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99764, Requested 673. Please try again in 6m17.568s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"bounce\"."
         },
         {
           "prompt": "make some chocolate cake",
           "expect": "fallback",
-          "actual": "fallback"
+          "actual": "error",
+          "raw": {
+            "type": "classifier",
+            "input": {
+              "prompt": "make some chocolate cake",
+              "systemPrompt": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them",
+              "model": "llama-3.3-70b-versatile",
+              "options": [
+                {
+                  "option": "play with the ball",
+                  "nextSlideId": "bounce",
+                  "slot": null,
+                  "slot1": null,
+                  "extra": null
+                },
+                {
+                  "option": "play with the jump rope",
+                  "nextSlideId": "skip",
+                  "slot": null,
+                  "slot1": null,
+                  "extra": null
+                },
+                {
+                  "option": "play with the coloring book",
+                  "nextSlideId": "color",
+                  "slot": null,
+                  "slot1": null,
+                  "extra": null
+                }
+              ]
+            },
+            "output": {
+              "chosen": "error",
+              "matchedOption": null,
+              "toolCalls": [],
+              "content": null,
+              "finishReason": "error",
+              "error": {
+                "message": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99764, Requested 671. Please try again in 6m15.84s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}",
+                "failedGeneration": null,
+                "recovered": false
+              },
+              "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99764, Requested 671. Please try again in 6m15.84s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"fallback\"."
+            },
+            "meta": {
+              "responseId": null,
+              "model": "llama-3.3-70b-versatile",
+              "usage": null
+            },
+            "fullRequest": {
+              "messages": [
+                {
+                  "role": "system",
+                  "content": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them"
+                },
+                {
+                  "role": "user",
+                  "content": "\"make some chocolate cake\""
+                }
+              ],
+              "tools": [
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "bounce",
+                    "description": "play with the ball ; more examples: ",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"play with the ball\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "skip",
+                    "description": "play with the jump rope ; more examples: ",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"play with the jump rope\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "color",
+                    "description": "play with the coloring book ; more examples: ",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"play with the coloring book\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "clarifying_question",
+                    "description": "Input is ambiguous — ask user a short clarifying question",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "clarifying_question": {
+                          "type": "string",
+                          "description": "A short question (under 12 words) to resolve ambiguity"
+                        },
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "fallback",
+                    "description": "No match found for the user input",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                }
+              ],
+              "model": "llama-3.3-70b-versatile",
+              "tool_choice": "auto"
+            },
+            "fullResponse": null
+          },
+          "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99764, Requested 671. Please try again in 6m15.84s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"fallback\"."
         }
       ]
     },
     {
       "name": "conceptual",
-      "passed": 5,
+      "passed": 0,
       "total": 6,
       "rows": [
         {
           "prompt": "get me man's best friend",
           "expect": "barkable",
-          "actual": "barkable"
+          "actual": "error",
+          "raw": {
+            "type": "classifier",
+            "input": {
+              "prompt": "get me man's best friend",
+              "systemPrompt": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them",
+              "model": "llama-3.3-70b-versatile",
+              "options": [
+                {
+                  "option": "get me the dog or nickname for a dog",
+                  "nextSlideId": "barkable",
+                  "slot": {
+                    "name": "animal speaking",
+                    "description": " this _FOREGROUND_ will say bark, hello  "
+                  },
+                  "slot1": null,
+                  "extra": null
+                }
+              ]
+            },
+            "output": {
+              "chosen": "error",
+              "matchedOption": null,
+              "toolCalls": [],
+              "content": null,
+              "finishReason": "error",
+              "error": {
+                "message": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 596. Please try again in 5m10.176s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}",
+                "failedGeneration": null,
+                "recovered": false
+              },
+              "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 596. Please try again in 5m10.176s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"barkable\"."
+            },
+            "meta": {
+              "responseId": null,
+              "model": "llama-3.3-70b-versatile",
+              "usage": null
+            },
+            "fullRequest": {
+              "messages": [
+                {
+                  "role": "system",
+                  "content": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them"
+                },
+                {
+                  "role": "user",
+                  "content": "\"get me man's best friend\""
+                }
+              ],
+              "tools": [
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "barkable",
+                    "description": "get me the dog or nickname for a dog ; more examples: ",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "animal speaking": {
+                          "type": "string",
+                          "description": " this _FOREGROUND_ will say bark, hello  "
+                        },
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"get me the dog or nickname for a dog\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "clarifying_question",
+                    "description": "Input is ambiguous — ask user a short clarifying question",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "clarifying_question": {
+                          "type": "string",
+                          "description": "A short question (under 12 words) to resolve ambiguity"
+                        },
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "fallback",
+                    "description": "No match found for the user input",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                }
+              ],
+              "model": "llama-3.3-70b-versatile",
+              "tool_choice": "auto"
+            },
+            "fullResponse": null
+          },
+          "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 596. Please try again in 5m10.176s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"barkable\"."
         },
         {
           "prompt": "I want the four-legged companion",
           "expect": "barkable",
-          "actual": "barkable"
+          "actual": "error",
+          "raw": {
+            "type": "classifier",
+            "input": {
+              "prompt": "I want the four-legged companion",
+              "systemPrompt": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them",
+              "model": "llama-3.3-70b-versatile",
+              "options": [
+                {
+                  "option": "get me the dog or nickname for a dog",
+                  "nextSlideId": "barkable",
+                  "slot": {
+                    "name": "animal speaking",
+                    "description": " this _FOREGROUND_ will say bark, hello  "
+                  },
+                  "slot1": null,
+                  "extra": null
+                }
+              ]
+            },
+            "output": {
+              "chosen": "error",
+              "matchedOption": null,
+              "toolCalls": [],
+              "content": null,
+              "finishReason": "error",
+              "error": {
+                "message": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 595. Please try again in 5m9.312s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}",
+                "failedGeneration": null,
+                "recovered": false
+              },
+              "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 595. Please try again in 5m9.312s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"barkable\"."
+            },
+            "meta": {
+              "responseId": null,
+              "model": "llama-3.3-70b-versatile",
+              "usage": null
+            },
+            "fullRequest": {
+              "messages": [
+                {
+                  "role": "system",
+                  "content": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them"
+                },
+                {
+                  "role": "user",
+                  "content": "\"I want the four-legged companion\""
+                }
+              ],
+              "tools": [
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "barkable",
+                    "description": "get me the dog or nickname for a dog ; more examples: ",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "animal speaking": {
+                          "type": "string",
+                          "description": " this _FOREGROUND_ will say bark, hello  "
+                        },
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"get me the dog or nickname for a dog\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "clarifying_question",
+                    "description": "Input is ambiguous — ask user a short clarifying question",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "clarifying_question": {
+                          "type": "string",
+                          "description": "A short question (under 12 words) to resolve ambiguity"
+                        },
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "fallback",
+                    "description": "No match found for the user input",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                }
+              ],
+              "model": "llama-3.3-70b-versatile",
+              "tool_choice": "auto"
+            },
+            "fullResponse": null
+          },
+          "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 595. Please try again in 5m9.312s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"barkable\"."
         },
         {
           "prompt": "bring me the loyal pet",
           "expect": "barkable",
-          "actual": "barkable"
+          "actual": "error",
+          "raw": {
+            "type": "classifier",
+            "input": {
+              "prompt": "bring me the loyal pet",
+              "systemPrompt": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them",
+              "model": "llama-3.3-70b-versatile",
+              "options": [
+                {
+                  "option": "get me the dog or nickname for a dog",
+                  "nextSlideId": "barkable",
+                  "slot": {
+                    "name": "animal speaking",
+                    "description": " this _FOREGROUND_ will say bark, hello  "
+                  },
+                  "slot1": null,
+                  "extra": null
+                }
+              ]
+            },
+            "output": {
+              "chosen": "error",
+              "matchedOption": null,
+              "toolCalls": [],
+              "content": null,
+              "finishReason": "error",
+              "error": {
+                "message": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 571. Please try again in 4m48.576s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}",
+                "failedGeneration": null,
+                "recovered": false
+              },
+              "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 571. Please try again in 4m48.576s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"barkable\"."
+            },
+            "meta": {
+              "responseId": null,
+              "model": "llama-3.3-70b-versatile",
+              "usage": null
+            },
+            "fullRequest": {
+              "messages": [
+                {
+                  "role": "system",
+                  "content": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them"
+                },
+                {
+                  "role": "user",
+                  "content": "\"bring me the loyal pet\""
+                }
+              ],
+              "tools": [
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "barkable",
+                    "description": "get me the dog or nickname for a dog ; more examples: ",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "animal speaking": {
+                          "type": "string",
+                          "description": " this _FOREGROUND_ will say bark, hello  "
+                        },
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"get me the dog or nickname for a dog\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "clarifying_question",
+                    "description": "Input is ambiguous — ask user a short clarifying question",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "clarifying_question": {
+                          "type": "string",
+                          "description": "A short question (under 12 words) to resolve ambiguity"
+                        },
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "fallback",
+                    "description": "No match found for the user input",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                }
+              ],
+              "model": "llama-3.3-70b-versatile",
+              "tool_choice": "auto"
+            },
+            "fullResponse": null
+          },
+          "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 571. Please try again in 4m48.576s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"barkable\"."
         },
         {
           "prompt": "fetch the animal that barks",
           "expect": "barkable",
-          "actual": "fallback"
+          "actual": "error",
+          "raw": {
+            "type": "classifier",
+            "input": {
+              "prompt": "fetch the animal that barks",
+              "systemPrompt": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them",
+              "model": "llama-3.3-70b-versatile",
+              "options": [
+                {
+                  "option": "get me the dog or nickname for a dog",
+                  "nextSlideId": "barkable",
+                  "slot": {
+                    "name": "animal speaking",
+                    "description": " this _FOREGROUND_ will say bark, hello  "
+                  },
+                  "slot1": null,
+                  "extra": null
+                }
+              ]
+            },
+            "output": {
+              "chosen": "error",
+              "matchedOption": null,
+              "toolCalls": [],
+              "content": null,
+              "finishReason": "error",
+              "error": {
+                "message": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 572. Please try again in 4m49.44s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}",
+                "failedGeneration": null,
+                "recovered": false
+              },
+              "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 572. Please try again in 4m49.44s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"barkable\"."
+            },
+            "meta": {
+              "responseId": null,
+              "model": "llama-3.3-70b-versatile",
+              "usage": null
+            },
+            "fullRequest": {
+              "messages": [
+                {
+                  "role": "system",
+                  "content": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them"
+                },
+                {
+                  "role": "user",
+                  "content": "\"fetch the animal that barks\""
+                }
+              ],
+              "tools": [
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "barkable",
+                    "description": "get me the dog or nickname for a dog ; more examples: ",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "animal speaking": {
+                          "type": "string",
+                          "description": " this _FOREGROUND_ will say bark, hello  "
+                        },
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"get me the dog or nickname for a dog\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "clarifying_question",
+                    "description": "Input is ambiguous — ask user a short clarifying question",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "clarifying_question": {
+                          "type": "string",
+                          "description": "A short question (under 12 words) to resolve ambiguity"
+                        },
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "fallback",
+                    "description": "No match found for the user input",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                }
+              ],
+              "model": "llama-3.3-70b-versatile",
+              "tool_choice": "auto"
+            },
+            "fullResponse": null
+          },
+          "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 572. Please try again in 4m49.44s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"barkable\"."
         },
         {
           "prompt": "get me the swimming creature",
           "expect": "fallback",
-          "actual": "fallback"
+          "actual": "error",
+          "raw": {
+            "type": "classifier",
+            "input": {
+              "prompt": "get me the swimming creature",
+              "systemPrompt": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them",
+              "model": "llama-3.3-70b-versatile",
+              "options": [
+                {
+                  "option": "get me the dog or nickname for a dog",
+                  "nextSlideId": "barkable",
+                  "slot": {
+                    "name": "animal speaking",
+                    "description": " this _FOREGROUND_ will say bark, hello  "
+                  },
+                  "slot1": null,
+                  "extra": null
+                }
+              ]
+            },
+            "output": {
+              "chosen": "error",
+              "matchedOption": null,
+              "toolCalls": [],
+              "content": null,
+              "finishReason": "error",
+              "error": {
+                "message": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 571. Please try again in 4m48.576s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}",
+                "failedGeneration": null,
+                "recovered": false
+              },
+              "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 571. Please try again in 4m48.576s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"fallback\"."
+            },
+            "meta": {
+              "responseId": null,
+              "model": "llama-3.3-70b-versatile",
+              "usage": null
+            },
+            "fullRequest": {
+              "messages": [
+                {
+                  "role": "system",
+                  "content": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them"
+                },
+                {
+                  "role": "user",
+                  "content": "\"get me the swimming creature\""
+                }
+              ],
+              "tools": [
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "barkable",
+                    "description": "get me the dog or nickname for a dog ; more examples: ",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "animal speaking": {
+                          "type": "string",
+                          "description": " this _FOREGROUND_ will say bark, hello  "
+                        },
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"get me the dog or nickname for a dog\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "clarifying_question",
+                    "description": "Input is ambiguous — ask user a short clarifying question",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "clarifying_question": {
+                          "type": "string",
+                          "description": "A short question (under 12 words) to resolve ambiguity"
+                        },
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "fallback",
+                    "description": "No match found for the user input",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                }
+              ],
+              "model": "llama-3.3-70b-versatile",
+              "tool_choice": "auto"
+            },
+            "fullResponse": null
+          },
+          "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 571. Please try again in 4m48.576s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"fallback\"."
         },
         {
           "prompt": "ill be bach",
           "expect": "fallback",
-          "actual": "fallback"
+          "actual": "error",
+          "raw": {
+            "type": "classifier",
+            "input": {
+              "prompt": "ill be bach",
+              "systemPrompt": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them",
+              "model": "llama-3.3-70b-versatile",
+              "options": [
+                {
+                  "option": "get me the dog or nickname for a dog",
+                  "nextSlideId": "barkable",
+                  "slot": {
+                    "name": "animal speaking",
+                    "description": " this _FOREGROUND_ will say bark, hello  "
+                  },
+                  "slot1": null,
+                  "extra": null
+                }
+              ]
+            },
+            "output": {
+              "chosen": "error",
+              "matchedOption": null,
+              "toolCalls": [],
+              "content": null,
+              "finishReason": "error",
+              "error": {
+                "message": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 569. Please try again in 4m46.848s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}",
+                "failedGeneration": null,
+                "recovered": false
+              },
+              "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 569. Please try again in 4m46.848s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"fallback\"."
+            },
+            "meta": {
+              "responseId": null,
+              "model": "llama-3.3-70b-versatile",
+              "usage": null
+            },
+            "fullRequest": {
+              "messages": [
+                {
+                  "role": "system",
+                  "content": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them"
+                },
+                {
+                  "role": "user",
+                  "content": "\"ill be bach\""
+                }
+              ],
+              "tools": [
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "barkable",
+                    "description": "get me the dog or nickname for a dog ; more examples: ",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "animal speaking": {
+                          "type": "string",
+                          "description": " this _FOREGROUND_ will say bark, hello  "
+                        },
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"get me the dog or nickname for a dog\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "clarifying_question",
+                    "description": "Input is ambiguous — ask user a short clarifying question",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "clarifying_question": {
+                          "type": "string",
+                          "description": "A short question (under 12 words) to resolve ambiguity"
+                        },
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "fallback",
+                    "description": "No match found for the user input",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                }
+              ],
+              "model": "llama-3.3-70b-versatile",
+              "tool_choice": "auto"
+            },
+            "fullResponse": null
+          },
+          "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 569. Please try again in 4m46.848s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"fallback\"."
         }
       ]
     },
     {
       "name": "conceptual-with-examples",
-      "passed": 5,
+      "passed": 0,
       "total": 5,
       "rows": [
         {
           "prompt": "get me man's best friend",
           "expect": "barkable",
-          "actual": "barkable"
+          "actual": "error",
+          "raw": {
+            "type": "classifier",
+            "input": {
+              "prompt": "get me man's best friend",
+              "systemPrompt": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them",
+              "model": "llama-3.3-70b-versatile",
+              "options": [
+                {
+                  "option": "get me the dog; a domesticated canine; a pet that barks and wags its tail",
+                  "nextSlideId": "barkable",
+                  "slot": null,
+                  "slot1": null,
+                  "extra": "fetch the puppy; bring the hound; I want the pooch; give me the good boy"
+                }
+              ]
+            },
+            "output": {
+              "chosen": "error",
+              "matchedOption": null,
+              "toolCalls": [],
+              "content": null,
+              "finishReason": "error",
+              "error": {
+                "message": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 616. Please try again in 5m27.456s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}",
+                "failedGeneration": null,
+                "recovered": false
+              },
+              "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 616. Please try again in 5m27.456s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"barkable\"."
+            },
+            "meta": {
+              "responseId": null,
+              "model": "llama-3.3-70b-versatile",
+              "usage": null
+            },
+            "fullRequest": {
+              "messages": [
+                {
+                  "role": "system",
+                  "content": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them"
+                },
+                {
+                  "role": "user",
+                  "content": "\"get me man's best friend\""
+                }
+              ],
+              "tools": [
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "barkable",
+                    "description": "get me the dog; a domesticated canine; a pet that barks and wags its tail ; more examples: fetch the puppy; bring the hound; I want the pooch; give me the good boy",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"get me the dog; a domesticated canine; a pet that \""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "clarifying_question",
+                    "description": "Input is ambiguous — ask user a short clarifying question",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "clarifying_question": {
+                          "type": "string",
+                          "description": "A short question (under 12 words) to resolve ambiguity"
+                        },
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "fallback",
+                    "description": "No match found for the user input",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                }
+              ],
+              "model": "llama-3.3-70b-versatile",
+              "tool_choice": "auto"
+            },
+            "fullResponse": null
+          },
+          "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 616. Please try again in 5m27.456s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"barkable\"."
         },
         {
           "prompt": "I want the four-legged companion",
           "expect": "barkable",
-          "actual": "barkable"
+          "actual": "error",
+          "raw": {
+            "type": "classifier",
+            "input": {
+              "prompt": "I want the four-legged companion",
+              "systemPrompt": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them",
+              "model": "llama-3.3-70b-versatile",
+              "options": [
+                {
+                  "option": "get me the dog; a domesticated canine; a pet that barks and wags its tail",
+                  "nextSlideId": "barkable",
+                  "slot": null,
+                  "slot1": null,
+                  "extra": "fetch the puppy; bring the hound; I want the pooch; give me the good boy"
+                }
+              ]
+            },
+            "output": {
+              "chosen": "error",
+              "matchedOption": null,
+              "toolCalls": [],
+              "content": null,
+              "finishReason": "error",
+              "error": {
+                "message": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 615. Please try again in 5m26.592s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}",
+                "failedGeneration": null,
+                "recovered": false
+              },
+              "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 615. Please try again in 5m26.592s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"barkable\"."
+            },
+            "meta": {
+              "responseId": null,
+              "model": "llama-3.3-70b-versatile",
+              "usage": null
+            },
+            "fullRequest": {
+              "messages": [
+                {
+                  "role": "system",
+                  "content": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them"
+                },
+                {
+                  "role": "user",
+                  "content": "\"I want the four-legged companion\""
+                }
+              ],
+              "tools": [
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "barkable",
+                    "description": "get me the dog; a domesticated canine; a pet that barks and wags its tail ; more examples: fetch the puppy; bring the hound; I want the pooch; give me the good boy",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"get me the dog; a domesticated canine; a pet that \""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "clarifying_question",
+                    "description": "Input is ambiguous — ask user a short clarifying question",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "clarifying_question": {
+                          "type": "string",
+                          "description": "A short question (under 12 words) to resolve ambiguity"
+                        },
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "fallback",
+                    "description": "No match found for the user input",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                }
+              ],
+              "model": "llama-3.3-70b-versatile",
+              "tool_choice": "auto"
+            },
+            "fullResponse": null
+          },
+          "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 615. Please try again in 5m26.592s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"barkable\"."
         },
         {
           "prompt": "bring me the loyal pet",
           "expect": "barkable",
-          "actual": "barkable"
+          "actual": "error",
+          "raw": {
+            "type": "classifier",
+            "input": {
+              "prompt": "bring me the loyal pet",
+              "systemPrompt": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them",
+              "model": "llama-3.3-70b-versatile",
+              "options": [
+                {
+                  "option": "get me the dog; a domesticated canine; a pet that barks and wags its tail",
+                  "nextSlideId": "barkable",
+                  "slot": null,
+                  "slot1": null,
+                  "extra": "fetch the puppy; bring the hound; I want the pooch; give me the good boy"
+                }
+              ]
+            },
+            "output": {
+              "chosen": "error",
+              "matchedOption": null,
+              "toolCalls": [],
+              "content": null,
+              "finishReason": "error",
+              "error": {
+                "message": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 639. Please try again in 5m47.328s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}",
+                "failedGeneration": null,
+                "recovered": false
+              },
+              "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 639. Please try again in 5m47.328s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"barkable\"."
+            },
+            "meta": {
+              "responseId": null,
+              "model": "llama-3.3-70b-versatile",
+              "usage": null
+            },
+            "fullRequest": {
+              "messages": [
+                {
+                  "role": "system",
+                  "content": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them"
+                },
+                {
+                  "role": "user",
+                  "content": "\"bring me the loyal pet\""
+                }
+              ],
+              "tools": [
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "barkable",
+                    "description": "get me the dog; a domesticated canine; a pet that barks and wags its tail ; more examples: fetch the puppy; bring the hound; I want the pooch; give me the good boy",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"get me the dog; a domesticated canine; a pet that \""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "clarifying_question",
+                    "description": "Input is ambiguous — ask user a short clarifying question",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "clarifying_question": {
+                          "type": "string",
+                          "description": "A short question (under 12 words) to resolve ambiguity"
+                        },
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "fallback",
+                    "description": "No match found for the user input",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                }
+              ],
+              "model": "llama-3.3-70b-versatile",
+              "tool_choice": "auto"
+            },
+            "fullResponse": null
+          },
+          "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 639. Please try again in 5m47.328s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"barkable\"."
         },
         {
           "prompt": "fetch the animal that barks",
           "expect": "barkable",
-          "actual": "barkable"
+          "actual": "error",
+          "raw": {
+            "type": "classifier",
+            "input": {
+              "prompt": "fetch the animal that barks",
+              "systemPrompt": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them",
+              "model": "llama-3.3-70b-versatile",
+              "options": [
+                {
+                  "option": "get me the dog; a domesticated canine; a pet that barks and wags its tail",
+                  "nextSlideId": "barkable",
+                  "slot": null,
+                  "slot1": null,
+                  "extra": "fetch the puppy; bring the hound; I want the pooch; give me the good boy"
+                }
+              ]
+            },
+            "output": {
+              "chosen": "error",
+              "matchedOption": null,
+              "toolCalls": [],
+              "content": null,
+              "finishReason": "error",
+              "error": {
+                "message": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 616. Please try again in 5m27.456s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}",
+                "failedGeneration": null,
+                "recovered": false
+              },
+              "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 616. Please try again in 5m27.456s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"barkable\"."
+            },
+            "meta": {
+              "responseId": null,
+              "model": "llama-3.3-70b-versatile",
+              "usage": null
+            },
+            "fullRequest": {
+              "messages": [
+                {
+                  "role": "system",
+                  "content": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them"
+                },
+                {
+                  "role": "user",
+                  "content": "\"fetch the animal that barks\""
+                }
+              ],
+              "tools": [
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "barkable",
+                    "description": "get me the dog; a domesticated canine; a pet that barks and wags its tail ; more examples: fetch the puppy; bring the hound; I want the pooch; give me the good boy",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"get me the dog; a domesticated canine; a pet that \""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "clarifying_question",
+                    "description": "Input is ambiguous — ask user a short clarifying question",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "clarifying_question": {
+                          "type": "string",
+                          "description": "A short question (under 12 words) to resolve ambiguity"
+                        },
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "fallback",
+                    "description": "No match found for the user input",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                }
+              ],
+              "model": "llama-3.3-70b-versatile",
+              "tool_choice": "auto"
+            },
+            "fullResponse": null
+          },
+          "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 616. Please try again in 5m27.456s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"barkable\"."
         },
         {
           "prompt": "get me the swimming creature",
           "expect": "fallback",
-          "actual": "fallback"
+          "actual": "error",
+          "raw": {
+            "type": "classifier",
+            "input": {
+              "prompt": "get me the swimming creature",
+              "systemPrompt": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them",
+              "model": "llama-3.3-70b-versatile",
+              "options": [
+                {
+                  "option": "get me the dog; a domesticated canine; a pet that barks and wags its tail",
+                  "nextSlideId": "barkable",
+                  "slot": null,
+                  "slot1": null,
+                  "extra": "fetch the puppy; bring the hound; I want the pooch; give me the good boy"
+                }
+              ]
+            },
+            "output": {
+              "chosen": "error",
+              "matchedOption": null,
+              "toolCalls": [],
+              "content": null,
+              "finishReason": "error",
+              "error": {
+                "message": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 615. Please try again in 5m26.592s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}",
+                "failedGeneration": null,
+                "recovered": false
+              },
+              "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 615. Please try again in 5m26.592s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"fallback\"."
+            },
+            "meta": {
+              "responseId": null,
+              "model": "llama-3.3-70b-versatile",
+              "usage": null
+            },
+            "fullRequest": {
+              "messages": [
+                {
+                  "role": "system",
+                  "content": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them"
+                },
+                {
+                  "role": "user",
+                  "content": "\"get me the swimming creature\""
+                }
+              ],
+              "tools": [
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "barkable",
+                    "description": "get me the dog; a domesticated canine; a pet that barks and wags its tail ; more examples: fetch the puppy; bring the hound; I want the pooch; give me the good boy",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"get me the dog; a domesticated canine; a pet that \""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "clarifying_question",
+                    "description": "Input is ambiguous — ask user a short clarifying question",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "clarifying_question": {
+                          "type": "string",
+                          "description": "A short question (under 12 words) to resolve ambiguity"
+                        },
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "fallback",
+                    "description": "No match found for the user input",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                }
+              ],
+              "model": "llama-3.3-70b-versatile",
+              "tool_choice": "auto"
+            },
+            "fullResponse": null
+          },
+          "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 615. Please try again in 5m26.592s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"fallback\"."
         }
       ]
     },
     {
       "name": "literal",
-      "passed": 4,
+      "passed": 0,
       "total": 5,
       "rows": [
         {
           "prompt": "get me the dog",
           "expect": "barkable",
-          "actual": "barkable"
+          "actual": "error",
+          "raw": {
+            "type": "classifier",
+            "input": {
+              "prompt": "get me the dog",
+              "systemPrompt": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them",
+              "model": "llama-3.3-70b-versatile",
+              "options": [
+                {
+                  "option": "get me the dog",
+                  "nextSlideId": "barkable",
+                  "slot": null,
+                  "slot1": null,
+                  "extra": null
+                }
+              ]
+            },
+            "output": {
+              "chosen": "error",
+              "matchedOption": null,
+              "toolCalls": [],
+              "content": null,
+              "finishReason": "error",
+              "error": {
+                "message": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 533. Please try again in 4m14.88s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}",
+                "failedGeneration": null,
+                "recovered": false
+              },
+              "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 533. Please try again in 4m14.88s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"barkable\"."
+            },
+            "meta": {
+              "responseId": null,
+              "model": "llama-3.3-70b-versatile",
+              "usage": null
+            },
+            "fullRequest": {
+              "messages": [
+                {
+                  "role": "system",
+                  "content": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them"
+                },
+                {
+                  "role": "user",
+                  "content": "\"get me the dog\""
+                }
+              ],
+              "tools": [
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "barkable",
+                    "description": "get me the dog ; more examples: ",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"get me the dog\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "clarifying_question",
+                    "description": "Input is ambiguous — ask user a short clarifying question",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "clarifying_question": {
+                          "type": "string",
+                          "description": "A short question (under 12 words) to resolve ambiguity"
+                        },
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "fallback",
+                    "description": "No match found for the user input",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                }
+              ],
+              "model": "llama-3.3-70b-versatile",
+              "tool_choice": "auto"
+            },
+            "fullResponse": null
+          },
+          "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 533. Please try again in 4m14.88s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"barkable\"."
         },
         {
           "prompt": "Get me the dog",
           "expect": "barkable",
-          "actual": "barkable"
+          "actual": "error",
+          "raw": {
+            "type": "classifier",
+            "input": {
+              "prompt": "Get me the dog",
+              "systemPrompt": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them",
+              "model": "llama-3.3-70b-versatile",
+              "options": [
+                {
+                  "option": "get me the dog",
+                  "nextSlideId": "barkable",
+                  "slot": null,
+                  "slot1": null,
+                  "extra": null
+                }
+              ]
+            },
+            "output": {
+              "chosen": "error",
+              "matchedOption": null,
+              "toolCalls": [],
+              "content": null,
+              "finishReason": "error",
+              "error": {
+                "message": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 557. Please try again in 4m35.616s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}",
+                "failedGeneration": null,
+                "recovered": false
+              },
+              "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 557. Please try again in 4m35.616s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"barkable\"."
+            },
+            "meta": {
+              "responseId": null,
+              "model": "llama-3.3-70b-versatile",
+              "usage": null
+            },
+            "fullRequest": {
+              "messages": [
+                {
+                  "role": "system",
+                  "content": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them"
+                },
+                {
+                  "role": "user",
+                  "content": "\"Get me the dog\""
+                }
+              ],
+              "tools": [
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "barkable",
+                    "description": "get me the dog ; more examples: ",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"get me the dog\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "clarifying_question",
+                    "description": "Input is ambiguous — ask user a short clarifying question",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "clarifying_question": {
+                          "type": "string",
+                          "description": "A short question (under 12 words) to resolve ambiguity"
+                        },
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "fallback",
+                    "description": "No match found for the user input",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                }
+              ],
+              "model": "llama-3.3-70b-versatile",
+              "tool_choice": "auto"
+            },
+            "fullResponse": null
+          },
+          "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 557. Please try again in 4m35.616s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"barkable\"."
         },
         {
           "prompt": "get me the dog please",
           "expect": "barkable",
-          "actual": "barkable"
+          "actual": "error",
+          "raw": {
+            "type": "classifier",
+            "input": {
+              "prompt": "get me the dog please",
+              "systemPrompt": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them",
+              "model": "llama-3.3-70b-versatile",
+              "options": [
+                {
+                  "option": "get me the dog",
+                  "nextSlideId": "barkable",
+                  "slot": null,
+                  "slot1": null,
+                  "extra": null
+                }
+              ]
+            },
+            "output": {
+              "chosen": "error",
+              "matchedOption": null,
+              "toolCalls": [],
+              "content": null,
+              "finishReason": "error",
+              "error": {
+                "message": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 534. Please try again in 4m15.744s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}",
+                "failedGeneration": null,
+                "recovered": false
+              },
+              "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 534. Please try again in 4m15.744s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"barkable\"."
+            },
+            "meta": {
+              "responseId": null,
+              "model": "llama-3.3-70b-versatile",
+              "usage": null
+            },
+            "fullRequest": {
+              "messages": [
+                {
+                  "role": "system",
+                  "content": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them"
+                },
+                {
+                  "role": "user",
+                  "content": "\"get me the dog please\""
+                }
+              ],
+              "tools": [
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "barkable",
+                    "description": "get me the dog ; more examples: ",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"get me the dog\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "clarifying_question",
+                    "description": "Input is ambiguous — ask user a short clarifying question",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "clarifying_question": {
+                          "type": "string",
+                          "description": "A short question (under 12 words) to resolve ambiguity"
+                        },
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "fallback",
+                    "description": "No match found for the user input",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                }
+              ],
+              "model": "llama-3.3-70b-versatile",
+              "tool_choice": "auto"
+            },
+            "fullResponse": null
+          },
+          "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 534. Please try again in 4m15.744s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"barkable\"."
         },
         {
           "prompt": "I want to get the dog",
           "expect": "barkable",
-          "actual": "barkable"
+          "actual": "error",
+          "raw": {
+            "type": "classifier",
+            "input": {
+              "prompt": "I want to get the dog",
+              "systemPrompt": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them",
+              "model": "llama-3.3-70b-versatile",
+              "options": [
+                {
+                  "option": "get me the dog",
+                  "nextSlideId": "barkable",
+                  "slot": null,
+                  "slot1": null,
+                  "extra": null
+                }
+              ]
+            },
+            "output": {
+              "chosen": "error",
+              "matchedOption": null,
+              "toolCalls": [],
+              "content": null,
+              "finishReason": "error",
+              "error": {
+                "message": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 558. Please try again in 4m36.48s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}",
+                "failedGeneration": null,
+                "recovered": false
+              },
+              "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 558. Please try again in 4m36.48s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"barkable\"."
+            },
+            "meta": {
+              "responseId": null,
+              "model": "llama-3.3-70b-versatile",
+              "usage": null
+            },
+            "fullRequest": {
+              "messages": [
+                {
+                  "role": "system",
+                  "content": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them"
+                },
+                {
+                  "role": "user",
+                  "content": "\"I want to get the dog\""
+                }
+              ],
+              "tools": [
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "barkable",
+                    "description": "get me the dog ; more examples: ",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"get me the dog\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "clarifying_question",
+                    "description": "Input is ambiguous — ask user a short clarifying question",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "clarifying_question": {
+                          "type": "string",
+                          "description": "A short question (under 12 words) to resolve ambiguity"
+                        },
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "fallback",
+                    "description": "No match found for the user input",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                }
+              ],
+              "model": "llama-3.3-70b-versatile",
+              "tool_choice": "auto"
+            },
+            "fullResponse": null
+          },
+          "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 558. Please try again in 4m36.48s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"barkable\"."
         },
         {
           "prompt": "get me the cat",
           "expect": "fallback",
-          "actual": "barkable"
+          "actual": "error",
+          "raw": {
+            "type": "classifier",
+            "input": {
+              "prompt": "get me the cat",
+              "systemPrompt": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them",
+              "model": "llama-3.3-70b-versatile",
+              "options": [
+                {
+                  "option": "get me the dog",
+                  "nextSlideId": "barkable",
+                  "slot": null,
+                  "slot1": null,
+                  "extra": null
+                }
+              ]
+            },
+            "output": {
+              "chosen": "error",
+              "matchedOption": null,
+              "toolCalls": [],
+              "content": null,
+              "finishReason": "error",
+              "error": {
+                "message": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 533. Please try again in 4m14.88s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}",
+                "failedGeneration": null,
+                "recovered": false
+              },
+              "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 533. Please try again in 4m14.88s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"fallback\"."
+            },
+            "meta": {
+              "responseId": null,
+              "model": "llama-3.3-70b-versatile",
+              "usage": null
+            },
+            "fullRequest": {
+              "messages": [
+                {
+                  "role": "system",
+                  "content": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them"
+                },
+                {
+                  "role": "user",
+                  "content": "\"get me the cat\""
+                }
+              ],
+              "tools": [
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "barkable",
+                    "description": "get me the dog ; more examples: ",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"get me the dog\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "clarifying_question",
+                    "description": "Input is ambiguous — ask user a short clarifying question",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "clarifying_question": {
+                          "type": "string",
+                          "description": "A short question (under 12 words) to resolve ambiguity"
+                        },
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "fallback",
+                    "description": "No match found for the user input",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                }
+              ],
+              "model": "llama-3.3-70b-versatile",
+              "tool_choice": "auto"
+            },
+            "fullResponse": null
+          },
+          "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 533. Please try again in 4m14.88s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"fallback\"."
         }
       ]
     },
     {
       "name": "synonyms",
-      "passed": 4,
+      "passed": 0,
       "total": 5,
       "rows": [
         {
           "prompt": "get me the canine",
           "expect": "bark",
-          "actual": "bark"
+          "actual": "error",
+          "raw": {
+            "type": "classifier",
+            "input": {
+              "prompt": "get me the canine",
+              "systemPrompt": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them",
+              "model": "llama-3.3-70b-versatile",
+              "options": [
+                {
+                  "option": "get me the dog",
+                  "nextSlideId": "bark",
+                  "slot": null,
+                  "slot1": null,
+                  "extra": null
+                }
+              ]
+            },
+            "output": {
+              "chosen": "error",
+              "matchedOption": null,
+              "toolCalls": [],
+              "content": null,
+              "finishReason": "error",
+              "error": {
+                "message": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 531. Please try again in 4m13.152s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}",
+                "failedGeneration": null,
+                "recovered": false
+              },
+              "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 531. Please try again in 4m13.152s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"bark\"."
+            },
+            "meta": {
+              "responseId": null,
+              "model": "llama-3.3-70b-versatile",
+              "usage": null
+            },
+            "fullRequest": {
+              "messages": [
+                {
+                  "role": "system",
+                  "content": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them"
+                },
+                {
+                  "role": "user",
+                  "content": "\"get me the canine\""
+                }
+              ],
+              "tools": [
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "bark",
+                    "description": "get me the dog ; more examples: ",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"get me the dog\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "clarifying_question",
+                    "description": "Input is ambiguous — ask user a short clarifying question",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "clarifying_question": {
+                          "type": "string",
+                          "description": "A short question (under 12 words) to resolve ambiguity"
+                        },
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "fallback",
+                    "description": "No match found for the user input",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                }
+              ],
+              "model": "llama-3.3-70b-versatile",
+              "tool_choice": "auto"
+            },
+            "fullResponse": null
+          },
+          "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 531. Please try again in 4m13.152s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"bark\"."
         },
         {
           "prompt": "fetch the hound",
           "expect": "bark",
-          "actual": "bark"
+          "actual": "error",
+          "raw": {
+            "type": "classifier",
+            "input": {
+              "prompt": "fetch the hound",
+              "systemPrompt": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them",
+              "model": "llama-3.3-70b-versatile",
+              "options": [
+                {
+                  "option": "get me the dog",
+                  "nextSlideId": "bark",
+                  "slot": null,
+                  "slot1": null,
+                  "extra": null
+                }
+              ]
+            },
+            "output": {
+              "chosen": "error",
+              "matchedOption": null,
+              "toolCalls": [],
+              "content": null,
+              "finishReason": "error",
+              "error": {
+                "message": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 531. Please try again in 4m13.152s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}",
+                "failedGeneration": null,
+                "recovered": false
+              },
+              "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 531. Please try again in 4m13.152s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"bark\"."
+            },
+            "meta": {
+              "responseId": null,
+              "model": "llama-3.3-70b-versatile",
+              "usage": null
+            },
+            "fullRequest": {
+              "messages": [
+                {
+                  "role": "system",
+                  "content": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them"
+                },
+                {
+                  "role": "user",
+                  "content": "\"fetch the hound\""
+                }
+              ],
+              "tools": [
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "bark",
+                    "description": "get me the dog ; more examples: ",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"get me the dog\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "clarifying_question",
+                    "description": "Input is ambiguous — ask user a short clarifying question",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "clarifying_question": {
+                          "type": "string",
+                          "description": "A short question (under 12 words) to resolve ambiguity"
+                        },
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "fallback",
+                    "description": "No match found for the user input",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                }
+              ],
+              "model": "llama-3.3-70b-versatile",
+              "tool_choice": "auto"
+            },
+            "fullResponse": null
+          },
+          "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 531. Please try again in 4m13.152s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"bark\"."
         },
         {
           "prompt": "bring me the puppy",
           "expect": "bark",
-          "actual": "bark"
+          "actual": "error",
+          "raw": {
+            "type": "classifier",
+            "input": {
+              "prompt": "bring me the puppy",
+              "systemPrompt": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them",
+              "model": "llama-3.3-70b-versatile",
+              "options": [
+                {
+                  "option": "get me the dog",
+                  "nextSlideId": "bark",
+                  "slot": null,
+                  "slot1": null,
+                  "extra": null
+                }
+              ]
+            },
+            "output": {
+              "chosen": "error",
+              "matchedOption": null,
+              "toolCalls": [],
+              "content": null,
+              "finishReason": "error",
+              "error": {
+                "message": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 531. Please try again in 4m13.152s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}",
+                "failedGeneration": null,
+                "recovered": false
+              },
+              "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 531. Please try again in 4m13.152s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"bark\"."
+            },
+            "meta": {
+              "responseId": null,
+              "model": "llama-3.3-70b-versatile",
+              "usage": null
+            },
+            "fullRequest": {
+              "messages": [
+                {
+                  "role": "system",
+                  "content": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them"
+                },
+                {
+                  "role": "user",
+                  "content": "\"bring me the puppy\""
+                }
+              ],
+              "tools": [
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "bark",
+                    "description": "get me the dog ; more examples: ",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"get me the dog\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "clarifying_question",
+                    "description": "Input is ambiguous — ask user a short clarifying question",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "clarifying_question": {
+                          "type": "string",
+                          "description": "A short question (under 12 words) to resolve ambiguity"
+                        },
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "fallback",
+                    "description": "No match found for the user input",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                }
+              ],
+              "model": "llama-3.3-70b-versatile",
+              "tool_choice": "auto"
+            },
+            "fullResponse": null
+          },
+          "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 531. Please try again in 4m13.152s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"bark\"."
         },
         {
           "prompt": "hand me the pooch",
           "expect": "bark",
-          "actual": "bark"
+          "actual": "error",
+          "raw": {
+            "type": "classifier",
+            "input": {
+              "prompt": "hand me the pooch",
+              "systemPrompt": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them",
+              "model": "llama-3.3-70b-versatile",
+              "options": [
+                {
+                  "option": "get me the dog",
+                  "nextSlideId": "bark",
+                  "slot": null,
+                  "slot1": null,
+                  "extra": null
+                }
+              ]
+            },
+            "output": {
+              "chosen": "error",
+              "matchedOption": null,
+              "toolCalls": [],
+              "content": null,
+              "finishReason": "error",
+              "error": {
+                "message": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 532. Please try again in 4m14.016s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}",
+                "failedGeneration": null,
+                "recovered": false
+              },
+              "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 532. Please try again in 4m14.016s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"bark\"."
+            },
+            "meta": {
+              "responseId": null,
+              "model": "llama-3.3-70b-versatile",
+              "usage": null
+            },
+            "fullRequest": {
+              "messages": [
+                {
+                  "role": "system",
+                  "content": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them"
+                },
+                {
+                  "role": "user",
+                  "content": "\"hand me the pooch\""
+                }
+              ],
+              "tools": [
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "bark",
+                    "description": "get me the dog ; more examples: ",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"get me the dog\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "clarifying_question",
+                    "description": "Input is ambiguous — ask user a short clarifying question",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "clarifying_question": {
+                          "type": "string",
+                          "description": "A short question (under 12 words) to resolve ambiguity"
+                        },
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "fallback",
+                    "description": "No match found for the user input",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                }
+              ],
+              "model": "llama-3.3-70b-versatile",
+              "tool_choice": "auto"
+            },
+            "fullResponse": null
+          },
+          "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 532. Please try again in 4m14.016s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"bark\"."
         },
         {
           "prompt": "get me the feline",
           "expect": "fallback",
-          "actual": "bark"
+          "actual": "error",
+          "raw": {
+            "type": "classifier",
+            "input": {
+              "prompt": "get me the feline",
+              "systemPrompt": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them",
+              "model": "llama-3.3-70b-versatile",
+              "options": [
+                {
+                  "option": "get me the dog",
+                  "nextSlideId": "bark",
+                  "slot": null,
+                  "slot1": null,
+                  "extra": null
+                }
+              ]
+            },
+            "output": {
+              "chosen": "error",
+              "matchedOption": null,
+              "toolCalls": [],
+              "content": null,
+              "finishReason": "error",
+              "error": {
+                "message": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 532. Please try again in 4m14.016s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}",
+                "failedGeneration": null,
+                "recovered": false
+              },
+              "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 532. Please try again in 4m14.016s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"fallback\"."
+            },
+            "meta": {
+              "responseId": null,
+              "model": "llama-3.3-70b-versatile",
+              "usage": null
+            },
+            "fullRequest": {
+              "messages": [
+                {
+                  "role": "system",
+                  "content": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them"
+                },
+                {
+                  "role": "user",
+                  "content": "\"get me the feline\""
+                }
+              ],
+              "tools": [
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "bark",
+                    "description": "get me the dog ; more examples: ",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"get me the dog\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "clarifying_question",
+                    "description": "Input is ambiguous — ask user a short clarifying question",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "clarifying_question": {
+                          "type": "string",
+                          "description": "A short question (under 12 words) to resolve ambiguity"
+                        },
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "fallback",
+                    "description": "No match found for the user input",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                }
+              ],
+              "model": "llama-3.3-70b-versatile",
+              "tool_choice": "auto"
+            },
+            "fullResponse": null
+          },
+          "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 532. Please try again in 4m14.016s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"fallback\"."
         }
       ]
     }

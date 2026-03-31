@@ -10,8 +10,8 @@
 // Known affordance types used across scenarios
 const KNOWN_AFFORDANCES = [
   'movable', 'connectable', 'readable', 'orderable',
-  'diagnosable', 'hatable', 'settable', 'wavable',
-  'emotive', 'greetable', 'moveDirection', 'revealable', 'askable'
+  'diagnosable', 'hatable', 'settable',
+  'moveDirection', 'revealable', 'askable'
 ];
 
 const PAGE_TYPES = ['simulation', 'story', 'options', 'end'];
@@ -132,6 +132,22 @@ class FormEditor {
     };
     header.appendChild(typeSelect);
 
+    // Display checkbox (in header)
+    if (page.display !== undefined || page.type === 'simulation' || page.type === 'options') {
+      const displayLabel = el('label', 'fe-header-label', 'Display');
+      header.appendChild(displayLabel);
+      const displayCb = el('input');
+      displayCb.type = 'checkbox';
+      displayCb.checked = page.display !== 'none';
+      displayCb.style.width = 'auto';
+      displayCb.style.margin = '0 8px 0 0';
+      displayCb.onchange = () => {
+        if (displayCb.checked) delete page.display;
+        else page.display = 'none';
+      };
+      header.appendChild(displayCb);
+    }
+
     // Spacer
     header.appendChild(el('span', 'fe-spacer'));
 
@@ -163,16 +179,7 @@ class FormEditor {
     }));
 
     if (page.display !== undefined || page.type === 'simulation' || page.type === 'options') {
-      body.appendChild(this._fieldRow('Display', () => {
-        const inp = el('input', 'fe-input');
-        inp.value = page.display || '';
-        inp.placeholder = 'e.g. none';
-        inp.onchange = () => {
-          if (inp.value) page.display = inp.value;
-          else delete page.display;
-        };
-        return inp;
-      }));
+      // Display checkbox moved to header
     }
 
     // ── Story-specific fields ───────────────
@@ -327,6 +334,7 @@ class FormEditor {
 
     const hdr = el('div', 'fe-section-header');
     hdr.appendChild(document.createTextNode('Options'));
+    hdr.appendChild(el('span', 'fe-spacer'));
     const addOptBtn = el('button', 'fe-btn fe-btn-filled fe-btn-sm');
     addOptBtn.appendChild(mIcon('add', 'fe-btn-icon'));
     addOptBtn.appendChild(document.createTextNode(' Add Option'));
@@ -726,10 +734,10 @@ const FORM_EDITOR_CSS = `
 
 /* ─── MD3 Tokens ──────────────────────────── */
 :root {
-  --md-primary:        #1a73e8;
+  --md-primary:        lightseagreen;
   --md-on-primary:     #ffffff;
-  --md-primary-ctr:    #d3e3fd;
-  --md-on-primary-ctr: #041e49;
+  --md-primary-ctr:    #b2dfdb;
+  --md-on-primary-ctr: #00382e;
   --md-secondary-ctr:  #e8eaed;
   --md-on-secondary-ctr:#1f1f1f;
   --md-surface:        #ffffff;
@@ -879,13 +887,13 @@ const FORM_EDITOR_CSS = `
 }
 .fe-btn-filled:hover {
   box-shadow: var(--md-elev-1);
-  background: #1765cc;
+  background: #178a80;
 }
 .fe-btn-tonal {
   background: var(--md-primary-ctr);
   color: var(--md-on-primary-ctr);
 }
-.fe-btn-tonal:hover { background: #c0d7f9; }
+.fe-btn-tonal:hover { background: #80cbc4; }
 .fe-btn-danger {
   background: var(--md-error);
   color: var(--md-on-error);
@@ -909,7 +917,7 @@ const FORM_EDITOR_CSS = `
 }
 .fe-btn-fab:hover {
   box-shadow: var(--md-elev-3);
-  background: #c0d7f9;
+  background: #80cbc4;
 }
 
 /* Icon-only buttons (delete, close) */

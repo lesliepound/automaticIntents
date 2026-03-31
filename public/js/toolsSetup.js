@@ -1632,6 +1632,7 @@ function editDialog() {
     const filename = activeButton.getAttribute("filename");
     document.getElementById('focalChat').innerHTML = " " + filename;
     document.getElementById('fileName').value = filename + "/story.json";
+    document.querySelector('#dialog3 .fe-dialog-title').textContent = `Edit ${filename} Scenario`;
     showDialogBox('dialog3');
     getFile(); // Auto-load the form editor
 }
