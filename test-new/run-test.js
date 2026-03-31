@@ -86,13 +86,109 @@ async function runClassifier(userInput, options, model) {
             });
         }
 
-        if (response.choices[0].message.tool_calls?.length > 0) {
-            return response.choices[0].message.tool_calls[0].function;
-        }
-        return { name: "fallback", arguments: "" };
+        const message = response.choices[0].message;
+        const chosenName = message.tool_calls?.length > 0
+            ? message.tool_calls[0].function.name
+            : "fallback";
+
+        // Find the matching story.json option for the chosen function
+        const matchedOption = options.find(o => o.nextSlideId === chosenName) || null;
+
+        // Parse all tool call arguments
+        const parsedToolCalls = (message.tool_calls || []).map(tc => {
+            let parsedArgs = tc.function.arguments;
+            try { parsedArgs = JSON.parse(tc.function.arguments); } catch {}
+            return { id: tc.id, name: tc.function.name, arguments: parsedArgs };
+        });
+
+        const raw = {
+            type: "classifier",
+            // ── INPUT: what was sent ──
+            input: {
+                prompt: userInput,
+                systemPrompt: CLASSIFIER_PROMPT,
+                model,
+                options: options.map(opt => ({
+                    option: opt.option,
+                    nextSlideId: opt.nextSlideId,
+                    slot: opt.slot || null,
+                    slot1: opt.slot1 || null,
+                    extra: opt.extra || null
+                }))
+            },
+            // ── OUTPUT: what came back ──
+            output: {
+                chosen: chosenName,
+                matchedOption: matchedOption ? {
+                    option: matchedOption.option,
+                    nextSlideId: matchedOption.nextSlideId,
+                    slot: matchedOption.slot || null,
+                    slot1: matchedOption.slot1 || null,
+                    extra: matchedOption.extra || null
+                } : null,
+                toolCalls: parsedToolCalls,
+                content: message.content || null,
+                finishReason: response.choices[0].finish_reason
+            },
+            // ── META ──
+            meta: {
+                responseId: response.id,
+                model: response.model,
+                usage: response.usage || null
+            },
+            // ── FULL API (for deep inspection) ──
+            fullRequest: { messages, tools, model, tool_choice: "auto" },
+            fullResponse: response
+        };
+
+        return { name: chosenName, arguments: message.tool_calls?.[0]?.function?.arguments || "", raw };
     } catch (e) {
-        console.warn("Classifier failed, returning fallback.", e.message);
-        return { name: "fallback", arguments: "" };
+        // Try to recover the intended function name from Groq's failed_generation
+        let recoveredName = "error";
+        let failedGeneration = null;
+        try {
+            const errBody = JSON.parse(e.message.replace(/^\d+\s*/, ''));
+            failedGeneration = errBody?.error?.failed_generation || null;
+            if (failedGeneration) {
+                const match = failedGeneration.match(/<function=(\w+)/);
+                if (match) recoveredName = match[1];
+            }
+        } catch {}
+
+        console.warn(`Classifier error${recoveredName !== 'error' ? ` (recovered: ${recoveredName})` : ''}: ${e.message}`);
+
+        const raw = {
+            type: "classifier",
+            input: {
+                prompt: userInput,
+                systemPrompt: CLASSIFIER_PROMPT,
+                model,
+                options: options.map(opt => ({
+                    option: opt.option,
+                    nextSlideId: opt.nextSlideId,
+                    slot: opt.slot || null,
+                    slot1: opt.slot1 || null,
+                    extra: opt.extra || null
+                }))
+            },
+            output: {
+                chosen: recoveredName,
+                matchedOption: null,
+                toolCalls: [],
+                content: null,
+                finishReason: "error",
+                error: {
+                    message: e.message,
+                    failedGeneration,
+                    recovered: recoveredName !== "error"
+                }
+            },
+            meta: { responseId: null, model, usage: null },
+            fullRequest: { messages, tools, model, tool_choice: "auto" },
+            fullResponse: null
+        };
+
+        return { name: recoveredName, arguments: "", raw };
     }
 }
 
@@ -161,6 +257,64 @@ function printTable(testName, model, rows) {
     return { passed, total: rows.length };
 }
 
+// ── Fail reason generator ───────────────────────────────────
+function getFailReason(row) {
+    const { prompt, expect, actual, raw } = row;
+    const ok = actual === expect;
+    const hasError = raw?.output?.error;
+    const input = raw?.input;
+    const output = raw?.output;
+
+    if (hasError && ok) {
+        return `API returned a 400 error — the model tried to call "${actual}" but used malformed syntax. The function name was recovered from the failed output. This counts as a pass but the API call itself failed.`;
+    }
+    if (hasError && !ok) {
+        const failedGen = hasError.failedGeneration;
+        if (failedGen) {
+            return `API returned a 400 error. The model's malformed output was: "${failedGen}". Expected "${expect}" but got "${actual}".`;
+        }
+        return `API call failed with error: ${hasError.message || 'unknown'}. Returned "${actual}" instead of "${expect}".`;
+    }
+    if (!raw) {
+        return `Expected "${expect}" but model returned "${actual}".`;
+    }
+    if (actual === 'fallback' && expect !== 'fallback') {
+        const expectedOpt = input?.options?.find(o => o.nextSlideId === expect);
+        if (expectedOpt) {
+            return `Model returned "fallback" (no match) but the prompt should have matched option "${expect}" ("${expectedOpt.option}"). The model failed to connect the user's input to this option's meaning.`;
+        }
+        return `Model returned "fallback" but should have matched "${expect}". The model didn't find any relationship to the available options.`;
+    }
+    if (actual === 'clarifying_question' && expect !== 'clarifying_question') {
+        const cqText = output?.toolCalls?.[0]?.arguments?.clarifying_question || '';
+        let reason = `Model asked a clarifying question instead of choosing "${expect}".`;
+        if (cqText) reason += ` It asked: "${cqText}"`;
+        reason += ` The input may have seemed ambiguous to the model, but a direct match was expected.`;
+        return reason;
+    }
+    if (expect === 'fallback' && actual !== 'fallback') {
+        const wrongOpt = input?.options?.find(o => o.nextSlideId === actual);
+        if (wrongOpt) {
+            return `Model matched "${actual}" ("${wrongOpt.option}") but the input should not have matched any option. Expected "fallback" — the model incorrectly found a relationship.`;
+        }
+        return `Model matched "${actual}" but expected "fallback". The input was unrelated to all options.`;
+    }
+    if (actual !== expect) {
+        const expectedOpt = input?.options?.find(o => o.nextSlideId === expect);
+        const actualOpt = input?.options?.find(o => o.nextSlideId === actual);
+        let reason = `Model chose "${actual}"`;
+        if (actualOpt) reason += ` ("${actualOpt.option}")`;
+        reason += ` instead of "${expect}"`;
+        if (expectedOpt) reason += ` ("${expectedOpt.option}")`;
+        reason += `. The model matched the user's input to the wrong option.`;
+        if (output?.content) {
+            reason += ` Model's reasoning: "${output.content}"`;
+        }
+        return reason;
+    }
+    return null;
+}
+
 // ── Run tests ───────────────────────────────────────────────
 async function runTestFolder(folderPath) {
     const absPath = path.resolve(folderPath);
@@ -191,11 +345,17 @@ async function runTestFolder(folderPath) {
 
     for (const t of testData.tests) {
         const result = await runClassifier(t.prompt, options, model);
-        rows.push({
+        const row = {
             prompt: t.prompt,
             expect: t.expect,
-            actual: result.name
-        });
+            actual: result.name,
+            raw: result.raw
+        };
+        row.failReason = getFailReason(row);
+        if (row.raw && row.failReason) {
+            row.raw.output.failReason = row.failReason;
+        }
+        rows.push(row);
     }
 
     const testName = path.basename(absPath);
@@ -259,6 +419,11 @@ const csvRows = allSuites.flatMap(suite =>
 );
 fs.writeFileSync(csvPath, [csvHeader, ...csvRows].join('\n') + '\n');
 
+// ── Save JSON to result-logs/ (includes raw API responses) ──
+const jsonName = `${datePart}_${model}.json`;
+const jsonPath = path.join(logsDir, jsonName);
+fs.writeFileSync(jsonPath, JSON.stringify(resultsData, null, 2));
+
 // ── Update index.json manifest ──────────────────────────────
 const indexPath = path.join(logsDir, 'index.json');
 let manifest = [];
@@ -267,6 +432,7 @@ if (fs.existsSync(indexPath)) {
 }
 manifest.push({
     file: csvName,
+    jsonFile: jsonName,
     timestamp: ts,
     model,
     totalPassed,
@@ -276,5 +442,6 @@ fs.writeFileSync(indexPath, JSON.stringify(manifest, null, 2));
 
 console.log(`\nResults saved to test-new/results.json`);
 console.log(`CSV log saved to test-new/result-logs/${csvName}`);
+console.log(`JSON log saved to test-new/result-logs/${jsonName}`);
 
 process.exit(totalPassed === totalTests ? 0 : 1);

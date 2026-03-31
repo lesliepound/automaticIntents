@@ -259,6 +259,30 @@
   tr.fail td { background: color-mix(in srgb, var(--md-fail-container) 30%, transparent); }
   tr.fail td.result-cell { color: var(--md-fail); font-weight: 500; }
   tr.fail td.mismatch { text-decoration: underline wavy var(--md-fail); text-underline-offset: 3px; }
+  tr.recovered td { background: color-mix(in srgb, #FFF3E0 50%, transparent); }
+  tr.recovered td.result-cell { color: #E65100; font-weight: 500; }
+  tr.fail-reason td {
+    padding: 6px 16px 10px;
+    border-top: none;
+    background: color-mix(in srgb, var(--md-fail-container) 12%, transparent);
+  }
+  tr.fail-reason .fail-reason-text {
+    display: flex;
+    align-items: flex-start;
+    gap: 6px;
+    font-size: 0.8rem;
+    color: var(--md-sys-color-on-surface-variant);
+    line-height: 1.4;
+  }
+  tr.fail-reason .fail-reason-text .material-icons {
+    font-size: 16px;
+    color: var(--md-sys-color-outline);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  tr.recovered + tr.fail-reason td {
+    background: color-mix(in srgb, #FFF3E0 20%, transparent);
+  }
 
   /* Empty state */
   .empty { text-align: center; padding: 64px 24px; }
@@ -271,6 +295,159 @@
     border-radius: 4px;
     font-family: 'Roboto Mono', monospace;
     font-size: 0.8125rem;
+  }
+
+  /* Raw JSON modal */
+  .raw-modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 100;
+    justify-content: center;
+    align-items: center;
+  }
+  .raw-modal-overlay.open { display: flex; }
+  .raw-modal {
+    background: var(--md-sys-color-surface);
+    border-radius: 16px;
+    width: min(90vw, 820px);
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+  }
+  .raw-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--md-sys-color-outline-variant);
+  }
+  .raw-modal-header h2 {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--md-sys-color-on-surface);
+  }
+  .raw-modal-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--md-sys-color-on-surface-variant);
+    border-radius: 50%;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.15s;
+  }
+  .raw-modal-close:hover { background: var(--md-sys-color-surface-container); }
+  .raw-modal-body {
+    overflow: auto;
+    padding: 16px 20px;
+    flex: 1;
+  }
+  .raw-modal-body pre {
+    font-family: 'Roboto Mono', monospace;
+    font-size: 0.75rem;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin: 0;
+    color: var(--md-sys-color-on-surface);
+  }
+  .raw-tabs {
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid var(--md-sys-color-outline-variant);
+    padding: 0 20px;
+  }
+  .raw-tab {
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    padding: 10px 16px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--md-sys-color-on-surface-variant);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .raw-tab:hover { color: var(--md-sys-color-on-surface); }
+  .raw-tab.active {
+    color: var(--md-sys-color-primary);
+    border-bottom-color: var(--md-sys-color-primary);
+  }
+  .raw-tab-panel { display: none; }
+  .raw-tab-panel.active { display: block; }
+  .raw-section {
+    margin-bottom: 16px;
+    border: 1px solid var(--md-sys-color-outline-variant);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .raw-section-title {
+    font-size: 0.6875rem;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--md-sys-color-on-surface-variant);
+    background: var(--md-sys-color-surface-container);
+    padding: 8px 12px;
+    margin: 0;
+  }
+  .raw-section-body {
+    padding: 10px 12px;
+    font-family: 'Roboto Mono', monospace;
+    font-size: 0.75rem;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .raw-section-body .raw-label {
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.6875rem;
+    font-weight: 500;
+    color: var(--md-sys-color-on-surface-variant);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    display: block;
+    margin-bottom: 2px;
+    margin-top: 8px;
+  }
+  .raw-section-body .raw-label:first-child { margin-top: 0; }
+  .raw-content-text {
+    color: var(--md-sys-color-primary);
+    font-style: italic;
+  }
+  .raw-btn {
+    background: none;
+    border: 1px solid var(--md-sys-color-outline-variant);
+    border-radius: 8px;
+    cursor: pointer;
+    color: var(--md-sys-color-on-surface-variant);
+    padding: 4px 8px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.75rem;
+    transition: all 0.15s;
+  }
+  .raw-btn:hover {
+    background: var(--md-sys-color-surface-container);
+    border-color: var(--md-sys-color-primary);
+    color: var(--md-sys-color-primary);
+  }
+  .raw-btn .material-icons { font-size: 16px; }
+  .raw-btn:disabled {
+    opacity: 0.38;
+    cursor: default;
+    border-color: var(--md-sys-color-outline-variant);
+    color: var(--md-sys-color-on-surface-variant);
+    background: none;
   }
 </style>
 </head>
@@ -311,7 +488,201 @@
   </div>
 </div>
 
+<div class="raw-modal-overlay" id="raw-modal-overlay">
+  <div class="raw-modal">
+    <div class="raw-modal-header">
+      <h2>Raw API Response</h2>
+      <button class="raw-modal-close" id="raw-modal-close"><span class="material-icons">close</span></button>
+    </div>
+    <div class="raw-tabs">
+      <button class="raw-tab active" data-tab="parsed">Parsed</button>
+      <button class="raw-tab" data-tab="raw">Full JSON</button>
+    </div>
+    <div class="raw-modal-body">
+      <div class="raw-tab-panel active" id="raw-panel-parsed"></div>
+      <div class="raw-tab-panel" id="raw-panel-raw">
+        <pre id="raw-modal-content"></pre>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
+// ── Raw modal logic ────────────────────────────────────────
+(function() {
+  const overlay = document.getElementById('raw-modal-overlay');
+  const content = document.getElementById('raw-modal-content');
+  const parsedPanel = document.getElementById('raw-panel-parsed');
+  const closeBtn = document.getElementById('raw-modal-close');
+
+  // Tab switching
+  document.querySelector('.raw-tabs').addEventListener('click', e => {
+    const tab = e.target.closest('.raw-tab');
+    if (!tab) return;
+    document.querySelectorAll('.raw-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.raw-tab-panel').forEach(p => p.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById('raw-panel-' + tab.dataset.tab).classList.add('active');
+  });
+
+  function esc(s) {
+    const d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+  }
+
+  function buildParsedView(raw) {
+    let html = '';
+    const input = raw.input;
+    const output = raw.output;
+    const meta = raw.meta;
+
+    // ── New structured format (classifier) ──
+    if (input && output) {
+
+      // INPUT section
+      html += `<div class="raw-section">
+        <div class="raw-section-title">Input — Classifier</div>
+        <div class="raw-section-body">
+          <span class="raw-label">User Prompt</span><strong>${esc(input.prompt)}</strong>
+          <span class="raw-label">Model</span>${esc(input.model || 'unknown')}
+          <span class="raw-label">System Prompt</span>${esc(input.systemPrompt)}
+          <span class="raw-label">Options from story.json (${input.options ? input.options.length : 0})</span>${
+            (input.options || []).map((opt, i) => {
+              let line = `${i + 1}. <strong>${esc(opt.nextSlideId)}</strong> — "${esc(opt.option)}"`;
+              if (opt.slot) line += `\n   slot: ${esc(opt.slot.name)} — ${esc(opt.slot.description)}`;
+              if (opt.slot1) line += `\n   slot1: ${esc(opt.slot1.name)} — ${esc(opt.slot1.description)}`;
+              if (opt.extra) line += `\n   extra: ${esc(opt.extra)}`;
+              return line;
+            }).join('\n')
+          }
+        </div>
+      </div>`;
+
+      // OUTPUT section
+      html += `<div class="raw-section">
+        <div class="raw-section-title">Output — Chosen Option</div>
+        <div class="raw-section-body">
+          <span class="raw-label">Chosen (nextSlideId)</span><strong>${esc(output.chosen)}</strong>
+          <span class="raw-label">Finish Reason</span>${esc(output.finishReason || 'n/a')}`;
+
+      if (output.matchedOption) {
+        const mo = output.matchedOption;
+        html += `\n          <span class="raw-label">Matched story.json Option</span>"${esc(mo.option)}" → nextSlideId: <strong>${esc(mo.nextSlideId)}</strong>`;
+        if (mo.slot) html += `\n          slot: { name: "${esc(mo.slot.name)}", description: "${esc(mo.slot.description)}" }`;
+        if (mo.slot1) html += `\n          slot1: { name: "${esc(mo.slot1.name)}", description: "${esc(mo.slot1.description)}" }`;
+        if (mo.extra) html += `\n          extra: "${esc(mo.extra)}"`;
+      } else if (output.chosen === 'clarifying_question' || output.chosen === 'fallback') {
+        html += `\n          <span class="raw-label">Matched story.json Option</span><em>(built-in: ${esc(output.chosen)})</em>`;
+      }
+
+      // Tool calls with _label and slot values
+      if (output.toolCalls && output.toolCalls.length > 0) {
+        html += `\n          <span class="raw-label">Tool Calls (${output.toolCalls.length})</span>`;
+        output.toolCalls.forEach((tc, i) => {
+          const args = typeof tc.arguments === 'object' ? tc.arguments : {};
+          html += `\n          ${i + 1}. <strong>${esc(tc.name)}</strong>`;
+          if (args._label) html += `\n             _label: "${esc(args._label)}"`;
+          Object.entries(args).forEach(([k, v]) => {
+            if (k !== '_label') html += `\n             ${esc(k)}: "${esc(v)}"`;
+          });
+        });
+      }
+
+      // Model content / reasoning
+      if (output.content) {
+        html += `\n          <span class="raw-label">Model Content / Reasoning</span><span class="raw-content-text">${esc(output.content)}</span>`;
+      }
+
+      // Fail reason (stored from test run)
+      if (output.failReason) {
+        html += `<div class="raw-section">
+          <div class="raw-section-title">Fail Analysis</div>
+          <div class="raw-section-body">${esc(output.failReason)}</div>
+        </div>`;
+      }
+
+      // Error details (recovered or not)
+      if (output.error) {
+        const err = output.error;
+        html += `\n          <span class="raw-label" style="color:#E65100;">⚠ API Error${err.recovered ? ' (recovered)' : ''}</span>${esc(err.message)}`;
+        if (err.failedGeneration) {
+          html += `\n          <span class="raw-label">Failed Generation</span>${esc(err.failedGeneration)}`;
+        }
+        if (err.recovered) {
+          html += `\n          <em style="color:#E65100;">Function name "${esc(output.chosen)}" was recovered from the failed generation. The model intended this call but used malformed syntax.</em>`;
+        }
+      }
+
+      html += `\n        </div>\n      </div>`;
+
+      // META section
+      if (meta) {
+        html += `<div class="raw-section">
+          <div class="raw-section-title">Meta</div>
+          <div class="raw-section-body">
+            <span class="raw-label">Model</span>${esc(meta.model || 'unknown')}
+            <span class="raw-label">Response ID</span>${esc(meta.responseId || 'n/a')}`;
+        if (meta.usage) {
+          html += `\n            <span class="raw-label">Tokens</span>prompt: ${meta.usage.prompt_tokens ?? 'n/a'} | completion: ${meta.usage.completion_tokens ?? 'n/a'} | total: ${meta.usage.total_tokens ?? 'n/a'}`;
+        }
+        html += `\n          </div>\n        </div>`;
+      }
+
+    // ── Legacy format (old parsed/request structure) ──
+    } else if (raw.parsed || raw.request) {
+      const parsed = raw.parsed;
+      const request = raw.request;
+      if (parsed) {
+        html += `<div class="raw-section">
+          <div class="raw-section-title">Parsed Response</div>
+          <div class="raw-section-body"><pre style="margin:0;">${esc(JSON.stringify(parsed, null, 2))}</pre></div>
+        </div>`;
+      }
+      if (request) {
+        html += `<div class="raw-section">
+          <div class="raw-section-title">Request</div>
+          <div class="raw-section-body"><pre style="margin:0;">${esc(JSON.stringify(request, null, 2))}</pre></div>
+        </div>`;
+      }
+
+    // ── Unknown format fallback ──
+    } else {
+      html = `<div class="raw-section">
+        <div class="raw-section-title">Response Data</div>
+        <div class="raw-section-body"><pre style="margin:0;">${esc(JSON.stringify(raw, null, 2))}</pre></div>
+      </div>`;
+    }
+
+    return html;
+  }
+
+  document.addEventListener('click', e => {
+    const btn = e.target.closest('.raw-btn');
+    if (!btn || btn.disabled) return;
+    const idx = parseInt(btn.dataset.rawIdx, 10);
+    const raw = _rawStore[idx];
+    if (!raw) return;
+
+    // Parsed tab
+    parsedPanel.innerHTML = buildParsedView(raw);
+    // Raw JSON tab
+    content.textContent = JSON.stringify(raw, null, 2);
+    // Reset to parsed tab
+    document.querySelectorAll('.raw-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.raw-tab-panel').forEach(p => p.classList.remove('active'));
+    document.querySelector('.raw-tab[data-tab="parsed"]').classList.add('active');
+    parsedPanel.classList.add('active');
+
+    overlay.classList.add('open');
+  });
+
+  closeBtn.addEventListener('click', () => overlay.classList.remove('open'));
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) overlay.classList.remove('open');
+  });
+})();
+
 // ── Run tests via SSE ──────────────────────────────────────
 document.getElementById('run-btn').addEventListener('click', () => {
   const btn = document.getElementById('run-btn');
@@ -396,7 +767,7 @@ function rebuildHistoryDropdown(manifest, latestData) {
   sorted.forEach(run => {
     const ts = new Date(run.timestamp);
     const option = document.createElement('option');
-    option.value = run.file;
+    option.value = run.jsonFile || run.file;
     option.textContent = `${ts.toLocaleDateString()} ${ts.toLocaleTimeString()} — ${run.model} (${run.totalPassed}/${run.totalTests})`;
     select.appendChild(option);
   });
@@ -483,8 +854,98 @@ function parseCSV(text) {
   };
 }
 
+// Store raw response objects for modal display
+let _rawStore = [];
+
+// Generate human-readable explanation for failures
+function getFailReason(r) {
+  const raw = r.raw;
+  const ok = r.actual === r.expect;
+  const hasError = raw?.output?.error;
+
+  // API error with recovery
+  if (hasError && ok) {
+    return `API returned a <strong>400 error</strong> — the model tried to call <code>${esc(r.actual)}</code> but used malformed syntax. ` +
+      `The function name was recovered from the failed output. This counts as a pass but the API call itself failed.`;
+  }
+
+  // API error without recovery
+  if (hasError && !ok) {
+    const failedGen = hasError.failedGeneration;
+    if (failedGen) {
+      return `API returned a <strong>400 error</strong>. The model's malformed output was: <code>${esc(failedGen)}</code>. ` +
+        `Expected <code>${esc(r.expect)}</code> but got <code>${esc(r.actual)}</code>.`;
+    }
+    return `API call failed with error: ${esc(hasError.message || 'unknown')}. Returned <code>${esc(r.actual)}</code> instead of <code>${esc(r.expect)}</code>.`;
+  }
+
+  // No raw data available (historical CSV)
+  if (!raw) {
+    return `Expected <code>${esc(r.expect)}</code> but model returned <code>${esc(r.actual)}</code>.`;
+  }
+
+  const input = raw.input;
+  const output = raw.output;
+
+  // Model chose fallback when it should have matched
+  if (r.actual === 'fallback' && r.expect !== 'fallback') {
+    const expectedOpt = input?.options?.find(o => o.nextSlideId === r.expect);
+    if (expectedOpt) {
+      return `Model returned <code>fallback</code> (no match) but the prompt should have matched option ` +
+        `<code>${esc(r.expect)}</code> ("${esc(expectedOpt.option)}"). ` +
+        `The model failed to connect the user's input to this option's meaning.`;
+    }
+    return `Model returned <code>fallback</code> but should have matched <code>${esc(r.expect)}</code>. The model didn't find any relationship to the available options.`;
+  }
+
+  // Model chose clarifying_question when it shouldn't have
+  if (r.actual === 'clarifying_question' && r.expect !== 'clarifying_question') {
+    const cqText = output?.toolCalls?.[0]?.arguments?.clarifying_question || '';
+    let reason = `Model asked a clarifying question instead of choosing <code>${esc(r.expect)}</code>.`;
+    if (cqText) reason += ` It asked: <em>"${esc(cqText)}"</em>`;
+    reason += ` The input may have seemed ambiguous to the model, but a direct match was expected.`;
+    return reason;
+  }
+
+  // Model matched when it should have been fallback
+  if (r.expect === 'fallback' && r.actual !== 'fallback') {
+    const wrongOpt = input?.options?.find(o => o.nextSlideId === r.actual);
+    if (wrongOpt) {
+      return `Model matched <code>${esc(r.actual)}</code> ("${esc(wrongOpt.option)}") but the input should not have matched any option. ` +
+        `Expected <code>fallback</code> — the model incorrectly found a relationship.`;
+    }
+    return `Model matched <code>${esc(r.actual)}</code> but expected <code>fallback</code>. The input was unrelated to all options.`;
+  }
+
+  // Model chose wrong option
+  if (r.actual !== r.expect) {
+    const expectedOpt = input?.options?.find(o => o.nextSlideId === r.expect);
+    const actualOpt = input?.options?.find(o => o.nextSlideId === r.actual);
+    let reason = `Model chose <code>${esc(r.actual)}</code>`;
+    if (actualOpt) reason += ` ("${esc(actualOpt.option)}")`;
+    reason += ` instead of <code>${esc(r.expect)}</code>`;
+    if (expectedOpt) reason += ` ("${esc(expectedOpt.option)}")`;
+    reason += `. The model matched the user's input to the wrong option.`;
+
+    // If model provided reasoning, include it
+    if (output?.content) {
+      reason += ` Model's reasoning: <em>"${esc(output.content)}"</em>`;
+    }
+    return reason;
+  }
+
+  return null;
+
+  function esc(s) {
+    const d = document.createElement('div');
+    d.textContent = s;
+    return d.innerHTML;
+  }
+}
+
 // Main rendering function
 function renderData(data) {
+  _rawStore = [];
   const currentFilter = document.querySelector('.filter-chip.active')?.dataset.filter || 'all';
   
   // Meta chips
@@ -542,17 +1003,38 @@ function renderData(data) {
       </div>
       <div class="suite-body${allPass ? ' collapsed' : ''}">
         <table>
-          <tr><th>Prompt</th><th>Expected</th><th>Actual</th><th>Result</th></tr>
-          ${suite.rows.map(r => {
+          <tr><th>Prompt</th><th>Expected</th><th>Actual</th><th>Result</th><th>Raw</th></tr>
+          ${suite.rows.map((r, ri) => {
             const ok = r.actual === r.expect;
-            return `<tr class="${ok ? 'pass' : 'fail'}">
+            const hasError = r.raw?.output?.error;
+            const isRecovered = hasError?.recovered;
+            const rowClass = hasError ? (ok ? 'recovered' : 'fail') : (ok ? 'pass' : 'fail');
+            const rawIdx = _rawStore.length;
+            _rawStore.push(r.raw || null);
+            let resultIcon;
+            if (hasError && ok) {
+              resultIcon = '<span class="material-icons" style="font-size:18px;color:#E65100" title="Passed via error recovery">warning</span>';
+            } else if (hasError && !ok) {
+              resultIcon = '<span class="material-icons" style="font-size:18px;color:var(--md-fail)" title="API error">error</span>';
+            } else if (ok) {
+              resultIcon = '<span class="material-icons" style="font-size:18px;color:var(--md-pass)">check_circle</span>';
+            } else {
+              resultIcon = '<span class="material-icons" style="font-size:18px;color:var(--md-fail)">cancel</span>';
+            }
+            let rowHtml = `<tr class="${rowClass}">
               <td class="prompt-cell">${esc(r.prompt)}</td>
               <td class="intent">${esc(r.expect)}</td>
               <td class="intent${ok ? '' : ' mismatch'}">${esc(r.actual)}</td>
-              <td class="result-cell">${ok
-                ? '<span class="material-icons" style="font-size:18px;color:var(--md-pass)">check_circle</span>'
-                : '<span class="material-icons" style="font-size:18px;color:var(--md-fail)">cancel</span>'}</td>
+              <td class="result-cell">${resultIcon}</td>
+              <td><button class="raw-btn" data-raw-idx="${rawIdx}" ${r.raw ? '' : 'disabled'}><span class="material-icons">data_object</span>Raw</button></td>
             </tr>`;
+            if (!ok || (hasError && ok)) {
+              const reason = r.failReason || r.raw?.output?.failReason || getFailReason(r);
+              if (reason) {
+                rowHtml += `<tr class="fail-reason"><td colspan="5"><div class="fail-reason-text"><span class="material-icons">info_outline</span><span>${reason}</span></div></td></tr>`;
+              }
+            }
+            return rowHtml;
           }).join('')}
         </table>
       </div>
@@ -614,7 +1096,7 @@ function renderData(data) {
     sorted.forEach(run => {
       const ts = new Date(run.timestamp);
       const option = document.createElement('option');
-      option.value = run.file;
+      option.value = run.jsonFile || run.file;
       option.textContent = `${ts.toLocaleDateString()} ${ts.toLocaleTimeString()} — ${run.model} (${run.totalPassed}/${run.totalTests})`;
       select.appendChild(option);
     });
@@ -626,11 +1108,17 @@ function renderData(data) {
         renderData(data);
       } else {
         try {
-          const resp = await fetch(`result-logs/${e.target.value}`);
-          if (!resp.ok) throw new Error('Failed to load CSV');
-          const csv = await resp.text();
-          const csvData = parseCSV(csv);
-          renderData(csvData);
+          const file = e.target.value;
+          const resp = await fetch(`result-logs/${file}`);
+          if (!resp.ok) throw new Error('Failed to load history file');
+          if (file.endsWith('.json')) {
+            const jsonData = await resp.json();
+            renderData(jsonData);
+          } else {
+            const csv = await resp.text();
+            const csvData = parseCSV(csv);
+            renderData(csvData);
+          }
         } catch (err) {
           console.error('Failed to load historical run:', err);
         }
