@@ -1,5 +1,5 @@
 {
-  "page": "toyPage",
+  "page": "slotPage",
   "tests": [
     { "prompt": "I want to play with that thing", "expect": "clarifying_question", "category": "ambiguous" },
     { "prompt": "give me one of those", "expect": "clarifying_question", "category": "ambiguous" },

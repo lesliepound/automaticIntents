@@ -3,8 +3,8 @@
     {
       "id": "slotPage",
       "type": "simulation",
-      "foreground": ["boat", "sea", "female"],
-      "text": "Go in any direction",
+      "foreground": ["boat", "sea", "water-ski","raft","carl","shelly", "female"],
+      "text": "tbe boy tskrdmthe ",
       "options": [
         {
           "option": "take the boat left",
