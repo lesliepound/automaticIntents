@@ -51,10 +51,10 @@ AffordanceRegistry.register('movable',
 );
 
 AffordanceRegistry.register('orderable',
-    (item) => { flash('#' + item); showDial('#'+item); },
+    (item) => { show('#' + item);flash('#' + item);  },
     ['item']
 );
-
+//
 AffordanceRegistry.register('hatable',
     (source, target) => wearHat('#' + source, '#' + target),
     ['source', 'target']
