@@ -583,17 +583,10 @@ function displayPage(index, content) {
     if (page.background) {
         showBackground('body', page.background);
     }
-    // if (page.dials) {
-    //     loadDials(page.dials);
-    //     // showDial('Distolic');
-    //     // setValue('Distolic', 87.6);
-    //     // showDial('temperature');
-    //     //  setValue('temperature', 98.6);
-    // }
 
 
-
-    // Display this page
+    // Display this page   --  Micah, should prob. be separate function for
+    // showing only the AI/author response. (#left-bubble > content in HTML)
     const contentDiv = document.getElementById('content');
     //handle *'s in model output
     contentDiv.innerHTML = content || page.text;
@@ -1237,7 +1230,7 @@ async function handleSend(prompt, model, options) {
     try {
         const response = await fetch('/middleware', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
                 prompt,
                 model,
@@ -1254,11 +1247,25 @@ async function handleSend(prompt, model, options) {
     }
 
 
+
+    // Micah,
+    // create a new mode 'clarification mode'
+    //
+    // make 'clarifying mode' (call it whatever you want) is triggered with clarifying question
+    // make an clarify object that inlcudes the claryfing question as well as prompt that triggered it
+    // then we wait until user responds
+    //
+    // Create a check for  clarification mode
+    // if set create a createClarifyBundle  with this prompt and the clarify object
+    // tirgger handleSend with these new bundle as prompt, model, options as normal
+
+
     // ─────────────────────────────────────────────
     // 2. GUIDED CLARIFICATION
     //    If the AI wants to ask the user a follow-up
     //    question before proceeding, show it and wait
     // ─────────────────────────────────────────────
+
 
     const question = optionalQuestion(responseObject);
     if (question) {
