@@ -27,36 +27,38 @@ window.getJsonValue = function (jsonStr, targetKey) {
 
 // === DOM HELPERS =============================================================
 
-function showDial(selector) {
-  show(selector)
+function getElements(selector) {
+    return document.querySelectorAll(selector);
 }
 
-function show(selector) {
-    const elements = document.querySelectorAll(selector);
+function show(selector, shouldFlash = false) {
+    const elements = getElements(selector);
+
     elements.forEach(el => {
-        el.classList.remove('hidden'); // Removing the "hide" class makes it appear
+        // 1. Make it appear
+        el.classList.remove('hidden');
         el.style.transform = '';
+        el.style.visibility = 'visible';
+        el.style.display = ''; // Reset in case 'remove' was called
+
+        // 2. Flash if requested
+        if (shouldFlash) {
+            // We pass the selector to animateCSS
+            animateCSS(selector, 'flash');
+        }
     });
 }
 
 function hide(selector) {
-    const elements = document.querySelectorAll(selector);
-    elements.forEach(el => {
+    getElements(selector).forEach(el => {
         el.classList.add('hidden');
     });
 }
-function remove(selector) {
-    const el = document.querySelector(selector);
-    if (el) el.style.display = 'none';
-}
 
-function flash(selector) {
-    console.log('selector', selector);
-    animateCSS(selector, 'flash');
-    const element = document.querySelector('#'+selector);
-    element.style.visibility = 'visible';
-    showDial(selector);
-    animateCSS(selector, 'flash');
+function remove(selector) {
+    getElements(selector).forEach(el => {
+        el.style.display = 'none';
+    });
 }
 
 function scaleTo(selector, factor, speed = 0.4) {
