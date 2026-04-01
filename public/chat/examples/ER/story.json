@@ -78,7 +78,7 @@
           "damaged": "<80"
         }
       },
-      "text": "A new patient comes in to the ER. Diagnose the patient by using the devices shown, ask for tests, watching them change, and asking her questions.",
+      "text": "A new patient comes in to the ER. Ask questions about vitals,  order lab tests,  watching them change",
       "affordances": {
         "water": [
           "movable"
