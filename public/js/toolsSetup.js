@@ -1226,6 +1226,18 @@ async function handleSend(prompt, model, options) {
         allForeground = deckData.pages[currentPageIndex].foreground.join(", ");
     }
 
+    // Do I have a  clarifying object
+    // if so, make bundle
+    // that object + the new answer...
+    // call handleSend
+    // prompt: I am a nurse
+    // clarify q: are you medical  prof - question ---clarity
+    // -- you capture
+    // latest prompt yes
+    // newPrompt =  'I am nurse ' + ' Are you a medical prof ?' + ' yes '
+    // myPrompt  = orig-prompt + clarify quesiont
+    // unset clarifying mode.
+
     let responseObject;
     try {
         const response = await fetch('/middleware', {
@@ -1245,6 +1257,7 @@ async function handleSend(prompt, model, options) {
         console.error('Middleware fetch failed:', error);
         return null;
     }
+
 
 
 
@@ -1269,6 +1282,8 @@ async function handleSend(prompt, model, options) {
 
     const question = optionalQuestion(responseObject);
     if (question) {
+        // sesion question object
+        // the prompt, clarifying question
         console.log('AI requesting clarification', responseObject);
         displayPage(0, question);
         return;
