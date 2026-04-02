@@ -132,22 +132,6 @@ class FormEditor {
     };
     header.appendChild(typeSelect);
 
-    // Display checkbox (in header)
-    if (page.display !== undefined || page.type === 'simulation' || page.type === 'options') {
-      const displayLabel = el('label', 'fe-header-label', 'Display');
-      header.appendChild(displayLabel);
-      const displayCb = el('input');
-      displayCb.type = 'checkbox';
-      displayCb.checked = page.display !== 'none';
-      displayCb.style.width = 'auto';
-      displayCb.style.margin = '0 8px 0 0';
-      displayCb.onchange = () => {
-        if (displayCb.checked) delete page.display;
-        else page.display = 'none';
-      };
-      header.appendChild(displayCb);
-    }
-
     // Spacer
     header.appendChild(el('span', 'fe-spacer'));
 
@@ -334,6 +318,24 @@ class FormEditor {
 
     const hdr = el('div', 'fe-section-header');
     hdr.appendChild(document.createTextNode('Options'));
+
+    // Display checkbox
+    if (page.display !== undefined || page.type === 'simulation' || page.type === 'options') {
+      const displayLabel = el('label', 'fe-header-label', 'Display');
+      displayLabel.style.marginLeft = '12px';
+      hdr.appendChild(displayLabel);
+      const displayCb = el('input');
+      displayCb.type = 'checkbox';
+      displayCb.checked = page.display !== 'none';
+      displayCb.style.width = 'auto';
+      displayCb.style.margin = '0 8px 0 4px';
+      displayCb.onchange = () => {
+        if (displayCb.checked) delete page.display;
+        else page.display = 'none';
+      };
+      hdr.appendChild(displayCb);
+    }
+
     hdr.appendChild(el('span', 'fe-spacer'));
     const addOptBtn = el('button', 'fe-btn fe-btn-filled fe-btn-sm');
     addOptBtn.appendChild(mIcon('add', 'fe-btn-icon'));
