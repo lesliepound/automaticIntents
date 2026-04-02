@@ -29,6 +29,7 @@ header {
     align-items: center; /* Vertically center the content */
     padding-bottom: 8px;
     margin-top: -61px;
+    position: relative;
 }
 
 #main {
@@ -95,28 +96,54 @@ header {
 
 
 .listening {
-    animation: color-change 4s infinite; /* Adjust duration as needed */
+    animation: none;
 }
 
+/* ── RGB light bar under the navbar ── */
+.listening header::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100vw;
+    top: 56px;
+    height: 4px;
+    border-radius: 0;
+    background: linear-gradient(90deg, #ff0000, #ff7700, #ffff00, #00ff00, #0088ff, #8800ff, #ff0088, #ff0000);
+    background-size: 300% 100%;
+    animation: rgb-slide 4s linear infinite, rgb-glow-pulse 2s ease-in-out infinite;
+    box-shadow: 0 4px 12px 4px rgba(255, 0, 200, 0.5);
+    clip-path: inset(0 0 -20px 0);
+}
 
-@keyframes color-change {
-    0% {
-        box-shadow: 0 0 10px 5px #ef9770;
+@keyframes rgb-slide {
+    0%   { background-position: 0% 50%; }
+    100% { background-position: 300% 50%; }
+}
+
+@keyframes rgb-glow-pulse {
+    0%, 100% { opacity: 0.6; box-shadow: 0 4px 8px 2px rgba(255, 0, 200, 0.3); }
+    50%      { opacity: 1;   box-shadow: 0 6px 18px 6px rgba(100, 0, 255, 0.6); }
+}
+
+/* ── Mic button glow when listening ── */
+.listening #listen-button {
+    background-color: #e00050;
+    animation: mic-glow 1.5s ease-in-out infinite;
+}
+
+@keyframes mic-glow {
+    0%, 100% {
+        box-shadow: 0 0 8px 3px rgba(255, 0, 80, 0.5);
+        background-color: #e00050;
     }
-    20% {
-        box-shadow: 0 0 10px 5px #ffd133;
+    33% {
+        box-shadow: 0 0 14px 6px rgba(0, 180, 255, 0.6);
+        background-color: #0077ff;
     }
-    40% {
-        box-shadow: 0 0 10px 5px #ff33e0;
-    }
-    60% {
-        box-shadow: 0 0 10px 5px #E64C00;
-    }
-    80% {
-        box-shadow: 0 0 10px 5px #f3ced9;
-    }
-    100% {
-        box-shadow: 0 0 10px 5px #e7acca;
+    66% {
+        box-shadow: 0 0 14px 6px rgba(140, 0, 255, 0.6);
+        background-color: #8800ff;
     }
 }
 
