@@ -483,11 +483,13 @@ let optionData = [];
 let running; // timeout name
 let customCode;
 let  focal;
+let pendingClarification = null;
 
 function resetGlobalControls() {
     currentPageIndex = 0;
     deckData = null;
     optionData = [];
+    pendingClarification = null;
     clearTimeout(running)
     document.getElementById("content").innerHTML = "";
     document.getElementById("dials").innerHTML = "";
@@ -1226,17 +1228,17 @@ async function handleSend(prompt, model, options) {
         allForeground = deckData.pages[currentPageIndex].foreground.join(", ");
     }
 
-    // Do I have a  clarifying object
-    // if so, make bundle
-    // that object + the new answer...
-    // call handleSend
-    // prompt: I am a nurse
-    // clarify q: are you medical  prof - question ---clarity
-    // -- you capture
-    // latest prompt yes
-    // newPrompt =  'I am nurse ' + ' Are you a medical prof ?' + ' yes '
-    // myPrompt  = orig-prompt + clarify quesiont
-    // unset clarifying mode.
+    // ─────────────────────────────────────────────
+    // 1. CLARIFICATION BUNDLE
+    //    If we were waiting for the user to answer a
+    //    clarifying question, combine everything into
+    //    one enriched prompt and clear the state.
+    // ─────────────────────────────────────────────
+    if (pendingClarification) {
+        prompt = pendingClarification.originalPrompt + "; " + pendingClarification.clarifyingQuestion + "; " + prompt;
+        console.log('📦 Clarification bundle:', prompt);
+        pendingClarification = null;
+    }
 
     let responseObject;
     try {
@@ -1259,20 +1261,6 @@ async function handleSend(prompt, model, options) {
     }
 
 
-
-
-    // Micah,
-    // create a new mode 'clarification mode'
-    //
-    // make 'clarifying mode' (call it whatever you want) is triggered with clarifying question
-    // make an clarify object that inlcudes the claryfing question as well as prompt that triggered it
-    // then we wait until user responds
-    //
-    // Create a check for  clarification mode
-    // if set create a createClarifyBundle  with this prompt and the clarify object
-    // tirgger handleSend with these new bundle as prompt, model, options as normal
-
-
     // ─────────────────────────────────────────────
     // 2. GUIDED CLARIFICATION
     //    If the AI wants to ask the user a follow-up
@@ -1282,9 +1270,8 @@ async function handleSend(prompt, model, options) {
 
     const question = optionalQuestion(responseObject);
     if (question) {
-        // sesion question object
-        // the prompt, clarifying question
-        console.log('AI requesting clarification', responseObject);
+        pendingClarification = { originalPrompt: prompt, clarifyingQuestion: question };
+        console.log('🔀 Clarification mode ON — waiting for user answer', pendingClarification);
         displayPage(0, question);
         return;
     }

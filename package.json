@@ -14,7 +14,8 @@
     "start": "node app.js & node test-new/server.js &",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest --clearCache && NODE_OPTIONS=--experimental-vm-modules jest",
     "test-watch": "NODE_OPTIONS=--experimental-vm-modules jest --clearCache && NODE_OPTIONS=--experimental-vm-modules jest --watch",
-    "test-new": "node test-new/run-test.js --all"
+    "test-new": "node test-new/run-test.js --all",
+    "kill": "kill -9 $(lsof -t -i:3001) $(lsof -t -i:3002) 2>/dev/null; echo 'Ports 3001 and 3002 cleared'"
   },
   "devDependencies": {
     "@babel/core": "^7.29.0",
