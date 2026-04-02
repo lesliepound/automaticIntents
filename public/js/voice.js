@@ -86,7 +86,8 @@ recognition.onspeechend = function (event) {
 
     recognition.stop();
     recognition.abort();
-    handleSend();
+    //handleSend();
+    handleUserInput();
 
 }
 
