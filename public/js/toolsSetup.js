@@ -483,11 +483,13 @@ let optionData = [];
 let running; // timeout name
 let customCode;
 let  focal;
+let clarificationContext = null; // holds { originalPrompt, clarifyingQuestion, options } during clarification
 
 function resetGlobalControls() {
     currentPageIndex = 0;
     deckData = null;
     optionData = [];
+    clarificationContext = null;
     clearTimeout(running)
     document.getElementById("content").innerHTML = "";
     document.getElementById("dials").innerHTML = "";
@@ -1178,6 +1180,21 @@ async function handleUserInput() {
         return;
     }
 
+    // Check if we're answering a clarifying question
+    if (clarificationContext) {
+        const bundledPrompt = clarificationContext.originalPrompt
+            + '. (Asked: "' + clarificationContext.clarifyingQuestion
+            + '" Answer: "' + prompt + '")';
+        const savedOptions = clarificationContext.options;
+        const model = getModelFromSettings();
+        clarificationContext = null; // clear before re-sending
+        clearBubble('user-prompt');
+        document.getElementById('content').innerHTML = '';
+        console.log('🔎 Bundled clarification prompt:', bundledPrompt);
+        handleSend(bundledPrompt, model, savedOptions);
+        return;
+    }
+
     // Normal flow: expand options and classify
     const model = getModelFromSettings();
     const currentPage = deckData.pages[currentPageIndex];
@@ -1282,9 +1299,14 @@ async function handleSend(prompt, model, options) {
 
     const question = optionalQuestion(responseObject);
     if (question) {
-        // sesion question object
-        // the prompt, clarifying question
-        console.log('AI requesting clarification', responseObject);
+        // Store context so next user input can bundle it
+        clarificationContext = {
+            originalPrompt: prompt,
+            clarifyingQuestion: question,
+            options: options
+        };
+        console.log('🔎 Clarification mode ON — stored context:', clarificationContext);
+        clearBubble('user-prompt');
         displayPage(0, question);
         return;
     }
