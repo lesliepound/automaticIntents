@@ -1,0 +1,5 @@
+age,gender,symptoms,history,vitals,ekg,diagnosis
+58,male,chest-pain-radiating-left-arm,smoker-hypertension,hr-110-bp-150-90,st-elevation,myocardial-infarction
+34,female,sharp-chest-pain-worse-breathing,recent-flight,hr-105-bp-120-80,sinus-tachycardia,pulmonary-embolism
+67,male,pressure-chest-pain-exertion,diabetes-high-cholesterol,hr-95-bp-140-85,st-depression,unstable-angina
+45,female,burning-chest-pain-after-eating,acid-reflux-history,hr-80-bp-125-78,normal,gerd

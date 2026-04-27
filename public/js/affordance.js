@@ -51,7 +51,7 @@ AffordanceRegistry.register('movable',
 );
 
 AffordanceRegistry.register('orderable',
-    (item) => { show('#' + item);flash('#' + item);  },
+    (item) => { show('#' + item);flash('#content');  },
     ['item']
 );
 //
@@ -148,13 +148,13 @@ function processAction(page, affordance, slots) {
     const itemAffordances = page.affordances?.[primary];
     if (!itemAffordances) {
         console.warn(`❌ "${primary}" has no affordances on page "${page.id}"`);
-        return;
+        return(`${primary}`);
     }
 
     // 2. Does this item support this affordance?
     if (!itemAffordances.includes(affordance)) {
         console.warn(`❌ "${primary}" does not have affordance "${affordance}"`);
-        return;
+        return(`${primary}`);
     }
 
     // 3. Is there a registered handler?

@@ -481,8 +481,10 @@ let currentPageIndex = 0;
 let deckData = null;
 let optionData = [];
 let running; // timeout name
-let customCode;
+// let customCode;
+let prompts = [];   // a LIFO structure for prompts  removeLastItem(arr); let lastPrompt = addItem('get the bird')
 let  focal;
+// classify =>n if optionalQuestion n->, n->if not look in resource
 let clarificationContext = null; // holds { originalPrompt, clarifyingQuestion, options } during clarification
 
 function resetGlobalControls() {
@@ -698,7 +700,16 @@ async function playAudio(audioStream) {
 }
 
 
+// Function to remove the last item
+function getLastPrompt(arr) {
+    return arr.pop(); // Removes 'cherry' and returns it
+}
 
+// Function to add a new item
+function addPrompt(arr, item) {
+    arr.push(item); // Adds the item to the end
+    return arr;
+}
 
 
 async function getCsvRow(csvData, rowNumber) {
@@ -1181,13 +1192,14 @@ async function handleUserInput() {
     }
 
     // Check if we're answering a clarifying question
-    if (clarificationContext) {
-        const bundledPrompt = clarificationContext.originalPrompt
-            + '. (Asked: "' + clarificationContext.clarifyingQuestion
-            + '" Answer: "' + prompt + '")';
-        const savedOptions = clarificationContext.options;
-        const model = getModelFromSettings();
-        clarificationContext = null; // clear before re-sending
+     if (clarificationContext) {
+    //     const bundledPrompt = clarificationContext.originalPrompt
+    //         + '. (Asked: "' + clarificationContext.clarifyingQuestion
+    //         + '" Answer: "' + prompt + '")';
+    //     const savedOptions = clarificationContext.options;
+         const bundledPrompt  = getLastPrompt(arr) + "  " +optionalQuestion  + prompt
+         const model = getModelFromSettings();
+        //clarificationContext = null; // clear before re-sending
         clearBubble('user-prompt');
         document.getElementById('content').innerHTML = '';
         console.log('🔎 Bundled clarification prompt:', bundledPrompt);
@@ -1237,12 +1249,12 @@ async function handleUserInput() {
 // CLASSIFIER
 async function handleSend(prompt, model, options) {
     // Call model to classify which option matches
-
     let allForeground = "";
     if (deckData.pages[currentPageIndex].hasOwnProperty('foreground')) {
         allForeground = deckData.pages[currentPageIndex].foreground.join(", ");
     }
 
+    let aiResponse;
     // Do I have a  clarifying object
     // if so, make bundle
     // that object + the new answer...
@@ -1275,51 +1287,37 @@ async function handleSend(prompt, model, options) {
         return null;
     }
 
-
-
-
-    // Micah,
-    // create a new mode 'clarification mode'
-    //
-    // make 'clarifying mode' (call it whatever you want) is triggered with clarifying question
-    // make an clarify object that inlcudes the claryfing question as well as prompt that triggered it
-    // then we wait until user responds
-    //
-    // Create a check for  clarification mode
-    // if set create a createClarifyBundle  with this prompt and the clarify object
-    // tirgger handleSend with these new bundle as prompt, model, options as normal
-
-
     // ─────────────────────────────────────────────
     // 2. GUIDED CLARIFICATION
     //    If the AI wants to ask the user a follow-up
     //    question before proceeding, show it and wait
     // ─────────────────────────────────────────────
 
-
     const question = optionalQuestion(responseObject);
     if (question) {
         // Store context so next user input can bundle it
-        clarificationContext = {
-            originalPrompt: prompt,
-            clarifyingQuestion: question,
-            options: options
-        };
+        // const lastPrompt = getLastPrompt(arr);
+        // //
+        // clarificationContext = {
+        //     originalPrompt: prompt,
+        //     clarifyingQuestion: question,
+        //     options: options
+        // };
         console.log('🔎 Clarification mode ON — stored context:', clarificationContext);
         clearBubble('user-prompt');
         displayPage(0, question);
         return;
     }
 
-console.log('namme',responseObject.args)
+//console.log('namme',responseObject.args)
 
     if (responseObject.name.includes('@test')) {
         // change to read the resource instead of assuming focal
         const data = JSON.stringify(focal, null, 2);
-        const finalPrompt = prompt +'. Check this question with  in sentence form from this data:'+data + 'If there is a match make congratulatory statement or else suggest a test'  ; //preparePrompt(prompt, resource)
+        const finalPrompt = prompt + 'Respond to this question from this data:' + data + ' If there is a match make congratulatory statement or else suggest a test'; //preparePrompt(prompt, resource)
         // directChat(finalPrompt, model);
         const aiResponse1 = await directChat(finalPrompt, model);
-        console.log('aiResponse1',aiResponse1)
+        console.log('aiResponse1', aiResponse1)
         const contentDiv = document.getElementById('content');
         contentDiv.innerHTML = aiResponse1;
         flash('#content')
@@ -1332,11 +1330,11 @@ console.log('namme',responseObject.args)
         const args = JSON.parse(responseObject.arguments);
         const selectedLabel = args._label;
         const matchedOption = deckData.pages[currentPageIndex].options.find(opt => opt.option === selectedLabel);
-       // const resource = matchedOption ? matchedOption.resource : null;
+        // const resource = matchedOption ? matchedOption.resource : null;
 
         //Which option is this
         //const matchedOption = options.find(o => responseObject.name.includes(o.nextSlideId));
-        console.log('matchedOption',matchedOption)
+        console.log('matchedOption', matchedOption)
         let resourceString = '';
         if (matchedOption?.resource === 'focal') {
             // 1. Process the local Object
@@ -1349,12 +1347,11 @@ console.log('namme',responseObject.args)
         }
 
 
-        const finalPrompt = prompt +'. answer this question with  in sentence form from this data'+resourceString ; //preparePrompt(prompt, resource)
-       // directChat(finalPrompt, model);
-        const aiResponse = await directChat(finalPrompt, model);
-        console.log('aiResponse',aiResponse)
+        const finalPrompt = prompt + '. In sentence form, answer this question from this data' + resourceString; //preparePrompt(prompt, resource)
+        // directChat(finalPrompt, model);
+        aiResponse = await directChat(finalPrompt, model);
+        console.log('aiResponse', aiResponse)
         const contentDiv = document.getElementById('content');
-        //handle *'s in model output
         contentDiv.innerHTML = aiResponse;
         return;
     }
@@ -1366,8 +1363,9 @@ console.log('namme',responseObject.args)
     //     fallbackResource, answer from that file.
     // ─────────────────────────────────────────────
 
-    if (responseObject.name === 'fallback') {
+    if (responseObject.name === 'fallback' || responseObject.name === 'sys-fallback') {
         const currentPage = deckData.pages[currentPageIndex];
+        console.log("0-0-0-", responseObject)
         const fallbackResource = currentPage.fallbackResource;
         // if (fallbackResource) {
         //     const finalPrompt = preparePrompt(userPrompt, fallbackResource)
@@ -1375,7 +1373,6 @@ console.log('namme',responseObject.args)
         // }
         return;
     }
-
 
     // ─────────────────────────────────────────────
     // 5. RESOLVE TARGET PAGE
@@ -1386,7 +1383,6 @@ console.log('namme',responseObject.args)
     const nextPageOrCat = findPageIndex(responseObject.name);
     const pageIndex = (nextPageOrCat >= 0) ? nextPageOrCat : currentPageIndex;
     const targetPage = deckData.pages[pageIndex];
-
     const isSim = targetPage.type === 'simulation';
 
 
@@ -1398,7 +1394,6 @@ console.log('namme',responseObject.args)
 
     if (isSim) {
         console.log('............ Starting simulation ............', responseObject);
-
         const category = responseObject.name.toLowerCase();
 
         // If this is a 'start' command and directed chat is open, just display the page
@@ -1424,7 +1419,21 @@ console.log('namme',responseObject.args)
 
         // Filter out the element where key is '_label'
         const cleanSlots = slots.filter(slot => slot.key !== '_label');
-        processAction(targetPage, category, cleanSlots);
+        // returns missing elif no related options found
+        const noActionFoundTopic = processAction(targetPage, category, cleanSlots);
+        // if no
+        if (noActionFoundTopic) {
+            console.log(noActionFoundTopic)//`
+            //Catching user prompts falling through crack
+            finalPrompt = prompt + '. In sentence form, answer the question : ' + noActionFoundTopic + ''; //preparePrompt(prompt, resource)
+            // directChat(finalPrompt, model);
+            // finalPromt
+
+            aiResponse = await directChat(finalPrompt, model);
+            const contentDiv = document.getElementById('content');
+            contentDiv.innerHTML = aiResponse;
+
+        }
 
         // ─────────────────────────────────────────────
         // 6B. STANDARD PAGE HANDLER
@@ -1436,6 +1445,7 @@ console.log('namme',responseObject.args)
         displayPage(pageIndex, "");
         processPageActions(pageIndex);
     }
+
 }
 
 // async function preparePrompt(userPrompt, resourceData) {
@@ -1453,8 +1463,6 @@ async function preparePrompt(userQuestion, resource) {
         return null;
     }
     // 2. Resolve the Resource: Turn file OR object into a String
-    // (This calls your resolveResource or object2input function)
-    //
     //getData()
     const contextString = await resolveResource(resource);
 
@@ -1468,7 +1476,7 @@ async function preparePrompt(userQuestion, resource) {
     return userQuestion;
 }
 
-
+// is there a lastPrompt to add?
 function optionalQuestion(responseObject, hint) {
     console.log("Checking for optionalQuestion")
     // Check if the name is a clarifying question request (new tool or legacy name)
@@ -1476,38 +1484,40 @@ function optionalQuestion(responseObject, hint) {
         responseObject.name === 'clarifying_question' ||
         responseObject.name === 'model needs more information'
     );
-    if (isClarifying) {
-
-        // Process arguments if it's a string containing JSON
-        if (responseObject.arguments && typeof responseObject.arguments === 'string') {
-            try {
-                const args = JSON.parse(responseObject.arguments);
-                let question;
-
-
-                // Look for clarifying_question first
-                if (args.clarifying_question !== undefined) {          // was: clariyfing_question (typo)
-                    question = args.clarifying_question;
-                } else if (args.slot !== undefined) {
-                    // If no clarifying_question, look for slot
-                    question = args.slot;
-                }
-
-                // If question is not set or is blank, use the hint if provided
-                if ((question === undefined || (typeof question === 'string' && question.trim() === '')) && hint !== undefined) {
-                    return hint;
-                } else if (typeof question === 'string' && question.trim() === '') {
-                    return undefined; // Ensure blank strings become undefined
-                }
-                return question; // Return the found question or undefined if not found
-
-            } catch (e) {
-                console.error("Error parsing arguments JSON string for optionalQuestion:", responseObject.arguments, e);
-                // If parsing fails, use the hint if provided
-                return hint !== undefined ? hint : undefined;
-            }
-        }
-    }
+    //const
+    if (isClarifying) { return true;}
+    //
+    //     // Process arguments if it's a string containing JSON
+    //     if (responseObject.arguments && typeof responseObject.arguments === 'string') {
+    //         try {
+    //             const args = JSON.parse(responseObject.arguments);
+    //             let question;
+    //
+    //
+    //             // Look for clarifying_question first
+    //             if (args.clarifying_question !== undefined) {          // was: clariyfing_question (typo)
+    //                 question = args.clarifying_question;
+    //                 //      question = args.clarifying_question + "  "  + getPrompt(prompts)
+    //             } else if (args.slot !== undefined) {
+    //                 // If no clarifying_question, look for slot
+    //                 question = args.slot;
+    //             }
+    //
+    //             // If question is not set or is blank, use the hint if provided
+    //             if ((question === undefined || (typeof question === 'string' && question.trim() === '')) && hint !== undefined) {
+    //                 return hint;
+    //             } else if (typeof question === 'string' && question.trim() === '') {
+    //                 return undefined; // Ensure blank strings become undefined
+    //             }
+    //             return question; // Return the found question or undefined if not found
+    //
+    //         } catch (e) {
+    //             console.error("Error parsing arguments JSON string for optionalQuestion:", responseObject.arguments, e);
+    //             // If parsing fails, use the hint if provided
+    //             return hint !== undefined ? hint : undefined;
+    //         }
+    //     }
+    // }
 }
 
 
@@ -1558,6 +1568,7 @@ async function getFile(event) {
     const fileName = document.getElementById('fileName').value;
     if (!fileName) return;
     const urlName = "/chat/examples/" + fileName;
+    console.log(" uuuueeelll",urlName)
     try {
         const response = await fetch(urlName, {
             method: 'GET',
@@ -1669,6 +1680,24 @@ function showHideAPI(demo) {
         document.getElementById('request').style.display = "none"
     }
 }
+
+//If a fallback is returned...
+const otherChecks = (fn, stopWords = ['and', 'the', 'a','an']) => {
+    // Get the function name and remove underscores
+    const originalName = fn.name;
+
+    // Replace underscores with spaces (or empty string)
+    let cleaned = originalName.replace(/_/g, ' ');
+
+    // Create a regex to find stop words as whole words, case-insensitively
+    const stopWordsRegex = new RegExp(`\\b(${stopWords.join('|')})\\b`, 'gi');
+
+    // Remove stop words and clean up extra whitespace
+    return cleaned
+        .replace(stopWordsRegex, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+};
 
 /** Dialogs */
 function editDialog() {

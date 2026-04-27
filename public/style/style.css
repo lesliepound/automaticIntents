@@ -75,6 +75,7 @@ header {
 
 .item-label {justify-items: center;
   margin-left: 10px;
+    font-size:.8em
   }
 
 .shrink {
@@ -441,8 +442,12 @@ input[type='number'] {
     overflow-y: auto; /* Vertical scrollbar appears when content exceeds max-height */
     transition: all 0.3s ease-in-out; /* Smooth transitions for height changes */
     /* Optional: for some internal spacing */
-    font-size:.85em;
+    font-size:.9em;
+
 }
+
+#content::first-letter {
+    text-transform: uppercase;}
 
 .slide {
     min-height: 40px;

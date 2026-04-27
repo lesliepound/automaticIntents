@@ -13,8 +13,7 @@
         "jacks",
         "jump_rope",
         "playdoh",
-        "coloring_book",
-        "cat"
+        "coloring_book"
       ],
       "text": "The child is playing. What should she play with?",
       "affordances": {
@@ -25,8 +24,7 @@
           "movable"
         ],
         "child": [
-          "movable",
-          "diagnosable"
+          "movable"
         ],
         "jump_rope": [
           "movable"
@@ -35,9 +33,6 @@
           "movable"
         ],
         "coloring_book": [
-          "movable"
-        ],
-        "cat": [
           "movable"
         ]
       },

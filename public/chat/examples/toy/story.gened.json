@@ -1,0 +1,104 @@
+{
+  "pages": [
+    {
+      "id": "optionsPage",
+      "type": "simulation",
+      "setup": {
+        "focus": "patient",
+        "data": "patient-cases.csv",
+        "selection": "random"
+      },
+      "text": "You are in an emergency room assessing a patient with acute chest pain.",
+      "goals": [
+        "patient:diagnosable"
+      ],
+      "foreground": [
+        "patient",
+        "monitor",
+        "ekg",
+        "stethoscope",
+        "chart",
+        "iv"
+      ],
+      "affordances": {
+        "patient": [
+          "diagnosable"
+        ],
+        "monitor": [
+          "readable"
+        ],
+        "ekg": [
+          "orderable",
+          "readable"
+        ],
+        "stethoscope": [
+          "movable"
+        ],
+        "chart": [
+          "readable"
+        ],
+        "iv": [
+          "connectable",
+          "movable"
+        ]
+      },
+      "options": [
+        {
+          "option": "listen to the patient's heart with the stethoscope",
+          "extra": "auscultate heart, use stethoscope on chest, check heart sounds",
+          "slot": {
+            "name": "action",
+            "description": "physical exam action"
+          },
+          "nextSlideId": "movable"
+        },
+        {
+          "option": "read the vital signs on the monitor",
+          "extra": "check monitor, look at vitals, read heart rate and blood pressure",
+          "slot": {
+            "name": "reading",
+            "description": "monitor values"
+          },
+          "nextSlideId": "readable"
+        },
+        {
+          "option": "order an EKG for the patient",
+          "extra": "get ekg, run electrocardiogram, perform ekg test",
+          "slot": {
+            "name": "test",
+            "description": "diagnostic test ordered"
+          },
+          "nextSlideId": "orderable"
+        },
+        {
+          "option": "attach the IV line to the patient",
+          "extra": "connect iv, start iv fluids, hook up iv",
+          "slot": {
+            "name": "connection",
+            "description": "device connection"
+          },
+          "nextSlideId": "connectable"
+        },
+        {
+          "option": "what are the patient's symptoms and history?",
+          "extra": "tell me the history, what symptoms does the patient have, patient background",
+          "slot": {
+            "name": "question",
+            "description": "clinical information request"
+          },
+          "nextSlideId": "@prompt"
+        },
+        {
+          "option": "this patient is having a myocardial infarction",
+          "extra": "heart attack diagnosis, acute mi, stemi diagnosis",
+          "slot": {
+            "name": "diagnosis",
+            "description": "final diagnosis"
+          },
+          "nextSlideId": "@test"
+        }
+      ],
+      "display": "none"
+    }
+  ]
+}

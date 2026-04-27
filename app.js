@@ -98,6 +98,11 @@ const getGroqChatCompletion = async (prompt, sysprompt) => {
         });
 }
 
+//const result = await runClassifier(prompt, options, model);
+// const latency_ms = Date.now() - start;
+
+//const args = JSON.parse(result.arguments || '{}');
+
 
 // Narration.
 app.post('/getSpeech', async (req, res) => {
@@ -140,11 +145,6 @@ app.post('/middleware', async (req, res) => {
         option: ${args._label}
         response: ${result.name}
         slots: ${JSON.stringify(args)}`);
-
-        //const result = await runClassifier(prompt, options, model);
-       // const latency_ms = Date.now() - start;
-
-        //const args = JSON.parse(result.arguments || '{}');
 
 
         logThis(`${new Date().toLocaleTimeString()}   
@@ -201,6 +201,15 @@ function applyVariant(options, variant) {
         return o;
     });
 }
+
+app.get("/agent", (req, res) => {
+    res.setHeader("Content-Type", "text/event-stream");
+    res.setHeader("Cache-Control", "no-cache");
+
+    runAgentLoop(req.query.input, options, model, (step) => {
+        res.write(`data: ${JSON.stringify(step)}\n\n`);
+    });
+});
 
 app.post('/run-tests', async (req, res) => {
     const {suites = ['baseline']} = req.body;

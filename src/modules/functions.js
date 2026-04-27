@@ -11,8 +11,8 @@ Rules:
 - Use the EXACT function name as defined — never invent or shorten names
 - Match by intent and meaning, not just literal words
 - Account for synonyms, related concepts, and common misspellings
-- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it
-- Only call 'fallback' if the input has absolutely no relationship to any function
+- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 14 words) to resolve it
+- Only call 'sys-fallback' if the input has absolutely no relationship to any function
 - Fill in slot values when the input provides them`;
 
 function createFunction(name, text, these_properties,optionLabel='none') {
@@ -53,10 +53,13 @@ async function runClassifier(userInput, options, model) {
             //opt.option.slice(0, 30)) is to identify the option for looging.
             return createFunction(opt.nextSlideId, optionDescription, slots, opt.option.slice(0, 50));
         }),
-        createFunction('clarifying_question', 'Input is ambiguous — ask user a short clarifying question', [
+        createFunction('clarifying_question', 'Input is ambiguous — ask user a short clarifying question.Make sure its a question', [
             { name: 'clarifying_question', description: 'A short question (under 12 words) to resolve ambiguity' }
         ]),
-        createFunction('fallback', 'No match found for the user input', [])
+        createFunction('fallback', 'No match found for the user input', [{prompt:userInput}]),
+        createFunction('sysfallback', 'No Sys match found for the user input', [
+            { name: 'sysfallback', description: 'cant find tool' }]),
+
     ];
 
     logThis('tools:' + JSON.stringify(tools, null, 2));
@@ -79,8 +82,9 @@ async function runClassifier(userInput, options, model) {
                     tool_choice: "auto",
                 });
             } else {
-                logThis('-',response)
-                return { name: "fallback", arguments: "" };
+                logThis('-no openAI',response)
+                return { name: "sys-fallback", arguments: "" };
+                //return { name: "fallback", arguments: "" };
             }
         } else {
             if (groq) {
@@ -93,7 +97,7 @@ async function runClassifier(userInput, options, model) {
                 });
             } else {
                 logThis('Groq not instantiated', getUninstantiatedBotError(BotName.GROQ));
-                return { name: "fallback", arguments: "" };
+                return { name: "sys-fallback", arguments: "" };
             }
         }
 
@@ -106,7 +110,7 @@ async function runClassifier(userInput, options, model) {
 
     } catch (e) {
         console.warn("Classifier failed, returning fallback.", e);
-        return { name: "fallback", arguments: "" };
+        return { name: "sys-fallback", arguments: "" };
     }
 }
 // llama-3.1-8b-instant to
@@ -131,5 +135,48 @@ const getGroqChatCompletion = async (prompt, sysprompt, model) => {
         stream: false,
     });
 };
+async function runAgentLoop(userInput, options, model, onStep) {
+    const messages = [
+        { role: "system", content: CLASSIFIER_PROMPT },
+        { role: "user", content: `"${userInput}"` }
+    ];
 
-export { runConversation, runClassifier };
+    const tools = buildTools(options); // extract your tools array from runClassifier
+    let steps = 0;
+    const MAX = 10;
+
+    while (steps < MAX) {
+        const response = await groq.chat.completions.create({
+            messages,
+            model,
+            temperature: 0.8,
+            tools,
+            tool_choice: "auto"
+        });
+
+        const toolCall = response.choices[0].message.tool_calls?.[0];
+
+        if (!toolCall) break; // no tool call — done
+
+        const fn = toolCall.function;
+
+        // (a) emit status to client
+        onStep({ fn: fn.name, args: JSON.parse(fn.arguments), status: "done" });
+
+        // check exit conditions
+        if (fn.name === "fallback" || fn.name === "sysfallback") break;
+
+        // (b) execute the function and feed result back
+        const result = await executeOption(fn.name, JSON.parse(fn.arguments));
+
+        messages.push(response.choices[0].message);
+        messages.push({
+            role: "tool",
+            tool_call_id: toolCall.id,
+            content: JSON.stringify(result)
+        });
+
+        steps++;
+    }
+}
+export { runConversation, runClassifier, runAgentLoop };

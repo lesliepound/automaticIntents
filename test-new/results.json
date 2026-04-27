@@ -1,18 +1,18 @@
 {
-  "timestamp": "2026-03-31T04:21:42.922Z",
+  "timestamp": "2026-04-26T00:08:33.315Z",
   "model": "llama-3.3-70b-versatile",
-  "totalPassed": 0,
-  "totalTests": 26,
+  "totalPassed": 28,
+  "totalTests": 31,
   "suites": [
     {
       "name": "clarifying-question",
-      "passed": 0,
+      "passed": 5,
       "total": 5,
       "rows": [
         {
           "prompt": "I want to play with that thing",
           "expect": "clarifying_question",
-          "actual": "error",
+          "actual": "clarifying_question",
           "raw": {
             "type": "classifier",
             "input": {
@@ -44,22 +44,32 @@
               ]
             },
             "output": {
-              "chosen": "error",
+              "chosen": "clarifying_question",
               "matchedOption": null,
-              "toolCalls": [],
+              "toolCalls": [
+                {
+                  "id": "zy7z4jd2p",
+                  "name": "clarifying_question",
+                  "arguments": {
+                    "clarifying_question": "What thing?"
+                  }
+                }
+              ],
               "content": null,
-              "finishReason": "error",
-              "error": {
-                "message": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99764, Requested 673. Please try again in 6m17.568s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}",
-                "failedGeneration": null,
-                "recovered": false
-              },
-              "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99764, Requested 673. Please try again in 6m17.568s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"clarifying_question\"."
+              "finishReason": "tool_calls"
             },
             "meta": {
-              "responseId": null,
+              "responseId": "chatcmpl-ec9f64c0-8c2a-4dbe-aee0-9c8fce8aa069",
               "model": "llama-3.3-70b-versatile",
-              "usage": null
+              "usage": {
+                "queue_time": 0.024964932,
+                "prompt_tokens": 672,
+                "prompt_time": 0.062611237,
+                "completion_tokens": 19,
+                "completion_time": 0.064899629,
+                "total_tokens": 691,
+                "total_time": 0.127510866
+              }
             },
             "fullRequest": {
               "messages": [
@@ -166,14 +176,55 @@
               "model": "llama-3.3-70b-versatile",
               "tool_choice": "auto"
             },
-            "fullResponse": null
+            "fullResponse": {
+              "id": "chatcmpl-ec9f64c0-8c2a-4dbe-aee0-9c8fce8aa069",
+              "object": "chat.completion",
+              "created": 1777162077,
+              "model": "llama-3.3-70b-versatile",
+              "choices": [
+                {
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "tool_calls": [
+                      {
+                        "id": "zy7z4jd2p",
+                        "type": "function",
+                        "function": {
+                          "name": "clarifying_question",
+                          "arguments": "{\"clarifying_question\":\"What thing?\"}"
+                        }
+                      }
+                    ]
+                  },
+                  "logprobs": null,
+                  "finish_reason": "tool_calls"
+                }
+              ],
+              "usage": {
+                "queue_time": 0.024964932,
+                "prompt_tokens": 672,
+                "prompt_time": 0.062611237,
+                "completion_tokens": 19,
+                "completion_time": 0.064899629,
+                "total_tokens": 691,
+                "total_time": 0.127510866
+              },
+              "usage_breakdown": null,
+              "system_fingerprint": "fp_0761e44d7b",
+              "x_groq": {
+                "id": "req_01kq3hth02e2vvrp17h37hr9bc",
+                "seed": 314671066
+              },
+              "service_tier": "on_demand"
+            }
           },
-          "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99764, Requested 673. Please try again in 6m17.568s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"clarifying_question\"."
+          "failReason": null
         },
         {
           "prompt": "give me one of those",
           "expect": "clarifying_question",
-          "actual": "error",
+          "actual": "clarifying_question",
           "raw": {
             "type": "classifier",
             "input": {
@@ -205,22 +256,32 @@
               ]
             },
             "output": {
-              "chosen": "error",
+              "chosen": "clarifying_question",
               "matchedOption": null,
-              "toolCalls": [],
+              "toolCalls": [
+                {
+                  "id": "hxtdrq0d0",
+                  "name": "clarifying_question",
+                  "arguments": {
+                    "clarifying_question": "What do you want?"
+                  }
+                }
+              ],
               "content": null,
-              "finishReason": "error",
-              "error": {
-                "message": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99764, Requested 672. Please try again in 6m16.704s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}",
-                "failedGeneration": null,
-                "recovered": false
-              },
-              "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99764, Requested 672. Please try again in 6m16.704s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"clarifying_question\"."
+              "finishReason": "tool_calls"
             },
             "meta": {
-              "responseId": null,
+              "responseId": "chatcmpl-6a29d817-623a-40b5-a6f9-ca184812a741",
               "model": "llama-3.3-70b-versatile",
-              "usage": null
+              "usage": {
+                "queue_time": 0.030114289,
+                "prompt_tokens": 671,
+                "prompt_time": 0.03602134,
+                "completion_tokens": 21,
+                "completion_time": 0.067599123,
+                "total_tokens": 692,
+                "total_time": 0.103620463
+              }
             },
             "fullRequest": {
               "messages": [
@@ -327,14 +388,55 @@
               "model": "llama-3.3-70b-versatile",
               "tool_choice": "auto"
             },
-            "fullResponse": null
+            "fullResponse": {
+              "id": "chatcmpl-6a29d817-623a-40b5-a6f9-ca184812a741",
+              "object": "chat.completion",
+              "created": 1777162077,
+              "model": "llama-3.3-70b-versatile",
+              "choices": [
+                {
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "tool_calls": [
+                      {
+                        "id": "hxtdrq0d0",
+                        "type": "function",
+                        "function": {
+                          "name": "clarifying_question",
+                          "arguments": "{\"clarifying_question\":\"What do you want?\"}"
+                        }
+                      }
+                    ]
+                  },
+                  "logprobs": null,
+                  "finish_reason": "tool_calls"
+                }
+              ],
+              "usage": {
+                "queue_time": 0.030114289,
+                "prompt_tokens": 671,
+                "prompt_time": 0.03602134,
+                "completion_tokens": 21,
+                "completion_time": 0.067599123,
+                "total_tokens": 692,
+                "total_time": 0.103620463
+              },
+              "usage_breakdown": null,
+              "system_fingerprint": "fp_0761e44d7b",
+              "x_groq": {
+                "id": "req_01kq3hth81er4axjyzj2wqknts",
+                "seed": 1588706459
+              },
+              "service_tier": "on_demand"
+            }
           },
-          "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99764, Requested 672. Please try again in 6m16.704s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"clarifying_question\"."
+          "failReason": null
         },
         {
           "prompt": "let me play",
           "expect": "clarifying_question",
-          "actual": "error",
+          "actual": "clarifying_question",
           "raw": {
             "type": "classifier",
             "input": {
@@ -366,22 +468,32 @@
               ]
             },
             "output": {
-              "chosen": "error",
+              "chosen": "clarifying_question",
               "matchedOption": null,
-              "toolCalls": [],
+              "toolCalls": [
+                {
+                  "id": "vhkd8ry8y",
+                  "name": "clarifying_question",
+                  "arguments": {
+                    "clarifying_question": "What to play with?"
+                  }
+                }
+              ],
               "content": null,
-              "finishReason": "error",
-              "error": {
-                "message": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99764, Requested 670. Please try again in 6m14.976s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}",
-                "failedGeneration": null,
-                "recovered": false
-              },
-              "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99764, Requested 670. Please try again in 6m14.976s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"clarifying_question\"."
+              "finishReason": "tool_calls"
             },
             "meta": {
-              "responseId": null,
+              "responseId": "chatcmpl-25071eb3-6d89-4b1e-9793-540b7e74c5bb",
               "model": "llama-3.3-70b-versatile",
-              "usage": null
+              "usage": {
+                "queue_time": 0.171429769,
+                "prompt_tokens": 669,
+                "prompt_time": 0.035803202,
+                "completion_tokens": 21,
+                "completion_time": 0.068456107,
+                "total_tokens": 690,
+                "total_time": 0.104259309
+              }
             },
             "fullRequest": {
               "messages": [
@@ -488,14 +600,55 @@
               "model": "llama-3.3-70b-versatile",
               "tool_choice": "auto"
             },
-            "fullResponse": null
+            "fullResponse": {
+              "id": "chatcmpl-25071eb3-6d89-4b1e-9793-540b7e74c5bb",
+              "object": "chat.completion",
+              "created": 1777162077,
+              "model": "llama-3.3-70b-versatile",
+              "choices": [
+                {
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "tool_calls": [
+                      {
+                        "id": "vhkd8ry8y",
+                        "type": "function",
+                        "function": {
+                          "name": "clarifying_question",
+                          "arguments": "{\"clarifying_question\":\"What to play with?\"}"
+                        }
+                      }
+                    ]
+                  },
+                  "logprobs": null,
+                  "finish_reason": "tool_calls"
+                }
+              ],
+              "usage": {
+                "queue_time": 0.171429769,
+                "prompt_tokens": 669,
+                "prompt_time": 0.035803202,
+                "completion_tokens": 21,
+                "completion_time": 0.068456107,
+                "total_tokens": 690,
+                "total_time": 0.104259309
+              },
+              "usage_breakdown": null,
+              "system_fingerprint": "fp_3272ea2d91",
+              "x_groq": {
+                "id": "req_01kq3hthekfsy9ct937ws3w0gm",
+                "seed": 1086488019
+              },
+              "service_tier": "on_demand"
+            }
           },
-          "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99764, Requested 670. Please try again in 6m14.976s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"clarifying_question\"."
+          "failReason": null
         },
         {
           "prompt": "I want to play with the ball",
           "expect": "bounce",
-          "actual": "error",
+          "actual": "bounce",
           "raw": {
             "type": "classifier",
             "input": {
@@ -527,22 +680,38 @@
               ]
             },
             "output": {
-              "chosen": "error",
-              "matchedOption": null,
-              "toolCalls": [],
-              "content": null,
-              "finishReason": "error",
-              "error": {
-                "message": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99764, Requested 673. Please try again in 6m17.568s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}",
-                "failedGeneration": null,
-                "recovered": false
+              "chosen": "bounce",
+              "matchedOption": {
+                "option": "play with the ball",
+                "nextSlideId": "bounce",
+                "slot": null,
+                "slot1": null,
+                "extra": null
               },
-              "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99764, Requested 673. Please try again in 6m17.568s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"bounce\"."
+              "toolCalls": [
+                {
+                  "id": "ke7hgqb8y",
+                  "name": "bounce",
+                  "arguments": {
+                    "_label": "play with the ball"
+                  }
+                }
+              ],
+              "content": null,
+              "finishReason": "tool_calls"
             },
             "meta": {
-              "responseId": null,
+              "responseId": "chatcmpl-b8101c50-92aa-432e-b7d4-c4e73ccc6c15",
               "model": "llama-3.3-70b-versatile",
-              "usage": null
+              "usage": {
+                "queue_time": 0.029296781,
+                "prompt_tokens": 672,
+                "prompt_time": 0.037023689,
+                "completion_tokens": 18,
+                "completion_time": 0.059028571,
+                "total_tokens": 690,
+                "total_time": 0.09605226
+              }
             },
             "fullRequest": {
               "messages": [
@@ -649,14 +818,55 @@
               "model": "llama-3.3-70b-versatile",
               "tool_choice": "auto"
             },
-            "fullResponse": null
+            "fullResponse": {
+              "id": "chatcmpl-b8101c50-92aa-432e-b7d4-c4e73ccc6c15",
+              "object": "chat.completion",
+              "created": 1777162078,
+              "model": "llama-3.3-70b-versatile",
+              "choices": [
+                {
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "tool_calls": [
+                      {
+                        "id": "ke7hgqb8y",
+                        "type": "function",
+                        "function": {
+                          "name": "bounce",
+                          "arguments": "{\"_label\":\"play with the ball\"}"
+                        }
+                      }
+                    ]
+                  },
+                  "logprobs": null,
+                  "finish_reason": "tool_calls"
+                }
+              ],
+              "usage": {
+                "queue_time": 0.029296781,
+                "prompt_tokens": 672,
+                "prompt_time": 0.037023689,
+                "completion_tokens": 18,
+                "completion_time": 0.059028571,
+                "total_tokens": 690,
+                "total_time": 0.09605226
+              },
+              "usage_breakdown": null,
+              "system_fingerprint": "fp_0761e44d7b",
+              "x_groq": {
+                "id": "req_01kq3hthvhfd19k52s03zydh36",
+                "seed": 811293026
+              },
+              "service_tier": "on_demand"
+            }
           },
-          "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99764, Requested 673. Please try again in 6m17.568s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"bounce\"."
+          "failReason": null
         },
         {
           "prompt": "make some chocolate cake",
           "expect": "fallback",
-          "actual": "error",
+          "actual": "fallback",
           "raw": {
             "type": "classifier",
             "input": {
@@ -688,22 +898,32 @@
               ]
             },
             "output": {
-              "chosen": "error",
+              "chosen": "fallback",
               "matchedOption": null,
-              "toolCalls": [],
+              "toolCalls": [
+                {
+                  "id": "bne8kyk77",
+                  "name": "fallback",
+                  "arguments": {
+                    "_label": "none"
+                  }
+                }
+              ],
               "content": null,
-              "finishReason": "error",
-              "error": {
-                "message": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99764, Requested 671. Please try again in 6m15.84s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}",
-                "failedGeneration": null,
-                "recovered": false
-              },
-              "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99764, Requested 671. Please try again in 6m15.84s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"fallback\"."
+              "finishReason": "tool_calls"
             },
             "meta": {
-              "responseId": null,
+              "responseId": "chatcmpl-cda18d5d-bdf7-47a5-a9c2-90ddae5c412b",
               "model": "llama-3.3-70b-versatile",
-              "usage": null
+              "usage": {
+                "queue_time": 0.172521986,
+                "prompt_tokens": 670,
+                "prompt_time": 0.036210112,
+                "completion_tokens": 15,
+                "completion_time": 0.0533168,
+                "total_tokens": 685,
+                "total_time": 0.089526912
+              }
             },
             "fullRequest": {
               "messages": [
@@ -810,21 +1030,62 @@
               "model": "llama-3.3-70b-versatile",
               "tool_choice": "auto"
             },
-            "fullResponse": null
+            "fullResponse": {
+              "id": "chatcmpl-cda18d5d-bdf7-47a5-a9c2-90ddae5c412b",
+              "object": "chat.completion",
+              "created": 1777162078,
+              "model": "llama-3.3-70b-versatile",
+              "choices": [
+                {
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "tool_calls": [
+                      {
+                        "id": "bne8kyk77",
+                        "type": "function",
+                        "function": {
+                          "name": "fallback",
+                          "arguments": "{\"_label\":\"none\"}"
+                        }
+                      }
+                    ]
+                  },
+                  "logprobs": null,
+                  "finish_reason": "tool_calls"
+                }
+              ],
+              "usage": {
+                "queue_time": 0.172521986,
+                "prompt_tokens": 670,
+                "prompt_time": 0.036210112,
+                "completion_tokens": 15,
+                "completion_time": 0.0533168,
+                "total_tokens": 685,
+                "total_time": 0.089526912
+              },
+              "usage_breakdown": null,
+              "system_fingerprint": "fp_4f6d808339",
+              "x_groq": {
+                "id": "req_01kq3htj1zergak989zgd145jh",
+                "seed": 1138506162
+              },
+              "service_tier": "on_demand"
+            }
           },
-          "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99764, Requested 671. Please try again in 6m15.84s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"fallback\"."
+          "failReason": null
         }
       ]
     },
     {
       "name": "conceptual",
-      "passed": 0,
+      "passed": 6,
       "total": 6,
       "rows": [
         {
           "prompt": "get me man's best friend",
           "expect": "barkable",
-          "actual": "error",
+          "actual": "barkable",
           "raw": {
             "type": "classifier",
             "input": {
@@ -845,22 +1106,42 @@
               ]
             },
             "output": {
-              "chosen": "error",
-              "matchedOption": null,
-              "toolCalls": [],
-              "content": null,
-              "finishReason": "error",
-              "error": {
-                "message": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 596. Please try again in 5m10.176s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}",
-                "failedGeneration": null,
-                "recovered": false
+              "chosen": "barkable",
+              "matchedOption": {
+                "option": "get me the dog or nickname for a dog",
+                "nextSlideId": "barkable",
+                "slot": {
+                  "name": "animal speaking",
+                  "description": " this _FOREGROUND_ will say bark, hello  "
+                },
+                "slot1": null,
+                "extra": null
               },
-              "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 596. Please try again in 5m10.176s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"barkable\"."
+              "toolCalls": [
+                {
+                  "id": "fh6ksvae1",
+                  "name": "barkable",
+                  "arguments": {
+                    "_label": "get me the dog or nickname for a dog",
+                    "animal speaking": "bark"
+                  }
+                }
+              ],
+              "content": null,
+              "finishReason": "tool_calls"
             },
             "meta": {
-              "responseId": null,
+              "responseId": "chatcmpl-2302d1fe-b514-4e7e-b169-b03f60a42a8a",
               "model": "llama-3.3-70b-versatile",
-              "usage": null
+              "usage": {
+                "queue_time": 0.025019128,
+                "prompt_tokens": 571,
+                "prompt_time": 0.053243441,
+                "completion_tokens": 32,
+                "completion_time": 0.081383817,
+                "total_tokens": 603,
+                "total_time": 0.134627258
+              }
             },
             "fullRequest": {
               "messages": [
@@ -937,14 +1218,55 @@
               "model": "llama-3.3-70b-versatile",
               "tool_choice": "auto"
             },
-            "fullResponse": null
+            "fullResponse": {
+              "id": "chatcmpl-2302d1fe-b514-4e7e-b169-b03f60a42a8a",
+              "object": "chat.completion",
+              "created": 1777162078,
+              "model": "llama-3.3-70b-versatile",
+              "choices": [
+                {
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "tool_calls": [
+                      {
+                        "id": "fh6ksvae1",
+                        "type": "function",
+                        "function": {
+                          "name": "barkable",
+                          "arguments": "{\"_label\":\"get me the dog or nickname for a dog\",\"animal speaking\":\"bark\"}"
+                        }
+                      }
+                    ]
+                  },
+                  "logprobs": null,
+                  "finish_reason": "tool_calls"
+                }
+              ],
+              "usage": {
+                "queue_time": 0.025019128,
+                "prompt_tokens": 571,
+                "prompt_time": 0.053243441,
+                "completion_tokens": 32,
+                "completion_time": 0.081383817,
+                "total_tokens": 603,
+                "total_time": 0.134627258
+              },
+              "usage_breakdown": null,
+              "system_fingerprint": "fp_0761e44d7b",
+              "x_groq": {
+                "id": "req_01kq3htjf3erpvda7d948bapr0",
+                "seed": 2060005699
+              },
+              "service_tier": "on_demand"
+            }
           },
-          "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 596. Please try again in 5m10.176s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"barkable\"."
+          "failReason": null
         },
         {
           "prompt": "I want the four-legged companion",
           "expect": "barkable",
-          "actual": "error",
+          "actual": "barkable",
           "raw": {
             "type": "classifier",
             "input": {
@@ -965,22 +1287,42 @@
               ]
             },
             "output": {
-              "chosen": "error",
-              "matchedOption": null,
-              "toolCalls": [],
-              "content": null,
-              "finishReason": "error",
-              "error": {
-                "message": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 595. Please try again in 5m9.312s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}",
-                "failedGeneration": null,
-                "recovered": false
+              "chosen": "barkable",
+              "matchedOption": {
+                "option": "get me the dog or nickname for a dog",
+                "nextSlideId": "barkable",
+                "slot": {
+                  "name": "animal speaking",
+                  "description": " this _FOREGROUND_ will say bark, hello  "
+                },
+                "slot1": null,
+                "extra": null
               },
-              "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 595. Please try again in 5m9.312s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"barkable\"."
+              "toolCalls": [
+                {
+                  "id": "6jxdknjv3",
+                  "name": "barkable",
+                  "arguments": {
+                    "_label": "get me the dog or nickname for a dog",
+                    "animal speaking": "dog"
+                  }
+                }
+              ],
+              "content": null,
+              "finishReason": "tool_calls"
             },
             "meta": {
-              "responseId": null,
+              "responseId": "chatcmpl-4732b753-c7bf-49df-a18c-d929939c3b84",
               "model": "llama-3.3-70b-versatile",
-              "usage": null
+              "usage": {
+                "queue_time": 0.171741103,
+                "prompt_tokens": 570,
+                "prompt_time": 0.027609405,
+                "completion_tokens": 31,
+                "completion_time": 0.062291237,
+                "total_tokens": 601,
+                "total_time": 0.089900642
+              }
             },
             "fullRequest": {
               "messages": [
@@ -1057,14 +1399,55 @@
               "model": "llama-3.3-70b-versatile",
               "tool_choice": "auto"
             },
-            "fullResponse": null
+            "fullResponse": {
+              "id": "chatcmpl-4732b753-c7bf-49df-a18c-d929939c3b84",
+              "object": "chat.completion",
+              "created": 1777162079,
+              "model": "llama-3.3-70b-versatile",
+              "choices": [
+                {
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "tool_calls": [
+                      {
+                        "id": "6jxdknjv3",
+                        "type": "function",
+                        "function": {
+                          "name": "barkable",
+                          "arguments": "{\"_label\":\"get me the dog or nickname for a dog\",\"animal speaking\":\"dog\"}"
+                        }
+                      }
+                    ]
+                  },
+                  "logprobs": null,
+                  "finish_reason": "tool_calls"
+                }
+              ],
+              "usage": {
+                "queue_time": 0.171741103,
+                "prompt_tokens": 570,
+                "prompt_time": 0.027609405,
+                "completion_tokens": 31,
+                "completion_time": 0.062291237,
+                "total_tokens": 601,
+                "total_time": 0.089900642
+              },
+              "usage_breakdown": null,
+              "system_fingerprint": "fp_45180df409",
+              "x_groq": {
+                "id": "req_01kq3htjpcfd8tm0h3xarjnag4",
+                "seed": 329712106
+              },
+              "service_tier": "on_demand"
+            }
           },
-          "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 595. Please try again in 5m9.312s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"barkable\"."
+          "failReason": null
         },
         {
           "prompt": "bring me the loyal pet",
           "expect": "barkable",
-          "actual": "error",
+          "actual": "barkable",
           "raw": {
             "type": "classifier",
             "input": {
@@ -1085,22 +1468,42 @@
               ]
             },
             "output": {
-              "chosen": "error",
-              "matchedOption": null,
-              "toolCalls": [],
-              "content": null,
-              "finishReason": "error",
-              "error": {
-                "message": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 571. Please try again in 4m48.576s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}",
-                "failedGeneration": null,
-                "recovered": false
+              "chosen": "barkable",
+              "matchedOption": {
+                "option": "get me the dog or nickname for a dog",
+                "nextSlideId": "barkable",
+                "slot": {
+                  "name": "animal speaking",
+                  "description": " this _FOREGROUND_ will say bark, hello  "
+                },
+                "slot1": null,
+                "extra": null
               },
-              "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 571. Please try again in 4m48.576s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"barkable\"."
+              "toolCalls": [
+                {
+                  "id": "6x859rv19",
+                  "name": "barkable",
+                  "arguments": {
+                    "_label": "get me the dog or nickname for a dog",
+                    "animal speaking": "dog"
+                  }
+                }
+              ],
+              "content": null,
+              "finishReason": "tool_calls"
             },
             "meta": {
-              "responseId": null,
+              "responseId": "chatcmpl-b13dee04-54c1-44fe-b3dd-effc060e2746",
               "model": "llama-3.3-70b-versatile",
-              "usage": null
+              "usage": {
+                "queue_time": 0.023715272,
+                "prompt_tokens": 570,
+                "prompt_time": 0.030883917,
+                "completion_tokens": 31,
+                "completion_time": 0.073970411,
+                "total_tokens": 601,
+                "total_time": 0.104854328
+              }
             },
             "fullRequest": {
               "messages": [
@@ -1177,14 +1580,55 @@
               "model": "llama-3.3-70b-versatile",
               "tool_choice": "auto"
             },
-            "fullResponse": null
+            "fullResponse": {
+              "id": "chatcmpl-b13dee04-54c1-44fe-b3dd-effc060e2746",
+              "object": "chat.completion",
+              "created": 1777162079,
+              "model": "llama-3.3-70b-versatile",
+              "choices": [
+                {
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "tool_calls": [
+                      {
+                        "id": "6x859rv19",
+                        "type": "function",
+                        "function": {
+                          "name": "barkable",
+                          "arguments": "{\"_label\":\"get me the dog or nickname for a dog\",\"animal speaking\":\"dog\"}"
+                        }
+                      }
+                    ]
+                  },
+                  "logprobs": null,
+                  "finish_reason": "tool_calls"
+                }
+              ],
+              "usage": {
+                "queue_time": 0.023715272,
+                "prompt_tokens": 570,
+                "prompt_time": 0.030883917,
+                "completion_tokens": 31,
+                "completion_time": 0.073970411,
+                "total_tokens": 601,
+                "total_time": 0.104854328
+              },
+              "usage_breakdown": null,
+              "system_fingerprint": "fp_0761e44d7b",
+              "x_groq": {
+                "id": "req_01kq3htk29e3rsvws627k09dh3",
+                "seed": 663258474
+              },
+              "service_tier": "on_demand"
+            }
           },
-          "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 571. Please try again in 4m48.576s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"barkable\"."
+          "failReason": null
         },
         {
           "prompt": "fetch the animal that barks",
           "expect": "barkable",
-          "actual": "error",
+          "actual": "barkable",
           "raw": {
             "type": "classifier",
             "input": {
@@ -1205,22 +1649,41 @@
               ]
             },
             "output": {
-              "chosen": "error",
-              "matchedOption": null,
-              "toolCalls": [],
-              "content": null,
-              "finishReason": "error",
-              "error": {
-                "message": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 572. Please try again in 4m49.44s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}",
-                "failedGeneration": null,
-                "recovered": false
+              "chosen": "barkable",
+              "matchedOption": {
+                "option": "get me the dog or nickname for a dog",
+                "nextSlideId": "barkable",
+                "slot": {
+                  "name": "animal speaking",
+                  "description": " this _FOREGROUND_ will say bark, hello  "
+                },
+                "slot1": null,
+                "extra": null
               },
-              "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 572. Please try again in 4m49.44s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"barkable\"."
+              "toolCalls": [
+                {
+                  "id": "5gvdjta2f",
+                  "name": "barkable",
+                  "arguments": {
+                    "animal speaking": "bark"
+                  }
+                }
+              ],
+              "content": null,
+              "finishReason": "tool_calls"
             },
             "meta": {
-              "responseId": null,
+              "responseId": "chatcmpl-db569135-381d-4199-a427-773ce86dca1a",
               "model": "llama-3.3-70b-versatile",
-              "usage": null
+              "usage": {
+                "queue_time": 0.062207273,
+                "prompt_tokens": 571,
+                "prompt_time": 0.029616844,
+                "completion_tokens": 17,
+                "completion_time": 0.056432572,
+                "total_tokens": 588,
+                "total_time": 0.086049416
+              }
             },
             "fullRequest": {
               "messages": [
@@ -1297,14 +1760,55 @@
               "model": "llama-3.3-70b-versatile",
               "tool_choice": "auto"
             },
-            "fullResponse": null
+            "fullResponse": {
+              "id": "chatcmpl-db569135-381d-4199-a427-773ce86dca1a",
+              "object": "chat.completion",
+              "created": 1777162079,
+              "model": "llama-3.3-70b-versatile",
+              "choices": [
+                {
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "tool_calls": [
+                      {
+                        "id": "5gvdjta2f",
+                        "type": "function",
+                        "function": {
+                          "name": "barkable",
+                          "arguments": "{\"animal speaking\":\"bark\"}"
+                        }
+                      }
+                    ]
+                  },
+                  "logprobs": null,
+                  "finish_reason": "tool_calls"
+                }
+              ],
+              "usage": {
+                "queue_time": 0.062207273,
+                "prompt_tokens": 571,
+                "prompt_time": 0.029616844,
+                "completion_tokens": 17,
+                "completion_time": 0.056432572,
+                "total_tokens": 588,
+                "total_time": 0.086049416
+              },
+              "usage_breakdown": null,
+              "system_fingerprint": "fp_d42c28f9ce",
+              "x_groq": {
+                "id": "req_01kq3htk8rft6ag93gvz3p8z59",
+                "seed": 661836667
+              },
+              "service_tier": "on_demand"
+            }
           },
-          "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 572. Please try again in 4m49.44s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"barkable\"."
+          "failReason": null
         },
         {
           "prompt": "get me the swimming creature",
           "expect": "fallback",
-          "actual": "error",
+          "actual": "fallback",
           "raw": {
             "type": "classifier",
             "input": {
@@ -1325,22 +1829,32 @@
               ]
             },
             "output": {
-              "chosen": "error",
+              "chosen": "fallback",
               "matchedOption": null,
-              "toolCalls": [],
+              "toolCalls": [
+                {
+                  "id": "ghwpxrt02",
+                  "name": "fallback",
+                  "arguments": {
+                    "_label": "none"
+                  }
+                }
+              ],
               "content": null,
-              "finishReason": "error",
-              "error": {
-                "message": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 571. Please try again in 4m48.576s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}",
-                "failedGeneration": null,
-                "recovered": false
-              },
-              "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 571. Please try again in 4m48.576s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"fallback\"."
+              "finishReason": "tool_calls"
             },
             "meta": {
-              "responseId": null,
+              "responseId": "chatcmpl-622b73cf-319f-47b8-b0f5-a61090c33bb9",
               "model": "llama-3.3-70b-versatile",
-              "usage": null
+              "usage": {
+                "queue_time": 0.171513887,
+                "prompt_tokens": 570,
+                "prompt_time": 0.03229682,
+                "completion_tokens": 15,
+                "completion_time": 0.054957444,
+                "total_tokens": 585,
+                "total_time": 0.087254264
+              }
             },
             "fullRequest": {
               "messages": [
@@ -1417,14 +1931,55 @@
               "model": "llama-3.3-70b-versatile",
               "tool_choice": "auto"
             },
-            "fullResponse": null
+            "fullResponse": {
+              "id": "chatcmpl-622b73cf-319f-47b8-b0f5-a61090c33bb9",
+              "object": "chat.completion",
+              "created": 1777162079,
+              "model": "llama-3.3-70b-versatile",
+              "choices": [
+                {
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "tool_calls": [
+                      {
+                        "id": "ghwpxrt02",
+                        "type": "function",
+                        "function": {
+                          "name": "fallback",
+                          "arguments": "{\"_label\":\"none\"}"
+                        }
+                      }
+                    ]
+                  },
+                  "logprobs": null,
+                  "finish_reason": "tool_calls"
+                }
+              ],
+              "usage": {
+                "queue_time": 0.171513887,
+                "prompt_tokens": 570,
+                "prompt_time": 0.03229682,
+                "completion_tokens": 15,
+                "completion_time": 0.054957444,
+                "total_tokens": 585,
+                "total_time": 0.087254264
+              },
+              "usage_breakdown": null,
+              "system_fingerprint": "fp_45180df409",
+              "x_groq": {
+                "id": "req_01kq3htkfperxtkt280nnrkgkh",
+                "seed": 429683491
+              },
+              "service_tier": "on_demand"
+            }
           },
-          "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 571. Please try again in 4m48.576s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"fallback\"."
+          "failReason": null
         },
         {
           "prompt": "ill be bach",
           "expect": "fallback",
-          "actual": "error",
+          "actual": "fallback",
           "raw": {
             "type": "classifier",
             "input": {
@@ -1445,17 +2000,17 @@
               ]
             },
             "output": {
-              "chosen": "error",
+              "chosen": "fallback",
               "matchedOption": null,
               "toolCalls": [],
               "content": null,
               "finishReason": "error",
               "error": {
-                "message": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 569. Please try again in 4m46.848s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}",
-                "failedGeneration": null,
-                "recovered": false
+                "message": "400 {\"error\":{\"message\":\"Failed to call a function. Please adjust your prompt. See 'failed_generation' for more details.\",\"type\":\"invalid_request_error\",\"code\":\"tool_use_failed\",\"failed_generation\":\"<function=fallback{\\\"_label\\\": \\\"none\\\"}</function>\"}}",
+                "failedGeneration": "<function=fallback{\"_label\": \"none\"}</function>",
+                "recovered": true
               },
-              "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 569. Please try again in 4m46.848s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"fallback\"."
+              "failReason": "API returned a 400 error — the model tried to call \"fallback\" but used malformed syntax. The function name was recovered from the failed output. This counts as a pass but the API call itself failed."
             },
             "meta": {
               "responseId": null,
@@ -1539,19 +2094,19 @@
             },
             "fullResponse": null
           },
-          "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 569. Please try again in 4m46.848s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"fallback\"."
+          "failReason": "API returned a 400 error — the model tried to call \"fallback\" but used malformed syntax. The function name was recovered from the failed output. This counts as a pass but the API call itself failed."
         }
       ]
     },
     {
       "name": "conceptual-with-examples",
-      "passed": 0,
+      "passed": 5,
       "total": 5,
       "rows": [
         {
           "prompt": "get me man's best friend",
           "expect": "barkable",
-          "actual": "error",
+          "actual": "barkable",
           "raw": {
             "type": "classifier",
             "input": {
@@ -1569,22 +2124,38 @@
               ]
             },
             "output": {
-              "chosen": "error",
-              "matchedOption": null,
-              "toolCalls": [],
-              "content": null,
-              "finishReason": "error",
-              "error": {
-                "message": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 616. Please try again in 5m27.456s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}",
-                "failedGeneration": null,
-                "recovered": false
+              "chosen": "barkable",
+              "matchedOption": {
+                "option": "get me the dog; a domesticated canine; a pet that barks and wags its tail",
+                "nextSlideId": "barkable",
+                "slot": null,
+                "slot1": null,
+                "extra": "fetch the puppy; bring the hound; I want the pooch; give me the good boy"
               },
-              "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 616. Please try again in 5m27.456s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"barkable\"."
+              "toolCalls": [
+                {
+                  "id": "0dqgvgj8t",
+                  "name": "barkable",
+                  "arguments": {
+                    "_label": "get me the dog; a domesticated canine; a pet that "
+                  }
+                }
+              ],
+              "content": null,
+              "finishReason": "tool_calls"
             },
             "meta": {
-              "responseId": null,
+              "responseId": "chatcmpl-2419b6e1-e331-4659-88a2-5fef1a5c6cb6",
               "model": "llama-3.3-70b-versatile",
-              "usage": null
+              "usage": {
+                "queue_time": 0.024270452,
+                "prompt_tokens": 615,
+                "prompt_time": 0.047775236,
+                "completion_tokens": 28,
+                "completion_time": 0.077131494,
+                "total_tokens": 643,
+                "total_time": 0.12490673
+              }
             },
             "fullRequest": {
               "messages": [
@@ -1657,14 +2228,55 @@
               "model": "llama-3.3-70b-versatile",
               "tool_choice": "auto"
             },
-            "fullResponse": null
+            "fullResponse": {
+              "id": "chatcmpl-2419b6e1-e331-4659-88a2-5fef1a5c6cb6",
+              "object": "chat.completion",
+              "created": 1777162080,
+              "model": "llama-3.3-70b-versatile",
+              "choices": [
+                {
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "tool_calls": [
+                      {
+                        "id": "0dqgvgj8t",
+                        "type": "function",
+                        "function": {
+                          "name": "barkable",
+                          "arguments": "{\"_label\":\"get me the dog; a domesticated canine; a pet that \"}"
+                        }
+                      }
+                    ]
+                  },
+                  "logprobs": null,
+                  "finish_reason": "tool_calls"
+                }
+              ],
+              "usage": {
+                "queue_time": 0.024270452,
+                "prompt_tokens": 615,
+                "prompt_time": 0.047775236,
+                "completion_tokens": 28,
+                "completion_time": 0.077131494,
+                "total_tokens": 643,
+                "total_time": 0.12490673
+              },
+              "usage_breakdown": null,
+              "system_fingerprint": "fp_0761e44d7b",
+              "x_groq": {
+                "id": "req_01kq3htkznfta88npamfjxy2fw",
+                "seed": 1452726313
+              },
+              "service_tier": "on_demand"
+            }
           },
-          "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 616. Please try again in 5m27.456s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"barkable\"."
+          "failReason": null
         },
         {
           "prompt": "I want the four-legged companion",
           "expect": "barkable",
-          "actual": "error",
+          "actual": "barkable",
           "raw": {
             "type": "classifier",
             "input": {
@@ -1682,22 +2294,38 @@
               ]
             },
             "output": {
-              "chosen": "error",
-              "matchedOption": null,
-              "toolCalls": [],
-              "content": null,
-              "finishReason": "error",
-              "error": {
-                "message": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 615. Please try again in 5m26.592s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}",
-                "failedGeneration": null,
-                "recovered": false
+              "chosen": "barkable",
+              "matchedOption": {
+                "option": "get me the dog; a domesticated canine; a pet that barks and wags its tail",
+                "nextSlideId": "barkable",
+                "slot": null,
+                "slot1": null,
+                "extra": "fetch the puppy; bring the hound; I want the pooch; give me the good boy"
               },
-              "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 615. Please try again in 5m26.592s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"barkable\"."
+              "toolCalls": [
+                {
+                  "id": "afhb3v826",
+                  "name": "barkable",
+                  "arguments": {
+                    "_label": "get me the dog; a domesticated canine; a pet that "
+                  }
+                }
+              ],
+              "content": null,
+              "finishReason": "tool_calls"
             },
             "meta": {
-              "responseId": null,
+              "responseId": "chatcmpl-64dd08e6-77b1-4157-bf82-656aa0a7c044",
               "model": "llama-3.3-70b-versatile",
-              "usage": null
+              "usage": {
+                "queue_time": 0.023973748,
+                "prompt_tokens": 614,
+                "prompt_time": 0.12057945,
+                "completion_tokens": 28,
+                "completion_time": 0.079532504,
+                "total_tokens": 642,
+                "total_time": 0.200111954
+              }
             },
             "fullRequest": {
               "messages": [
@@ -1770,14 +2398,55 @@
               "model": "llama-3.3-70b-versatile",
               "tool_choice": "auto"
             },
-            "fullResponse": null
+            "fullResponse": {
+              "id": "chatcmpl-64dd08e6-77b1-4157-bf82-656aa0a7c044",
+              "object": "chat.completion",
+              "created": 1777162080,
+              "model": "llama-3.3-70b-versatile",
+              "choices": [
+                {
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "tool_calls": [
+                      {
+                        "id": "afhb3v826",
+                        "type": "function",
+                        "function": {
+                          "name": "barkable",
+                          "arguments": "{\"_label\":\"get me the dog; a domesticated canine; a pet that \"}"
+                        }
+                      }
+                    ]
+                  },
+                  "logprobs": null,
+                  "finish_reason": "tool_calls"
+                }
+              ],
+              "usage": {
+                "queue_time": 0.023973748,
+                "prompt_tokens": 614,
+                "prompt_time": 0.12057945,
+                "completion_tokens": 28,
+                "completion_time": 0.079532504,
+                "total_tokens": 642,
+                "total_time": 0.200111954
+              },
+              "usage_breakdown": null,
+              "system_fingerprint": "fp_0761e44d7b",
+              "x_groq": {
+                "id": "req_01kq3htm6nerzv7y5rsm5nx836",
+                "seed": 1073241794
+              },
+              "service_tier": "on_demand"
+            }
           },
-          "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 615. Please try again in 5m26.592s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"barkable\"."
+          "failReason": null
         },
         {
           "prompt": "bring me the loyal pet",
           "expect": "barkable",
-          "actual": "error",
+          "actual": "barkable",
           "raw": {
             "type": "classifier",
             "input": {
@@ -1795,22 +2464,38 @@
               ]
             },
             "output": {
-              "chosen": "error",
-              "matchedOption": null,
-              "toolCalls": [],
-              "content": null,
-              "finishReason": "error",
-              "error": {
-                "message": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 639. Please try again in 5m47.328s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}",
-                "failedGeneration": null,
-                "recovered": false
+              "chosen": "barkable",
+              "matchedOption": {
+                "option": "get me the dog; a domesticated canine; a pet that barks and wags its tail",
+                "nextSlideId": "barkable",
+                "slot": null,
+                "slot1": null,
+                "extra": "fetch the puppy; bring the hound; I want the pooch; give me the good boy"
               },
-              "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 639. Please try again in 5m47.328s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"barkable\"."
+              "toolCalls": [
+                {
+                  "id": "r356bxzf5",
+                  "name": "barkable",
+                  "arguments": {
+                    "_label": "get me the dog; a domesticated canine; a pet that "
+                  }
+                }
+              ],
+              "content": null,
+              "finishReason": "tool_calls"
             },
             "meta": {
-              "responseId": null,
+              "responseId": "chatcmpl-223fcda3-0c5d-4522-8215-01d791004aa4",
               "model": "llama-3.3-70b-versatile",
-              "usage": null
+              "usage": {
+                "queue_time": 0.170738512,
+                "prompt_tokens": 614,
+                "prompt_time": 0.059893106,
+                "completion_tokens": 28,
+                "completion_time": 0.078629362,
+                "total_tokens": 642,
+                "total_time": 0.138522468
+              }
             },
             "fullRequest": {
               "messages": [
@@ -1883,14 +2568,55 @@
               "model": "llama-3.3-70b-versatile",
               "tool_choice": "auto"
             },
-            "fullResponse": null
+            "fullResponse": {
+              "id": "chatcmpl-223fcda3-0c5d-4522-8215-01d791004aa4",
+              "object": "chat.completion",
+              "created": 1777162081,
+              "model": "llama-3.3-70b-versatile",
+              "choices": [
+                {
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "tool_calls": [
+                      {
+                        "id": "r356bxzf5",
+                        "type": "function",
+                        "function": {
+                          "name": "barkable",
+                          "arguments": "{\"_label\":\"get me the dog; a domesticated canine; a pet that \"}"
+                        }
+                      }
+                    ]
+                  },
+                  "logprobs": null,
+                  "finish_reason": "tool_calls"
+                }
+              ],
+              "usage": {
+                "queue_time": 0.170738512,
+                "prompt_tokens": 614,
+                "prompt_time": 0.059893106,
+                "completion_tokens": 28,
+                "completion_time": 0.078629362,
+                "total_tokens": 642,
+                "total_time": 0.138522468
+              },
+              "usage_breakdown": null,
+              "system_fingerprint": "fp_45180df409",
+              "x_groq": {
+                "id": "req_01kq3htmj0fdrt57y6zbd2qv84",
+                "seed": 516901430
+              },
+              "service_tier": "on_demand"
+            }
           },
-          "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 639. Please try again in 5m47.328s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"barkable\"."
+          "failReason": null
         },
         {
           "prompt": "fetch the animal that barks",
           "expect": "barkable",
-          "actual": "error",
+          "actual": "barkable",
           "raw": {
             "type": "classifier",
             "input": {
@@ -1908,22 +2634,38 @@
               ]
             },
             "output": {
-              "chosen": "error",
-              "matchedOption": null,
-              "toolCalls": [],
-              "content": null,
-              "finishReason": "error",
-              "error": {
-                "message": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 616. Please try again in 5m27.456s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}",
-                "failedGeneration": null,
-                "recovered": false
+              "chosen": "barkable",
+              "matchedOption": {
+                "option": "get me the dog; a domesticated canine; a pet that barks and wags its tail",
+                "nextSlideId": "barkable",
+                "slot": null,
+                "slot1": null,
+                "extra": "fetch the puppy; bring the hound; I want the pooch; give me the good boy"
               },
-              "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 616. Please try again in 5m27.456s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"barkable\"."
+              "toolCalls": [
+                {
+                  "id": "f5x72gxec",
+                  "name": "barkable",
+                  "arguments": {
+                    "_label": "get me the dog; a domesticated canine; a pet that "
+                  }
+                }
+              ],
+              "content": null,
+              "finishReason": "tool_calls"
             },
             "meta": {
-              "responseId": null,
+              "responseId": "chatcmpl-8f7a0eda-1f2d-4d1f-b4c0-6e882ede0f01",
               "model": "llama-3.3-70b-versatile",
-              "usage": null
+              "usage": {
+                "queue_time": 0.171413896,
+                "prompt_tokens": 615,
+                "prompt_time": 0.049516762,
+                "completion_tokens": 28,
+                "completion_time": 0.071190882,
+                "total_tokens": 643,
+                "total_time": 0.120707644
+              }
             },
             "fullRequest": {
               "messages": [
@@ -1996,14 +2738,55 @@
               "model": "llama-3.3-70b-versatile",
               "tool_choice": "auto"
             },
-            "fullResponse": null
+            "fullResponse": {
+              "id": "chatcmpl-8f7a0eda-1f2d-4d1f-b4c0-6e882ede0f01",
+              "object": "chat.completion",
+              "created": 1777162081,
+              "model": "llama-3.3-70b-versatile",
+              "choices": [
+                {
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "tool_calls": [
+                      {
+                        "id": "f5x72gxec",
+                        "type": "function",
+                        "function": {
+                          "name": "barkable",
+                          "arguments": "{\"_label\":\"get me the dog; a domesticated canine; a pet that \"}"
+                        }
+                      }
+                    ]
+                  },
+                  "logprobs": null,
+                  "finish_reason": "tool_calls"
+                }
+              ],
+              "usage": {
+                "queue_time": 0.171413896,
+                "prompt_tokens": 615,
+                "prompt_time": 0.049516762,
+                "completion_tokens": 28,
+                "completion_time": 0.071190882,
+                "total_tokens": 643,
+                "total_time": 0.120707644
+              },
+              "usage_breakdown": null,
+              "system_fingerprint": "fp_3272ea2d91",
+              "x_groq": {
+                "id": "req_01kq3htmxme4dr59dw7h9tqnda",
+                "seed": 796576178
+              },
+              "service_tier": "on_demand"
+            }
           },
-          "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 616. Please try again in 5m27.456s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"barkable\"."
+          "failReason": null
         },
         {
           "prompt": "get me the swimming creature",
           "expect": "fallback",
-          "actual": "error",
+          "actual": "fallback",
           "raw": {
             "type": "classifier",
             "input": {
@@ -2021,17 +2804,17 @@
               ]
             },
             "output": {
-              "chosen": "error",
+              "chosen": "fallback",
               "matchedOption": null,
               "toolCalls": [],
               "content": null,
               "finishReason": "error",
               "error": {
-                "message": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 615. Please try again in 5m26.592s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}",
-                "failedGeneration": null,
-                "recovered": false
+                "message": "400 {\"error\":{\"message\":\"tool call validation failed: attempted to call tool 'fallback{\\\"_label\\\": \\\"none\\\"}' which was not in request.tools\",\"type\":\"invalid_request_error\",\"code\":\"tool_use_failed\",\"failed_generation\":\"<function=fallback{\\\"_label\\\": \\\"none\\\"}></function>\"}}",
+                "failedGeneration": "<function=fallback{\"_label\": \"none\"}></function>",
+                "recovered": true
               },
-              "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 615. Please try again in 5m26.592s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"fallback\"."
+              "failReason": "API returned a 400 error — the model tried to call \"fallback\" but used malformed syntax. The function name was recovered from the failed output. This counts as a pass but the API call itself failed."
             },
             "meta": {
               "responseId": null,
@@ -2111,19 +2894,19 @@
             },
             "fullResponse": null
           },
-          "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99763, Requested 615. Please try again in 5m26.592s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"fallback\"."
+          "failReason": "API returned a 400 error — the model tried to call \"fallback\" but used malformed syntax. The function name was recovered from the failed output. This counts as a pass but the API call itself failed."
         }
       ]
     },
     {
       "name": "literal",
-      "passed": 0,
+      "passed": 4,
       "total": 5,
       "rows": [
         {
           "prompt": "get me the dog",
           "expect": "barkable",
-          "actual": "error",
+          "actual": "barkable",
           "raw": {
             "type": "classifier",
             "input": {
@@ -2141,22 +2924,38 @@
               ]
             },
             "output": {
-              "chosen": "error",
-              "matchedOption": null,
-              "toolCalls": [],
-              "content": null,
-              "finishReason": "error",
-              "error": {
-                "message": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 533. Please try again in 4m14.88s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}",
-                "failedGeneration": null,
-                "recovered": false
+              "chosen": "barkable",
+              "matchedOption": {
+                "option": "get me the dog",
+                "nextSlideId": "barkable",
+                "slot": null,
+                "slot1": null,
+                "extra": null
               },
-              "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 533. Please try again in 4m14.88s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"barkable\"."
+              "toolCalls": [
+                {
+                  "id": "avtgdtzf8",
+                  "name": "barkable",
+                  "arguments": {
+                    "_label": "get me the dog"
+                  }
+                }
+              ],
+              "content": null,
+              "finishReason": "tool_calls"
             },
             "meta": {
-              "responseId": null,
+              "responseId": "chatcmpl-3bc89343-ddd3-4db2-88e4-e991a4b96f3f",
               "model": "llama-3.3-70b-versatile",
-              "usage": null
+              "usage": {
+                "queue_time": 0.064882254,
+                "prompt_tokens": 532,
+                "prompt_time": 0.029077042,
+                "completion_tokens": 19,
+                "completion_time": 0.058874553,
+                "total_tokens": 551,
+                "total_time": 0.087951595
+              }
             },
             "fullRequest": {
               "messages": [
@@ -2229,14 +3028,55 @@
               "model": "llama-3.3-70b-versatile",
               "tool_choice": "auto"
             },
-            "fullResponse": null
+            "fullResponse": {
+              "id": "chatcmpl-3bc89343-ddd3-4db2-88e4-e991a4b96f3f",
+              "object": "chat.completion",
+              "created": 1777162082,
+              "model": "llama-3.3-70b-versatile",
+              "choices": [
+                {
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "tool_calls": [
+                      {
+                        "id": "avtgdtzf8",
+                        "type": "function",
+                        "function": {
+                          "name": "barkable",
+                          "arguments": "{\"_label\":\"get me the dog\"}"
+                        }
+                      }
+                    ]
+                  },
+                  "logprobs": null,
+                  "finish_reason": "tool_calls"
+                }
+              ],
+              "usage": {
+                "queue_time": 0.064882254,
+                "prompt_tokens": 532,
+                "prompt_time": 0.029077042,
+                "completion_tokens": 19,
+                "completion_time": 0.058874553,
+                "total_tokens": 551,
+                "total_time": 0.087951595
+              },
+              "usage_breakdown": null,
+              "system_fingerprint": "fp_d42c28f9ce",
+              "x_groq": {
+                "id": "req_01kq3htnpgftnrqg5dpkpx27t8",
+                "seed": 558325441
+              },
+              "service_tier": "on_demand"
+            }
           },
-          "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 533. Please try again in 4m14.88s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"barkable\"."
+          "failReason": null
         },
         {
           "prompt": "Get me the dog",
           "expect": "barkable",
-          "actual": "error",
+          "actual": "barkable",
           "raw": {
             "type": "classifier",
             "input": {
@@ -2254,22 +3094,38 @@
               ]
             },
             "output": {
-              "chosen": "error",
-              "matchedOption": null,
-              "toolCalls": [],
-              "content": null,
-              "finishReason": "error",
-              "error": {
-                "message": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 557. Please try again in 4m35.616s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}",
-                "failedGeneration": null,
-                "recovered": false
+              "chosen": "barkable",
+              "matchedOption": {
+                "option": "get me the dog",
+                "nextSlideId": "barkable",
+                "slot": null,
+                "slot1": null,
+                "extra": null
               },
-              "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 557. Please try again in 4m35.616s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"barkable\"."
+              "toolCalls": [
+                {
+                  "id": "zcb8mhzn9",
+                  "name": "barkable",
+                  "arguments": {
+                    "_label": "get me the dog"
+                  }
+                }
+              ],
+              "content": null,
+              "finishReason": "tool_calls"
             },
             "meta": {
-              "responseId": null,
+              "responseId": "chatcmpl-15f28687-34e9-4779-adc9-c7aff162b903",
               "model": "llama-3.3-70b-versatile",
-              "usage": null
+              "usage": {
+                "queue_time": 0.171256198,
+                "prompt_tokens": 532,
+                "prompt_time": 0.02736273,
+                "completion_tokens": 19,
+                "completion_time": 0.04045897,
+                "total_tokens": 551,
+                "total_time": 0.0678217
+              }
             },
             "fullRequest": {
               "messages": [
@@ -2342,14 +3198,55 @@
               "model": "llama-3.3-70b-versatile",
               "tool_choice": "auto"
             },
-            "fullResponse": null
+            "fullResponse": {
+              "id": "chatcmpl-15f28687-34e9-4779-adc9-c7aff162b903",
+              "object": "chat.completion",
+              "created": 1777162082,
+              "model": "llama-3.3-70b-versatile",
+              "choices": [
+                {
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "tool_calls": [
+                      {
+                        "id": "zcb8mhzn9",
+                        "type": "function",
+                        "function": {
+                          "name": "barkable",
+                          "arguments": "{\"_label\":\"get me the dog\"}"
+                        }
+                      }
+                    ]
+                  },
+                  "logprobs": null,
+                  "finish_reason": "tool_calls"
+                }
+              ],
+              "usage": {
+                "queue_time": 0.171256198,
+                "prompt_tokens": 532,
+                "prompt_time": 0.02736273,
+                "completion_tokens": 19,
+                "completion_time": 0.04045897,
+                "total_tokens": 551,
+                "total_time": 0.0678217
+              },
+              "usage_breakdown": null,
+              "system_fingerprint": "fp_3272ea2d91",
+              "x_groq": {
+                "id": "req_01kq3htnxmesd95t1p1aptsckh",
+                "seed": 291246588
+              },
+              "service_tier": "on_demand"
+            }
           },
-          "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 557. Please try again in 4m35.616s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"barkable\"."
+          "failReason": null
         },
         {
           "prompt": "get me the dog please",
           "expect": "barkable",
-          "actual": "error",
+          "actual": "barkable",
           "raw": {
             "type": "classifier",
             "input": {
@@ -2367,22 +3264,38 @@
               ]
             },
             "output": {
-              "chosen": "error",
-              "matchedOption": null,
-              "toolCalls": [],
-              "content": null,
-              "finishReason": "error",
-              "error": {
-                "message": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 534. Please try again in 4m15.744s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}",
-                "failedGeneration": null,
-                "recovered": false
+              "chosen": "barkable",
+              "matchedOption": {
+                "option": "get me the dog",
+                "nextSlideId": "barkable",
+                "slot": null,
+                "slot1": null,
+                "extra": null
               },
-              "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 534. Please try again in 4m15.744s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"barkable\"."
+              "toolCalls": [
+                {
+                  "id": "hmhk1cgw7",
+                  "name": "barkable",
+                  "arguments": {
+                    "_label": "get me the dog"
+                  }
+                }
+              ],
+              "content": null,
+              "finishReason": "tool_calls"
             },
             "meta": {
-              "responseId": null,
+              "responseId": "chatcmpl-ced85179-4640-481f-af9c-7032394e0b89",
               "model": "llama-3.3-70b-versatile",
-              "usage": null
+              "usage": {
+                "queue_time": 0.171120357,
+                "prompt_tokens": 533,
+                "prompt_time": 0.027572155,
+                "completion_tokens": 19,
+                "completion_time": 0.04342425,
+                "total_tokens": 552,
+                "total_time": 0.070996405
+              }
             },
             "fullRequest": {
               "messages": [
@@ -2455,14 +3368,55 @@
               "model": "llama-3.3-70b-versatile",
               "tool_choice": "auto"
             },
-            "fullResponse": null
+            "fullResponse": {
+              "id": "chatcmpl-ced85179-4640-481f-af9c-7032394e0b89",
+              "object": "chat.completion",
+              "created": 1777162082,
+              "model": "llama-3.3-70b-versatile",
+              "choices": [
+                {
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "tool_calls": [
+                      {
+                        "id": "hmhk1cgw7",
+                        "type": "function",
+                        "function": {
+                          "name": "barkable",
+                          "arguments": "{\"_label\":\"get me the dog\"}"
+                        }
+                      }
+                    ]
+                  },
+                  "logprobs": null,
+                  "finish_reason": "tool_calls"
+                }
+              ],
+              "usage": {
+                "queue_time": 0.171120357,
+                "prompt_tokens": 533,
+                "prompt_time": 0.027572155,
+                "completion_tokens": 19,
+                "completion_time": 0.04342425,
+                "total_tokens": 552,
+                "total_time": 0.070996405
+              },
+              "usage_breakdown": null,
+              "system_fingerprint": "fp_4f6d808339",
+              "x_groq": {
+                "id": "req_01kq3htp8vfttv8dsc2vtc4kbw",
+                "seed": 1414246699
+              },
+              "service_tier": "on_demand"
+            }
           },
-          "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 534. Please try again in 4m15.744s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"barkable\"."
+          "failReason": null
         },
         {
           "prompt": "I want to get the dog",
           "expect": "barkable",
-          "actual": "error",
+          "actual": "barkable",
           "raw": {
             "type": "classifier",
             "input": {
@@ -2480,22 +3434,38 @@
               ]
             },
             "output": {
-              "chosen": "error",
-              "matchedOption": null,
-              "toolCalls": [],
-              "content": null,
-              "finishReason": "error",
-              "error": {
-                "message": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 558. Please try again in 4m36.48s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}",
-                "failedGeneration": null,
-                "recovered": false
+              "chosen": "barkable",
+              "matchedOption": {
+                "option": "get me the dog",
+                "nextSlideId": "barkable",
+                "slot": null,
+                "slot1": null,
+                "extra": null
               },
-              "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 558. Please try again in 4m36.48s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"barkable\"."
+              "toolCalls": [
+                {
+                  "id": "h71fnwage",
+                  "name": "barkable",
+                  "arguments": {
+                    "_label": "get me the dog"
+                  }
+                }
+              ],
+              "content": null,
+              "finishReason": "tool_calls"
             },
             "meta": {
-              "responseId": null,
+              "responseId": "chatcmpl-b7d75b2a-9a52-4bde-a2f4-ecd798a929ba",
               "model": "llama-3.3-70b-versatile",
-              "usage": null
+              "usage": {
+                "queue_time": 0.171367061,
+                "prompt_tokens": 533,
+                "prompt_time": 0.04778812,
+                "completion_tokens": 19,
+                "completion_time": 0.04905834,
+                "total_tokens": 552,
+                "total_time": 0.09684646
+              }
             },
             "fullRequest": {
               "messages": [
@@ -2568,14 +3538,55 @@
               "model": "llama-3.3-70b-versatile",
               "tool_choice": "auto"
             },
-            "fullResponse": null
+            "fullResponse": {
+              "id": "chatcmpl-b7d75b2a-9a52-4bde-a2f4-ecd798a929ba",
+              "object": "chat.completion",
+              "created": 1777162083,
+              "model": "llama-3.3-70b-versatile",
+              "choices": [
+                {
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "tool_calls": [
+                      {
+                        "id": "h71fnwage",
+                        "type": "function",
+                        "function": {
+                          "name": "barkable",
+                          "arguments": "{\"_label\":\"get me the dog\"}"
+                        }
+                      }
+                    ]
+                  },
+                  "logprobs": null,
+                  "finish_reason": "tool_calls"
+                }
+              ],
+              "usage": {
+                "queue_time": 0.171367061,
+                "prompt_tokens": 533,
+                "prompt_time": 0.04778812,
+                "completion_tokens": 19,
+                "completion_time": 0.04905834,
+                "total_tokens": 552,
+                "total_time": 0.09684646
+              },
+              "usage_breakdown": null,
+              "system_fingerprint": "fp_45180df409",
+              "x_groq": {
+                "id": "req_01kq3htpjnftxa5jf99reyah5b",
+                "seed": 1204525777
+              },
+              "service_tier": "on_demand"
+            }
           },
-          "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 558. Please try again in 4m36.48s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"barkable\"."
+          "failReason": null
         },
         {
           "prompt": "get me the cat",
           "expect": "fallback",
-          "actual": "error",
+          "actual": "barkable",
           "raw": {
             "type": "classifier",
             "input": {
@@ -2593,22 +3604,39 @@
               ]
             },
             "output": {
-              "chosen": "error",
-              "matchedOption": null,
-              "toolCalls": [],
-              "content": null,
-              "finishReason": "error",
-              "error": {
-                "message": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 533. Please try again in 4m14.88s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}",
-                "failedGeneration": null,
-                "recovered": false
+              "chosen": "barkable",
+              "matchedOption": {
+                "option": "get me the dog",
+                "nextSlideId": "barkable",
+                "slot": null,
+                "slot1": null,
+                "extra": null
               },
-              "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 533. Please try again in 4m14.88s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"fallback\"."
+              "toolCalls": [
+                {
+                  "id": "w2t9j1xce",
+                  "name": "barkable",
+                  "arguments": {
+                    "_label": "get me the dog"
+                  }
+                }
+              ],
+              "content": null,
+              "finishReason": "tool_calls",
+              "failReason": "Model matched \"barkable\" (\"get me the dog\") but the input should not have matched any option. Expected \"fallback\" — the model incorrectly found a relationship."
             },
             "meta": {
-              "responseId": null,
+              "responseId": "chatcmpl-14d6869f-aed2-466c-90d5-03adf9ab9a76",
               "model": "llama-3.3-70b-versatile",
-              "usage": null
+              "usage": {
+                "queue_time": 0.064589797,
+                "prompt_tokens": 532,
+                "prompt_time": 0.029078292,
+                "completion_tokens": 19,
+                "completion_time": 0.066057128,
+                "total_tokens": 551,
+                "total_time": 0.09513542
+              }
             },
             "fullRequest": {
               "messages": [
@@ -2681,21 +3709,1027 @@
               "model": "llama-3.3-70b-versatile",
               "tool_choice": "auto"
             },
+            "fullResponse": {
+              "id": "chatcmpl-14d6869f-aed2-466c-90d5-03adf9ab9a76",
+              "object": "chat.completion",
+              "created": 1777162083,
+              "model": "llama-3.3-70b-versatile",
+              "choices": [
+                {
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "tool_calls": [
+                      {
+                        "id": "w2t9j1xce",
+                        "type": "function",
+                        "function": {
+                          "name": "barkable",
+                          "arguments": "{\"_label\":\"get me the dog\"}"
+                        }
+                      }
+                    ]
+                  },
+                  "logprobs": null,
+                  "finish_reason": "tool_calls"
+                }
+              ],
+              "usage": {
+                "queue_time": 0.064589797,
+                "prompt_tokens": 532,
+                "prompt_time": 0.029078292,
+                "completion_tokens": 19,
+                "completion_time": 0.066057128,
+                "total_tokens": 551,
+                "total_time": 0.09513542
+              },
+              "usage_breakdown": null,
+              "system_fingerprint": "fp_d42c28f9ce",
+              "x_groq": {
+                "id": "req_01kq3htpxcfep8vh8hq7y8qjwa",
+                "seed": 1131904677
+              },
+              "service_tier": "on_demand"
+            }
+          },
+          "failReason": "Model matched \"barkable\" (\"get me the dog\") but the input should not have matched any option. Expected \"fallback\" — the model incorrectly found a relationship."
+        }
+      ]
+    },
+    {
+      "name": "slot-naming",
+      "passed": 4,
+      "total": 5,
+      "rows": [
+        {
+          "prompt": "I want to play with that thing",
+          "expect": "clarifying_question",
+          "actual": "clarifying_question",
+          "raw": {
+            "type": "classifier",
+            "input": {
+              "prompt": "I want to play with that thing",
+              "systemPrompt": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them",
+              "model": "llama-3.3-70b-versatile",
+              "options": [
+                {
+                  "option": "take the boat left",
+                  "nextSlideId": "bounce",
+                  "slot": null,
+                  "slot1": null,
+                  "extra": null
+                },
+                {
+                  "option": "play with the jump rope",
+                  "nextSlideId": "skip",
+                  "slot": null,
+                  "slot1": null,
+                  "extra": null
+                },
+                {
+                  "option": "play with the coloring book",
+                  "nextSlideId": "color",
+                  "slot": null,
+                  "slot1": null,
+                  "extra": null
+                }
+              ]
+            },
+            "output": {
+              "chosen": "clarifying_question",
+              "matchedOption": null,
+              "toolCalls": [
+                {
+                  "id": "mtfb03yr6",
+                  "name": "clarifying_question",
+                  "arguments": {
+                    "clarifying_question": "What thing?"
+                  }
+                }
+              ],
+              "content": null,
+              "finishReason": "tool_calls"
+            },
+            "meta": {
+              "responseId": "chatcmpl-19705117-0bbd-4eb5-bfeb-10b936c19879",
+              "model": "llama-3.3-70b-versatile",
+              "usage": {
+                "queue_time": 0.172342141,
+                "prompt_tokens": 672,
+                "prompt_time": 0.072217497,
+                "completion_tokens": 19,
+                "completion_time": 0.068012854,
+                "total_tokens": 691,
+                "total_time": 0.140230351
+              }
+            },
+            "fullRequest": {
+              "messages": [
+                {
+                  "role": "system",
+                  "content": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them"
+                },
+                {
+                  "role": "user",
+                  "content": "\"I want to play with that thing\""
+                }
+              ],
+              "tools": [
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "bounce",
+                    "description": "take the boat left ; more examples: ",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"take the boat left\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "skip",
+                    "description": "play with the jump rope ; more examples: ",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"play with the jump rope\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "color",
+                    "description": "play with the coloring book ; more examples: ",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"play with the coloring book\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "clarifying_question",
+                    "description": "Input is ambiguous — ask user a short clarifying question",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "clarifying_question": {
+                          "type": "string",
+                          "description": "A short question (under 12 words) to resolve ambiguity"
+                        },
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "fallback",
+                    "description": "No match found for the user input",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                }
+              ],
+              "model": "llama-3.3-70b-versatile",
+              "tool_choice": "auto"
+            },
+            "fullResponse": {
+              "id": "chatcmpl-19705117-0bbd-4eb5-bfeb-10b936c19879",
+              "object": "chat.completion",
+              "created": 1777162086,
+              "model": "llama-3.3-70b-versatile",
+              "choices": [
+                {
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "tool_calls": [
+                      {
+                        "id": "mtfb03yr6",
+                        "type": "function",
+                        "function": {
+                          "name": "clarifying_question",
+                          "arguments": "{\"clarifying_question\":\"What thing?\"}"
+                        }
+                      }
+                    ]
+                  },
+                  "logprobs": null,
+                  "finish_reason": "tool_calls"
+                }
+              ],
+              "usage": {
+                "queue_time": 0.172342141,
+                "prompt_tokens": 672,
+                "prompt_time": 0.072217497,
+                "completion_tokens": 19,
+                "completion_time": 0.068012854,
+                "total_tokens": 691,
+                "total_time": 0.140230351
+              },
+              "usage_breakdown": null,
+              "system_fingerprint": "fp_45180df409",
+              "x_groq": {
+                "id": "req_01kq3htt5rfftaa374q5jzxvy3",
+                "seed": 757026840
+              },
+              "service_tier": "on_demand"
+            }
+          },
+          "failReason": null
+        },
+        {
+          "prompt": "give me one of those",
+          "expect": "clarifying_question",
+          "actual": "clarifying_question",
+          "raw": {
+            "type": "classifier",
+            "input": {
+              "prompt": "give me one of those",
+              "systemPrompt": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them",
+              "model": "llama-3.3-70b-versatile",
+              "options": [
+                {
+                  "option": "take the boat left",
+                  "nextSlideId": "bounce",
+                  "slot": null,
+                  "slot1": null,
+                  "extra": null
+                },
+                {
+                  "option": "play with the jump rope",
+                  "nextSlideId": "skip",
+                  "slot": null,
+                  "slot1": null,
+                  "extra": null
+                },
+                {
+                  "option": "play with the coloring book",
+                  "nextSlideId": "color",
+                  "slot": null,
+                  "slot1": null,
+                  "extra": null
+                }
+              ]
+            },
+            "output": {
+              "chosen": "clarifying_question",
+              "matchedOption": null,
+              "toolCalls": [
+                {
+                  "id": "3q9bxvdq8",
+                  "name": "clarifying_question",
+                  "arguments": {
+                    "clarifying_question": "What do you want?"
+                  }
+                }
+              ],
+              "content": null,
+              "finishReason": "tool_calls"
+            },
+            "meta": {
+              "responseId": "chatcmpl-f76470fd-8e53-46b2-9f73-c46bbcce7649",
+              "model": "llama-3.3-70b-versatile",
+              "usage": {
+                "queue_time": 0.032985922,
+                "prompt_tokens": 671,
+                "prompt_time": 0.058233888,
+                "completion_tokens": 21,
+                "completion_time": 0.074724614,
+                "total_tokens": 692,
+                "total_time": 0.132958502
+              }
+            },
+            "fullRequest": {
+              "messages": [
+                {
+                  "role": "system",
+                  "content": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them"
+                },
+                {
+                  "role": "user",
+                  "content": "\"give me one of those\""
+                }
+              ],
+              "tools": [
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "bounce",
+                    "description": "take the boat left ; more examples: ",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"take the boat left\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "skip",
+                    "description": "play with the jump rope ; more examples: ",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"play with the jump rope\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "color",
+                    "description": "play with the coloring book ; more examples: ",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"play with the coloring book\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "clarifying_question",
+                    "description": "Input is ambiguous — ask user a short clarifying question",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "clarifying_question": {
+                          "type": "string",
+                          "description": "A short question (under 12 words) to resolve ambiguity"
+                        },
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "fallback",
+                    "description": "No match found for the user input",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                }
+              ],
+              "model": "llama-3.3-70b-versatile",
+              "tool_choice": "auto"
+            },
+            "fullResponse": {
+              "id": "chatcmpl-f76470fd-8e53-46b2-9f73-c46bbcce7649",
+              "object": "chat.completion",
+              "created": 1777162089,
+              "model": "llama-3.3-70b-versatile",
+              "choices": [
+                {
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "tool_calls": [
+                      {
+                        "id": "3q9bxvdq8",
+                        "type": "function",
+                        "function": {
+                          "name": "clarifying_question",
+                          "arguments": "{\"clarifying_question\":\"What do you want?\"}"
+                        }
+                      }
+                    ]
+                  },
+                  "logprobs": null,
+                  "finish_reason": "tool_calls"
+                }
+              ],
+              "usage": {
+                "queue_time": 0.032985922,
+                "prompt_tokens": 671,
+                "prompt_time": 0.058233888,
+                "completion_tokens": 21,
+                "completion_time": 0.074724614,
+                "total_tokens": 692,
+                "total_time": 0.132958502
+              },
+              "usage_breakdown": null,
+              "system_fingerprint": "fp_0761e44d7b",
+              "x_groq": {
+                "id": "req_01kq3htwjwfgn8chv0gr6v22nh",
+                "seed": 998924203
+              },
+              "service_tier": "on_demand"
+            }
+          },
+          "failReason": null
+        },
+        {
+          "prompt": "let me play",
+          "expect": "clarifying_question",
+          "actual": "clarifying_question",
+          "raw": {
+            "type": "classifier",
+            "input": {
+              "prompt": "let me play",
+              "systemPrompt": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them",
+              "model": "llama-3.3-70b-versatile",
+              "options": [
+                {
+                  "option": "take the boat left",
+                  "nextSlideId": "bounce",
+                  "slot": null,
+                  "slot1": null,
+                  "extra": null
+                },
+                {
+                  "option": "play with the jump rope",
+                  "nextSlideId": "skip",
+                  "slot": null,
+                  "slot1": null,
+                  "extra": null
+                },
+                {
+                  "option": "play with the coloring book",
+                  "nextSlideId": "color",
+                  "slot": null,
+                  "slot1": null,
+                  "extra": null
+                }
+              ]
+            },
+            "output": {
+              "chosen": "clarifying_question",
+              "matchedOption": null,
+              "toolCalls": [],
+              "content": null,
+              "finishReason": "error",
+              "error": {
+                "message": "400 {\"error\":{\"message\":\"Failed to call a function. Please adjust your prompt. See 'failed_generation' for more details.\",\"type\":\"invalid_request_error\",\"code\":\"tool_use_failed\",\"failed_generation\":\"<function=clarifying_question({\\\"_label\\\": \\\"none\\\", \\\"clarifying_question\\\": \\\"Play what?\\\"})</function>\"}}",
+                "failedGeneration": "<function=clarifying_question({\"_label\": \"none\", \"clarifying_question\": \"Play what?\"})</function>",
+                "recovered": true
+              },
+              "failReason": "API returned a 400 error — the model tried to call \"clarifying_question\" but used malformed syntax. The function name was recovered from the failed output. This counts as a pass but the API call itself failed."
+            },
+            "meta": {
+              "responseId": null,
+              "model": "llama-3.3-70b-versatile",
+              "usage": null
+            },
+            "fullRequest": {
+              "messages": [
+                {
+                  "role": "system",
+                  "content": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them"
+                },
+                {
+                  "role": "user",
+                  "content": "\"let me play\""
+                }
+              ],
+              "tools": [
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "bounce",
+                    "description": "take the boat left ; more examples: ",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"take the boat left\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "skip",
+                    "description": "play with the jump rope ; more examples: ",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"play with the jump rope\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "color",
+                    "description": "play with the coloring book ; more examples: ",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"play with the coloring book\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "clarifying_question",
+                    "description": "Input is ambiguous — ask user a short clarifying question",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "clarifying_question": {
+                          "type": "string",
+                          "description": "A short question (under 12 words) to resolve ambiguity"
+                        },
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "fallback",
+                    "description": "No match found for the user input",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                }
+              ],
+              "model": "llama-3.3-70b-versatile",
+              "tool_choice": "auto"
+            },
             "fullResponse": null
           },
-          "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 533. Please try again in 4m14.88s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"fallback\"."
+          "failReason": "API returned a 400 error — the model tried to call \"clarifying_question\" but used malformed syntax. The function name was recovered from the failed output. This counts as a pass but the API call itself failed."
+        },
+        {
+          "prompt": "I want to play with the ball",
+          "expect": "bounce",
+          "actual": "fallback",
+          "raw": {
+            "type": "classifier",
+            "input": {
+              "prompt": "I want to play with the ball",
+              "systemPrompt": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them",
+              "model": "llama-3.3-70b-versatile",
+              "options": [
+                {
+                  "option": "take the boat left",
+                  "nextSlideId": "bounce",
+                  "slot": null,
+                  "slot1": null,
+                  "extra": null
+                },
+                {
+                  "option": "play with the jump rope",
+                  "nextSlideId": "skip",
+                  "slot": null,
+                  "slot1": null,
+                  "extra": null
+                },
+                {
+                  "option": "play with the coloring book",
+                  "nextSlideId": "color",
+                  "slot": null,
+                  "slot1": null,
+                  "extra": null
+                }
+              ]
+            },
+            "output": {
+              "chosen": "fallback",
+              "matchedOption": null,
+              "toolCalls": [],
+              "content": null,
+              "finishReason": "error",
+              "error": {
+                "message": "400 {\"error\":{\"message\":\"Failed to call a function. Please adjust your prompt. See 'failed_generation' for more details.\",\"type\":\"invalid_request_error\",\"code\":\"tool_use_failed\",\"failed_generation\":\"<function=fallback{\\\"_label\\\": \\\"none\\\"}</function>\"}}",
+                "failedGeneration": "<function=fallback{\"_label\": \"none\"}</function>",
+                "recovered": true
+              },
+              "failReason": "API returned a 400 error. The model's malformed output was: \"<function=fallback{\"_label\": \"none\"}</function>\". Expected \"bounce\" but got \"fallback\"."
+            },
+            "meta": {
+              "responseId": null,
+              "model": "llama-3.3-70b-versatile",
+              "usage": null
+            },
+            "fullRequest": {
+              "messages": [
+                {
+                  "role": "system",
+                  "content": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them"
+                },
+                {
+                  "role": "user",
+                  "content": "\"I want to play with the ball\""
+                }
+              ],
+              "tools": [
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "bounce",
+                    "description": "take the boat left ; more examples: ",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"take the boat left\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "skip",
+                    "description": "play with the jump rope ; more examples: ",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"play with the jump rope\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "color",
+                    "description": "play with the coloring book ; more examples: ",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"play with the coloring book\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "clarifying_question",
+                    "description": "Input is ambiguous — ask user a short clarifying question",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "clarifying_question": {
+                          "type": "string",
+                          "description": "A short question (under 12 words) to resolve ambiguity"
+                        },
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "fallback",
+                    "description": "No match found for the user input",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                }
+              ],
+              "model": "llama-3.3-70b-versatile",
+              "tool_choice": "auto"
+            },
+            "fullResponse": null
+          },
+          "failReason": "API returned a 400 error. The model's malformed output was: \"<function=fallback{\"_label\": \"none\"}</function>\". Expected \"bounce\" but got \"fallback\"."
+        },
+        {
+          "prompt": "make some chocolate cake",
+          "expect": "fallback",
+          "actual": "fallback",
+          "raw": {
+            "type": "classifier",
+            "input": {
+              "prompt": "make some chocolate cake",
+              "systemPrompt": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them",
+              "model": "llama-3.3-70b-versatile",
+              "options": [
+                {
+                  "option": "take the boat left",
+                  "nextSlideId": "bounce",
+                  "slot": null,
+                  "slot1": null,
+                  "extra": null
+                },
+                {
+                  "option": "play with the jump rope",
+                  "nextSlideId": "skip",
+                  "slot": null,
+                  "slot1": null,
+                  "extra": null
+                },
+                {
+                  "option": "play with the coloring book",
+                  "nextSlideId": "color",
+                  "slot": null,
+                  "slot1": null,
+                  "extra": null
+                }
+              ]
+            },
+            "output": {
+              "chosen": "fallback",
+              "matchedOption": null,
+              "toolCalls": [
+                {
+                  "id": "0pd9ynzna",
+                  "name": "fallback",
+                  "arguments": {
+                    "_label": "none"
+                  }
+                }
+              ],
+              "content": null,
+              "finishReason": "tool_calls"
+            },
+            "meta": {
+              "responseId": "chatcmpl-66e20da1-b909-4994-9d96-90ca5ba07064",
+              "model": "llama-3.3-70b-versatile",
+              "usage": {
+                "queue_time": 0.071590372,
+                "prompt_tokens": 670,
+                "prompt_time": 0.054435398,
+                "completion_tokens": 15,
+                "completion_time": 0.048524195,
+                "total_tokens": 685,
+                "total_time": 0.102959593
+              }
+            },
+            "fullRequest": {
+              "messages": [
+                {
+                  "role": "system",
+                  "content": "You are an intent classifier for an interactive application.\nYour job is to match the user's input to the single best function from the list provided.\n\nRules:\n- Use the EXACT function name as defined — never invent or shorten names\n- Match by intent and meaning, not just literal words\n- Account for synonyms, related concepts, and common misspellings\n- If the input is ambiguous between two or more functions, call 'clarifying_question' with a short question (under 12 words) to resolve it\n- Only call 'fallback' if the input has absolutely no relationship to any function\n- Fill in slot values when the input provides them"
+                },
+                {
+                  "role": "user",
+                  "content": "\"make some chocolate cake\""
+                }
+              ],
+              "tools": [
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "bounce",
+                    "description": "take the boat left ; more examples: ",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"take the boat left\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "skip",
+                    "description": "play with the jump rope ; more examples: ",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"play with the jump rope\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "color",
+                    "description": "play with the coloring book ; more examples: ",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"play with the coloring book\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "clarifying_question",
+                    "description": "Input is ambiguous — ask user a short clarifying question",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "clarifying_question": {
+                          "type": "string",
+                          "description": "A short question (under 12 words) to resolve ambiguity"
+                        },
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                },
+                {
+                  "type": "function",
+                  "function": {
+                    "name": "fallback",
+                    "description": "No match found for the user input",
+                    "parameters": {
+                      "type": "object",
+                      "properties": {
+                        "_label": {
+                          "type": "string",
+                          "description": "Always return exactly this value: \"none\""
+                        }
+                      },
+                      "required": []
+                    }
+                  }
+                }
+              ],
+              "model": "llama-3.3-70b-versatile",
+              "tool_choice": "auto"
+            },
+            "fullResponse": {
+              "id": "chatcmpl-66e20da1-b909-4994-9d96-90ca5ba07064",
+              "object": "chat.completion",
+              "created": 1777162099,
+              "model": "llama-3.3-70b-versatile",
+              "choices": [
+                {
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "tool_calls": [
+                      {
+                        "id": "0pd9ynzna",
+                        "type": "function",
+                        "function": {
+                          "name": "fallback",
+                          "arguments": "{\"_label\":\"none\"}"
+                        }
+                      }
+                    ]
+                  },
+                  "logprobs": null,
+                  "finish_reason": "tool_calls"
+                }
+              ],
+              "usage": {
+                "queue_time": 0.071590372,
+                "prompt_tokens": 670,
+                "prompt_time": 0.054435398,
+                "completion_tokens": 15,
+                "completion_time": 0.048524195,
+                "total_tokens": 685,
+                "total_time": 0.102959593
+              },
+              "usage_breakdown": null,
+              "system_fingerprint": "fp_43d97c5965",
+              "x_groq": {
+                "id": "req_01kq3hv6eyenjsekj14eshhc7x",
+                "seed": 1210217130
+              },
+              "service_tier": "on_demand"
+            }
+          },
+          "failReason": null
         }
       ]
     },
     {
       "name": "synonyms",
-      "passed": 0,
+      "passed": 4,
       "total": 5,
       "rows": [
         {
           "prompt": "get me the canine",
           "expect": "bark",
-          "actual": "error",
+          "actual": "bark",
           "raw": {
             "type": "classifier",
             "input": {
@@ -2713,22 +4747,38 @@
               ]
             },
             "output": {
-              "chosen": "error",
-              "matchedOption": null,
-              "toolCalls": [],
-              "content": null,
-              "finishReason": "error",
-              "error": {
-                "message": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 531. Please try again in 4m13.152s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}",
-                "failedGeneration": null,
-                "recovered": false
+              "chosen": "bark",
+              "matchedOption": {
+                "option": "get me the dog",
+                "nextSlideId": "bark",
+                "slot": null,
+                "slot1": null,
+                "extra": null
               },
-              "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 531. Please try again in 4m13.152s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"bark\"."
+              "toolCalls": [
+                {
+                  "id": "mpgfcd20y",
+                  "name": "bark",
+                  "arguments": {
+                    "_label": "get me the dog"
+                  }
+                }
+              ],
+              "content": null,
+              "finishReason": "tool_calls"
             },
             "meta": {
-              "responseId": null,
+              "responseId": "chatcmpl-fb9df8f3-69d0-45bc-82e9-f33e6ac4a254",
               "model": "llama-3.3-70b-versatile",
-              "usage": null
+              "usage": {
+                "queue_time": 0.342802345,
+                "prompt_tokens": 530,
+                "prompt_time": 0.027097723,
+                "completion_tokens": 18,
+                "completion_time": 0.056933033,
+                "total_tokens": 548,
+                "total_time": 0.084030756
+              }
             },
             "fullRequest": {
               "messages": [
@@ -2801,14 +4851,55 @@
               "model": "llama-3.3-70b-versatile",
               "tool_choice": "auto"
             },
-            "fullResponse": null
+            "fullResponse": {
+              "id": "chatcmpl-fb9df8f3-69d0-45bc-82e9-f33e6ac4a254",
+              "object": "chat.completion",
+              "created": 1777162102,
+              "model": "llama-3.3-70b-versatile",
+              "choices": [
+                {
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "tool_calls": [
+                      {
+                        "id": "mpgfcd20y",
+                        "type": "function",
+                        "function": {
+                          "name": "bark",
+                          "arguments": "{\"_label\":\"get me the dog\"}"
+                        }
+                      }
+                    ]
+                  },
+                  "logprobs": null,
+                  "finish_reason": "tool_calls"
+                }
+              ],
+              "usage": {
+                "queue_time": 0.342802345,
+                "prompt_tokens": 530,
+                "prompt_time": 0.027097723,
+                "completion_tokens": 18,
+                "completion_time": 0.056933033,
+                "total_tokens": 548,
+                "total_time": 0.084030756
+              },
+              "usage_breakdown": null,
+              "system_fingerprint": "fp_45180df409",
+              "x_groq": {
+                "id": "req_01kq3hv9q6fdka0a5zw6f4kvpm",
+                "seed": 341320975
+              },
+              "service_tier": "on_demand"
+            }
           },
-          "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 531. Please try again in 4m13.152s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"bark\"."
+          "failReason": null
         },
         {
           "prompt": "fetch the hound",
           "expect": "bark",
-          "actual": "error",
+          "actual": "bark",
           "raw": {
             "type": "classifier",
             "input": {
@@ -2826,22 +4917,38 @@
               ]
             },
             "output": {
-              "chosen": "error",
-              "matchedOption": null,
-              "toolCalls": [],
-              "content": null,
-              "finishReason": "error",
-              "error": {
-                "message": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 531. Please try again in 4m13.152s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}",
-                "failedGeneration": null,
-                "recovered": false
+              "chosen": "bark",
+              "matchedOption": {
+                "option": "get me the dog",
+                "nextSlideId": "bark",
+                "slot": null,
+                "slot1": null,
+                "extra": null
               },
-              "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 531. Please try again in 4m13.152s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"bark\"."
+              "toolCalls": [
+                {
+                  "id": "76vw0rzqe",
+                  "name": "bark",
+                  "arguments": {
+                    "_label": "get me the dog"
+                  }
+                }
+              ],
+              "content": null,
+              "finishReason": "tool_calls"
             },
             "meta": {
-              "responseId": null,
+              "responseId": "chatcmpl-4ef866e7-69d9-4a3f-b97e-2428037fc03c",
               "model": "llama-3.3-70b-versatile",
-              "usage": null
+              "usage": {
+                "queue_time": 0.023055614,
+                "prompt_tokens": 530,
+                "prompt_time": 0.029187252,
+                "completion_tokens": 18,
+                "completion_time": 0.057304806,
+                "total_tokens": 548,
+                "total_time": 0.086492058
+              }
             },
             "fullRequest": {
               "messages": [
@@ -2914,14 +5021,55 @@
               "model": "llama-3.3-70b-versatile",
               "tool_choice": "auto"
             },
-            "fullResponse": null
+            "fullResponse": {
+              "id": "chatcmpl-4ef866e7-69d9-4a3f-b97e-2428037fc03c",
+              "object": "chat.completion",
+              "created": 1777162105,
+              "model": "llama-3.3-70b-versatile",
+              "choices": [
+                {
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "tool_calls": [
+                      {
+                        "id": "76vw0rzqe",
+                        "type": "function",
+                        "function": {
+                          "name": "bark",
+                          "arguments": "{\"_label\":\"get me the dog\"}"
+                        }
+                      }
+                    ]
+                  },
+                  "logprobs": null,
+                  "finish_reason": "tool_calls"
+                }
+              ],
+              "usage": {
+                "queue_time": 0.023055614,
+                "prompt_tokens": 530,
+                "prompt_time": 0.029187252,
+                "completion_tokens": 18,
+                "completion_time": 0.057304806,
+                "total_tokens": 548,
+                "total_time": 0.086492058
+              },
+              "usage_breakdown": null,
+              "system_fingerprint": "fp_0761e44d7b",
+              "x_groq": {
+                "id": "req_01kq3hvc7menna45ammz0b5h07",
+                "seed": 155919522
+              },
+              "service_tier": "on_demand"
+            }
           },
-          "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 531. Please try again in 4m13.152s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"bark\"."
+          "failReason": null
         },
         {
           "prompt": "bring me the puppy",
           "expect": "bark",
-          "actual": "error",
+          "actual": "bark",
           "raw": {
             "type": "classifier",
             "input": {
@@ -2939,22 +5087,38 @@
               ]
             },
             "output": {
-              "chosen": "error",
-              "matchedOption": null,
-              "toolCalls": [],
-              "content": null,
-              "finishReason": "error",
-              "error": {
-                "message": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 531. Please try again in 4m13.152s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}",
-                "failedGeneration": null,
-                "recovered": false
+              "chosen": "bark",
+              "matchedOption": {
+                "option": "get me the dog",
+                "nextSlideId": "bark",
+                "slot": null,
+                "slot1": null,
+                "extra": null
               },
-              "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 531. Please try again in 4m13.152s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"bark\"."
+              "toolCalls": [
+                {
+                  "id": "j7cx3nnyy",
+                  "name": "bark",
+                  "arguments": {
+                    "_label": "get me the dog"
+                  }
+                }
+              ],
+              "content": null,
+              "finishReason": "tool_calls"
             },
             "meta": {
-              "responseId": null,
+              "responseId": "chatcmpl-12facd48-9b1e-4a3e-91a8-bef886ae9dda",
               "model": "llama-3.3-70b-versatile",
-              "usage": null
+              "usage": {
+                "queue_time": 0.174781974,
+                "prompt_tokens": 530,
+                "prompt_time": 0.027887647,
+                "completion_tokens": 18,
+                "completion_time": 0.055042541,
+                "total_tokens": 548,
+                "total_time": 0.082930188
+              }
             },
             "fullRequest": {
               "messages": [
@@ -3027,14 +5191,55 @@
               "model": "llama-3.3-70b-versatile",
               "tool_choice": "auto"
             },
-            "fullResponse": null
+            "fullResponse": {
+              "id": "chatcmpl-12facd48-9b1e-4a3e-91a8-bef886ae9dda",
+              "object": "chat.completion",
+              "created": 1777162108,
+              "model": "llama-3.3-70b-versatile",
+              "choices": [
+                {
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "tool_calls": [
+                      {
+                        "id": "j7cx3nnyy",
+                        "type": "function",
+                        "function": {
+                          "name": "bark",
+                          "arguments": "{\"_label\":\"get me the dog\"}"
+                        }
+                      }
+                    ]
+                  },
+                  "logprobs": null,
+                  "finish_reason": "tool_calls"
+                }
+              ],
+              "usage": {
+                "queue_time": 0.174781974,
+                "prompt_tokens": 530,
+                "prompt_time": 0.027887647,
+                "completion_tokens": 18,
+                "completion_time": 0.055042541,
+                "total_tokens": 548,
+                "total_time": 0.082930188
+              },
+              "usage_breakdown": null,
+              "system_fingerprint": "fp_4f6d808339",
+              "x_groq": {
+                "id": "req_01kq3hvfdwev195gsz77bq0b9s",
+                "seed": 971581638
+              },
+              "service_tier": "on_demand"
+            }
           },
-          "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 531. Please try again in 4m13.152s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"bark\"."
+          "failReason": null
         },
         {
           "prompt": "hand me the pooch",
           "expect": "bark",
-          "actual": "error",
+          "actual": "bark",
           "raw": {
             "type": "classifier",
             "input": {
@@ -3052,22 +5257,38 @@
               ]
             },
             "output": {
-              "chosen": "error",
-              "matchedOption": null,
-              "toolCalls": [],
-              "content": null,
-              "finishReason": "error",
-              "error": {
-                "message": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 532. Please try again in 4m14.016s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}",
-                "failedGeneration": null,
-                "recovered": false
+              "chosen": "bark",
+              "matchedOption": {
+                "option": "get me the dog",
+                "nextSlideId": "bark",
+                "slot": null,
+                "slot1": null,
+                "extra": null
               },
-              "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 532. Please try again in 4m14.016s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"bark\"."
+              "toolCalls": [
+                {
+                  "id": "a6wck5zbn",
+                  "name": "bark",
+                  "arguments": {
+                    "_label": "get me the dog"
+                  }
+                }
+              ],
+              "content": null,
+              "finishReason": "tool_calls"
             },
             "meta": {
-              "responseId": null,
+              "responseId": "chatcmpl-a3d318e7-a73c-42c2-a875-83d691baab40",
               "model": "llama-3.3-70b-versatile",
-              "usage": null
+              "usage": {
+                "queue_time": 0.008361387,
+                "prompt_tokens": 531,
+                "prompt_time": 0.02833613,
+                "completion_tokens": 18,
+                "completion_time": 0.068503103,
+                "total_tokens": 549,
+                "total_time": 0.096839233
+              }
             },
             "fullRequest": {
               "messages": [
@@ -3140,14 +5361,55 @@
               "model": "llama-3.3-70b-versatile",
               "tool_choice": "auto"
             },
-            "fullResponse": null
+            "fullResponse": {
+              "id": "chatcmpl-a3d318e7-a73c-42c2-a875-83d691baab40",
+              "object": "chat.completion",
+              "created": 1777162110,
+              "model": "llama-3.3-70b-versatile",
+              "choices": [
+                {
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "tool_calls": [
+                      {
+                        "id": "a6wck5zbn",
+                        "type": "function",
+                        "function": {
+                          "name": "bark",
+                          "arguments": "{\"_label\":\"get me the dog\"}"
+                        }
+                      }
+                    ]
+                  },
+                  "logprobs": null,
+                  "finish_reason": "tool_calls"
+                }
+              ],
+              "usage": {
+                "queue_time": 0.008361387,
+                "prompt_tokens": 531,
+                "prompt_time": 0.02833613,
+                "completion_tokens": 18,
+                "completion_time": 0.068503103,
+                "total_tokens": 549,
+                "total_time": 0.096839233
+              },
+              "usage_breakdown": null,
+              "system_fingerprint": "fp_0761e44d7b",
+              "x_groq": {
+                "id": "req_01kq3hvhs7ev1vmx175g6qjrn7",
+                "seed": 158436079
+              },
+              "service_tier": "on_demand"
+            }
           },
-          "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 532. Please try again in 4m14.016s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"bark\"."
+          "failReason": null
         },
         {
           "prompt": "get me the feline",
           "expect": "fallback",
-          "actual": "error",
+          "actual": "bark",
           "raw": {
             "type": "classifier",
             "input": {
@@ -3165,22 +5427,39 @@
               ]
             },
             "output": {
-              "chosen": "error",
-              "matchedOption": null,
-              "toolCalls": [],
-              "content": null,
-              "finishReason": "error",
-              "error": {
-                "message": "429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 532. Please try again in 4m14.016s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}",
-                "failedGeneration": null,
-                "recovered": false
+              "chosen": "bark",
+              "matchedOption": {
+                "option": "get me the dog",
+                "nextSlideId": "bark",
+                "slot": null,
+                "slot1": null,
+                "extra": null
               },
-              "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 532. Please try again in 4m14.016s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"fallback\"."
+              "toolCalls": [
+                {
+                  "id": "q9xqcf08r",
+                  "name": "bark",
+                  "arguments": {
+                    "_label": "get me the dog"
+                  }
+                }
+              ],
+              "content": null,
+              "finishReason": "tool_calls",
+              "failReason": "Model matched \"bark\" (\"get me the dog\") but the input should not have matched any option. Expected \"fallback\" — the model incorrectly found a relationship."
             },
             "meta": {
-              "responseId": null,
+              "responseId": "chatcmpl-db2ee971-e7c8-4e2c-812a-b2b3c26c96a9",
               "model": "llama-3.3-70b-versatile",
-              "usage": null
+              "usage": {
+                "queue_time": 0.175589461,
+                "prompt_tokens": 531,
+                "prompt_time": 0.0773938,
+                "completion_tokens": 18,
+                "completion_time": 0.058483474,
+                "total_tokens": 549,
+                "total_time": 0.135877274
+              }
             },
             "fullRequest": {
               "messages": [
@@ -3253,9 +5532,50 @@
               "model": "llama-3.3-70b-versatile",
               "tool_choice": "auto"
             },
-            "fullResponse": null
+            "fullResponse": {
+              "id": "chatcmpl-db2ee971-e7c8-4e2c-812a-b2b3c26c96a9",
+              "object": "chat.completion",
+              "created": 1777162113,
+              "model": "llama-3.3-70b-versatile",
+              "choices": [
+                {
+                  "index": 0,
+                  "message": {
+                    "role": "assistant",
+                    "tool_calls": [
+                      {
+                        "id": "q9xqcf08r",
+                        "type": "function",
+                        "function": {
+                          "name": "bark",
+                          "arguments": "{\"_label\":\"get me the dog\"}"
+                        }
+                      }
+                    ]
+                  },
+                  "logprobs": null,
+                  "finish_reason": "tool_calls"
+                }
+              ],
+              "usage": {
+                "queue_time": 0.175589461,
+                "prompt_tokens": 531,
+                "prompt_time": 0.0773938,
+                "completion_tokens": 18,
+                "completion_time": 0.058483474,
+                "total_tokens": 549,
+                "total_time": 0.135877274
+              },
+              "usage_breakdown": null,
+              "system_fingerprint": "fp_3272ea2d91",
+              "x_groq": {
+                "id": "req_01kq3hvkznenpbxyv83nfygc9v",
+                "seed": 1109375987
+              },
+              "service_tier": "on_demand"
+            }
           },
-          "failReason": "API call failed with error: 429 {\"error\":{\"message\":\"Rate limit reached for model `llama-3.3-70b-versatile` in organization `org_01km24tevwecpa7rpyjpg0d1vy` service tier `on_demand` on tokens per day (TPD): Limit 100000, Used 99762, Requested 532. Please try again in 4m14.016s. Need more tokens? Upgrade to Dev Tier today at https://console.groq.com/settings/billing\",\"type\":\"tokens\",\"code\":\"rate_limit_exceeded\"}}. Returned \"error\" instead of \"fallback\"."
+          "failReason": "Model matched \"bark\" (\"get me the dog\") but the input should not have matched any option. Expected \"fallback\" — the model incorrectly found a relationship."
         }
       ]
     }

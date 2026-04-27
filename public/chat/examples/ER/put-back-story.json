@@ -146,7 +146,7 @@
           "nextSlideId": "movable"
         },
         {
-          "option": "attach ekg or blood pressure (bp) or iv poll to the patient. ",
+          "option": "attach ekg or blood pressure cuff (bp) or iv poll to the patient. ",
           "extra": "show the connection between  _FOREGROUND_   check heart rate; check pulse;check blood pressure",
           "slot": {
             "name": "item-to-attach_to_patient",
@@ -176,7 +176,21 @@
             "name": "",
             "description": ""
           }
-
+        },
+        {
+          "option": "the diagnosis is any ER diagnosis,",
+          "extra": " the patient has this condition; my conclusion the patient has",
+          "resource": "focal",
+          "end": "Well done.",
+          "nextSlideId": "@test",
+          "slot": {
+            "name": "diagnosis",
+            "description": ""
+          },
+          "slot1": {
+            "name": "test",
+            "description": "yes or no "
+          }
         },
         {
           "option": "Any question that  may be about patient",

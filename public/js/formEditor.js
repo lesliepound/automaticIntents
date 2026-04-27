@@ -86,177 +86,292 @@ class FormEditor {
   }
 
   // ── Page card builder ───────────────────────────────────────
-
-  _buildPageCard(page, index) {
-    const card = el('div', 'fe-card');
-    card.dataset.index = index;
-
-    // Header bar
-    const header = el('div', 'fe-card-header');
-
-    // Collapse toggle
-    const collapseBtn = el('button', 'fe-collapse-btn');
-    collapseBtn.type = 'button';
-    const collapseIcon = mIcon('expand_more');
-    collapseBtn.appendChild(collapseIcon);
-    let collapsed = false;
-    collapseBtn.onclick = () => {
-      collapsed = !collapsed;
-      collapseIcon.textContent = collapsed ? 'chevron_right' : 'expand_more';
-      body.style.display = collapsed ? 'none' : '';
-    };
-    header.appendChild(collapseBtn);
-
-    // Page ID
-    const idLabel = el('label', 'fe-header-label', 'ID');
-    header.appendChild(idLabel);
-    const idInput = el('input', 'fe-header-input');
-    idInput.value = page.id || '';
-    idInput.onchange = () => { page.id = idInput.value; };
-    header.appendChild(idInput);
-
-    // Type dropdown
-    const typeLabel = el('label', 'fe-header-label', 'Type');
-    header.appendChild(typeLabel);
-    const typeSelect = el('select', 'fe-header-select');
-    PAGE_TYPES.forEach(t => {
-      const opt = el('option');
-      opt.value = t;
-      opt.textContent = t;
-      if (page.type === t) opt.selected = true;
-      typeSelect.appendChild(opt);
-    });
-    typeSelect.onchange = () => {
-      page.type = typeSelect.value;
-      this.render();
-    };
-    header.appendChild(typeSelect);
-
-    // Spacer
-    header.appendChild(el('span', 'fe-spacer'));
-
-    // Delete page
-    const delBtn = el('button', 'fe-icon-btn fe-icon-btn-danger');
-    delBtn.type = 'button';
-    delBtn.title = 'Delete page';
-    delBtn.appendChild(mIcon('delete'));
-    delBtn.onclick = async () => {
-      if (this.pages.length <= 1) return;
-      const ok = await showConfirm('Delete page?', `Remove page "${page.id || 'Untitled'}"? This cannot be undone.`);
-      if (!ok) return;
-      this.pages.splice(index, 1);
-      this.render();
-    };
-    header.appendChild(delBtn);
-
-    card.appendChild(header);
-
-    // Body
-    const body = el('div', 'fe-card-body');
-
-    // ── Common fields ───────────────────────
-    body.appendChild(this._fieldRow('Text', () => {
-      const ta = el('textarea', 'fe-textarea');
-      ta.value = page.text || '';
-      ta.onchange = () => { page.text = ta.value; };
-      return ta;
-    }));
-
-    if (page.display !== undefined || page.type === 'simulation' || page.type === 'options') {
-      // Display checkbox moved to header
-    }
-
-    // ── Story-specific fields ───────────────
-    if (page.type === 'story') {
-      body.appendChild(this._fieldRow('Timer (s)', () => {
-        const inp = el('input', 'fe-input fe-input-sm');
-        inp.type = 'number';
-        inp.min = '0';
-        inp.value = page.timer ?? '';
-        inp.onchange = () => {
-          const v = parseFloat(inp.value);
-          if (!isNaN(v)) page.timer = v; else delete page.timer;
-        };
-        return inp;
-      }));
-
-      body.appendChild(this._fieldRow('Prompt', () => {
-        const ta = el('textarea', 'fe-textarea fe-textarea-sm');
-        ta.value = page.prompt || '';
-        ta.placeholder = 'Optional system prompt';
-        ta.onchange = () => {
-          if (ta.value) page.prompt = ta.value; else delete page.prompt;
-        };
-        return ta;
-      }));
-
-      body.appendChild(this._fieldRow('Next Slide ID', () => {
-        const inp = el('input', 'fe-input');
-        inp.value = page.nextSlideId || '';
-        inp.onchange = () => {
-          if (inp.value) page.nextSlideId = inp.value; else delete page.nextSlideId;
-        };
-        return inp;
-      }));
-    }
-
-    // ── Simulation / Options fields ─────────
-    if (page.type === 'simulation' || page.type === 'options') {
-      // Setup (simulation only)
-      if (page.type === 'simulation') {
-        body.appendChild(this._buildSetup(page));
-      }
-
-      // Foreground
-      body.appendChild(this._buildTagList('Foreground', page, 'foreground'));
-
-      // Goals
-      if (page.type === 'simulation') {
-        body.appendChild(this._buildTagList('Goals', page, 'goals'));
-      }
-
-      // Options
-      body.appendChild(this._buildOptions(page, index));
-
-      // Affordances
-      body.appendChild(this._buildAffordances(page));
-
-      // Dials (simulation only)
-      if (page.type === 'simulation' && (page.dials || Object.keys(page).includes('dials'))) {
-        body.appendChild(this._buildDials(page));
-      }
-      // Add Dials button if simulation and no dials yet
-      if (page.type === 'simulation' && !page.dials) {
-        const addDialsBtn = el('button', 'fe-btn fe-btn-tonal fe-btn-sm');
-        addDialsBtn.type = 'button';
-        addDialsBtn.appendChild(mIcon('speed', 'fe-btn-icon'));
-        addDialsBtn.appendChild(document.createTextNode(' Add Dials Section'));
-        addDialsBtn.style.marginTop = '8px';
-        addDialsBtn.onclick = () => {
-          page.dials = {};
-          this.render();
-        };
-        body.appendChild(addDialsBtn);
-      }
-    }
-
-    card.appendChild(body);
-    return card;
-  }
+// ── Page card builder ───────────────────────────────────────
+// /***
+//   _buildPageCard(page, index) {
+//     const card = el('div', 'fe-card');
+//     card.dataset.index = index; [cite: 12]
+//
+//     // Header bar
+//     const header = el('div', 'fe-card-header'); [cite: 40]
+//
+//     // Collapse toggle
+//     const collapseBtn = el('button', 'fe-collapse-btn'); [cite: 42]
+//     collapseBtn.type = 'button';
+//     const collapseIcon = mIcon('expand_more'); [cite: 28]
+//     collapseBtn.appendChild(collapseIcon);
+//     let collapsed = false;
+//     collapseBtn.onclick = () => {
+//       collapsed = !collapsed;
+//       collapseIcon.textContent = collapsed ? 'chevron_right' : 'expand_more';
+//       body.style.display = collapsed ? 'none' : '';
+//     };
+//     header.appendChild(collapseBtn);
+//
+//     // Page ID
+//     const idLabel = el('label', 'fe-header-label', 'ID'); [cite: 43]
+//     header.appendChild(idLabel);
+//     const idInput = el('input', 'fe-header-input'); [cite: 44]
+//     idInput.value = page.id || '';
+//     idInput.onchange = () => { page.id = idInput.value; };
+//     header.appendChild(idInput);
+//
+//     // Type dropdown
+//     const typeLabel = el('label', 'fe-header-label', 'Type'); [cite: 43]
+//     header.appendChild(typeLabel);
+//     const typeSelect = el('select', 'fe-header-select'); [cite: 46]
+//     PAGE_TYPES.forEach(t => {
+//       const opt = el('option');
+//       opt.value = t;
+//       opt.textContent = t;
+//       if (page.type === t) opt.selected = true;
+//       typeSelect.appendChild(opt);
+//     });
+//     typeSelect.onchange = () => {
+//       page.type = typeSelect.value;
+//       this.render();
+//     };
+//     header.appendChild(typeSelect);
+//
+//     // Spacer
+//     header.appendChild(el('span', 'fe-spacer')); [cite: 47]
+//
+//     // Delete page
+//     const delBtn = el('button', 'fe-icon-btn fe-icon-btn-danger'); [cite: 56, 57]
+//     delBtn.type = 'button';
+//     delBtn.title = 'Delete page';
+//     delBtn.appendChild(mIcon('delete')); [cite: 28]
+//     delBtn.onclick = async () => {
+//       if (this.pages.length <= 1) return;
+//       const ok = await showConfirm('Delete page?', `Remove page "${page.id || 'Untitled'}"? This cannot be undone.`);
+//       if (!ok) return;
+//       this.pages.splice(index, 1);
+//       this.render();
+//     };
+//     header.appendChild(delBtn);
+//
+//     card.appendChild(header);
+//
+//     // Body
+//     const body = el('div', 'fe-card-body'); [cite: 41]
+//
+//     // ── MOVED SETUP SECTION (NOW COLLAPSIBLE & ABOVE TEXT) ──
+//     if (page.type === 'simulation') {
+//       body.appendChild(this._buildSetup(page)); [cite: 13]
+//     }
+//
+//     // ── COMMON FIELDS ───────────────────────
+//     // ORIGINAL ORDER: Text was here before Setup
+//     body.appendChild(this._fieldRow('Text', () => {
+//       const ta = el('textarea', 'fe-textarea'); [cite: 65]
+//       ta.value = page.text || '';
+//       ta.onchange = () => { page.text = ta.value; };
+//       return ta;
+//     }));
+//
+//     // ... [Remaining logic for Simulation/Options fields remains the same] ...
+//     if (page.type === 'story') {
+//       // ... story logic [cite: 1]
+//     }
+//
+//     if (page.type === 'simulation' || page.type === 'options') {
+//       // ... sim logic [cite: 1]
+//     }
+//
+//     card.appendChild(body);
+//     return card;
+//   }
+//  **/
+  // _buildPageCard(page, index) {
+  //   const card = el('div', 'fe-card');
+  //   card.dataset.index = index;
+  //
+  //   // Header bar
+  //   const header = el('div', 'fe-card-header');
+  //
+  //   // Collapse toggle
+  //   const collapseBtn = el('button', 'fe-collapse-btn');
+  //   collapseBtn.type = 'button';
+  //   const collapseIcon = mIcon('expand_more');
+  //   collapseBtn.appendChild(collapseIcon);
+  //   let collapsed = false;
+  //   collapseBtn.onclick = () => {
+  //     collapsed = !collapsed;
+  //     collapseIcon.textContent = collapsed ? 'chevron_right' : 'expand_more';
+  //     body.style.display = collapsed ? 'none' : '';
+  //   };
+  //   header.appendChild(collapseBtn);
+  //
+  //   // Page ID
+  //   const idLabel = el('label', 'fe-header-label', 'ID');
+  //   header.appendChild(idLabel);
+  //   const idInput = el('input', 'fe-header-input');
+  //   idInput.value = page.id || '';
+  //   idInput.onchange = () => { page.id = idInput.value; };
+  //   header.appendChild(idInput);
+  //
+  //   // Type dropdown
+  //   const typeLabel = el('label', 'fe-header-label', 'Type');
+  //   header.appendChild(typeLabel);
+  //   const typeSelect = el('select', 'fe-header-select');
+  //   PAGE_TYPES.forEach(t => {
+  //     const opt = el('option');
+  //     opt.value = t;
+  //     opt.textContent = t;
+  //     if (page.type === t) opt.selected = true;
+  //     typeSelect.appendChild(opt);
+  //   });
+  //   typeSelect.onchange = () => {
+  //     page.type = typeSelect.value;
+  //     this.render();
+  //   };
+  //   header.appendChild(typeSelect);
+  //
+  //   // Spacer
+  //   header.appendChild(el('span', 'fe-spacer'));
+  //
+  //   // Delete page
+  //   const delBtn = el('button', 'fe-icon-btn fe-icon-btn-danger');
+  //   delBtn.type = 'button';
+  //   delBtn.title = 'Delete page';
+  //   delBtn.appendChild(mIcon('delete'));
+  //   delBtn.onclick = async () => {
+  //     if (this.pages.length <= 1) return;
+  //     const ok = await showConfirm('Delete page?', `Remove page "${page.id || 'Untitled'}"? This cannot be undone.`);
+  //     if (!ok) return;
+  //     this.pages.splice(index, 1);
+  //     this.render();
+  //   };
+  //   header.appendChild(delBtn);
+  //
+  //   card.appendChild(header);
+  //
+  //   // Body
+  //   const body = el('div', 'fe-card-body');
+  //
+  //   // ── Common fields ───────────────────────
+  //   body.appendChild(this._fieldRow('Text', () => {
+  //     const ta = el('textarea', 'fe-textarea');
+  //     ta.value = page.text || '';
+  //     ta.onchange = () => { page.text = ta.value; };
+  //     return ta;
+  //   }));
+  //
+  //   if (page.display !== undefined || page.type === 'simulation' || page.type === 'options') {
+  //     // Display checkbox moved to header
+  //   }
+  //
+  //   // ── Story-specific fields ───────────────
+  //   if (page.type === 'story') {
+  //     body.appendChild(this._fieldRow('Timer (s)', () => {
+  //       const inp = el('input', 'fe-input fe-input-sm');
+  //       inp.type = 'number';
+  //       inp.min = '0';
+  //       inp.value = page.timer ?? '';
+  //       inp.onchange = () => {
+  //         const v = parseFloat(inp.value);
+  //         if (!isNaN(v)) page.timer = v; else delete page.timer;
+  //       };
+  //       return inp;
+  //     }));
+  //
+  //     body.appendChild(this._fieldRow('Prompt', () => {
+  //       const ta = el('textarea', 'fe-textarea fe-textarea-sm');
+  //       ta.value = page.prompt || '';
+  //       ta.placeholder = 'Optional system prompt';
+  //       ta.onchange = () => {
+  //         if (ta.value) page.prompt = ta.value; else delete page.prompt;
+  //       };
+  //       return ta;
+  //     }));
+  //
+  //     body.appendChild(this._fieldRow('Next Slide ID', () => {
+  //       const inp = el('input', 'fe-input');
+  //       inp.value = page.nextSlideId || '';
+  //       inp.onchange = () => {
+  //         if (inp.value) page.nextSlideId = inp.value; else delete page.nextSlideId;
+  //       };
+  //       return inp;
+  //     }));
+  //   }
+  //
+  //   // ── Simulation / Options fields ─────────
+  //   if (page.type === 'simulation' || page.type === 'options') {
+  //     // Setup (simulation only)
+  //     if (page.type === 'simulation') {
+  //       body.appendChild(this._buildSetup(page));
+  //     }
+  //
+  //     // Foreground
+  //     body.appendChild(this._buildTagList('Foreground', page, 'foreground'));
+  //
+  //     // Goals
+  //     if (page.type === 'simulation') {
+  //       body.appendChild(this._buildTagList('Goals', page, 'goals'));
+  //     }
+  //
+  //     // Options
+  //     body.appendChild(this._buildOptions(page, index));
+  //
+  //     // Affordances
+  //     body.appendChild(this._buildAffordances(page));
+  //
+  //     // Dials (simulation only)
+  //     if (page.type === 'simulation' && (page.dials || Object.keys(page).includes('dials'))) {
+  //       body.appendChild(this._buildDials(page));
+  //     }
+  //     // Add Dials button if simulation and no dials yet
+  //     if (page.type === 'simulation' && !page.dials) {
+  //       const addDialsBtn = el('button', 'fe-btn fe-btn-tonal fe-btn-sm');
+  //       addDialsBtn.type = 'button';
+  //       addDialsBtn.appendChild(mIcon('speed', 'fe-btn-icon'));
+  //       addDialsBtn.appendChild(document.createTextNode(' Add Dials Section'));
+  //       addDialsBtn.style.marginTop = '8px';
+  //       addDialsBtn.onclick = () => {
+  //         page.dials = {};
+  //         this.render();
+  //       };
+  //       body.appendChild(addDialsBtn);
+  //     }
+  //   }
+  //
+  //   card.appendChild(body);
+  //   return card;
+  // }
 
   // ── Setup section ───────────────────────────────────────────
+// ── Setup section (Updated to be Collapsible) ────────────────
 
   _buildSetup(page) {
-    if (!page.setup) page.setup = {};
-    const section = el('div', 'fe-section');
-    const hdr = el('div', 'fe-section-header', 'Setup');
+    if (!page.setup) page.setup = {}; [cite: 13]
+    const section = el('div', 'fe-section fe-collapsible'); [cite: 68]
+
+    // Header with toggle icon
+    const hdr = el('div', 'fe-section-header fe-section-header-toggle'); [cite: 69, 70]
+    hdr.style.cursor = 'pointer';
+    const toggleIcon = mIcon('expand_more', 'fe-toggle-icon'); [cite: 28, 70]
+    hdr.appendChild(toggleIcon);
+    hdr.appendChild(document.createTextNode(' Setup'));
+
+    const grid = el('div', 'fe-setup-grid'); [cite: 71]
+
+    // Toggle logic
+    let setupCollapsed = true; // Default to collapsed for a cleaner look
+    grid.style.display = 'none';
+    toggleIcon.textContent = 'chevron_right';
+
+    hdr.onclick = () => {
+      setupCollapsed = !setupCollapsed;
+      toggleIcon.textContent = setupCollapsed ? 'chevron_right' : 'expand_more';
+      grid.style.display = setupCollapsed ? 'none' : 'grid';
+    };
+
     section.appendChild(hdr);
-    const grid = el('div', 'fe-setup-grid');
 
     ['focus', 'data', 'selection'].forEach(key => {
-      const lbl = el('label', 'fe-label-sm', key);
+      const lbl = el('label', 'fe-label-sm', key); [cite: 60]
       grid.appendChild(lbl);
-      const inp = el('input', 'fe-input');
+      const inp = el('input', 'fe-input'); [cite: 62]
       inp.value = page.setup[key] || '';
       inp.placeholder = key;
       inp.onchange = () => {
@@ -270,6 +385,30 @@ class FormEditor {
     section.appendChild(grid);
     return section;
   }
+  // _buildSetup(page) {
+  //   if (!page.setup) page.setup = {};
+  //   const section = el('div', 'fe-section');
+  //   const hdr = el('div', 'fe-section-header', 'Setup');
+  //   section.appendChild(hdr);
+  //   const grid = el('div', 'fe-setup-grid');
+  //
+  //   ['focus', 'data', 'selection'].forEach(key => {
+  //     const lbl = el('label', 'fe-label-sm', key);
+  //     grid.appendChild(lbl);
+  //     const inp = el('input', 'fe-input');
+  //     inp.value = page.setup[key] || '';
+  //     inp.placeholder = key;
+  //     inp.onchange = () => {
+  //       if (inp.value) page.setup[key] = inp.value;
+  //       else delete page.setup[key];
+  //       if (!Object.keys(page.setup).length) delete page.setup;
+  //     };
+  //     grid.appendChild(inp);
+  //   });
+  //
+  //   section.appendChild(grid);
+  //   return section;
+  // }
 
   // ── Tag list (foreground, goals) ────────────────────────────
 
